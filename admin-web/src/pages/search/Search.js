@@ -19,12 +19,6 @@ import {
 } from "@mui/icons-material";
 import useStyles from "./styles";
 
-//images
-import img1 from "../../images/search/img1.jpg";
-import img2 from "../../images/search/img2.jpg";
-import img3 from "../../images/search/img3.jpg";
-import img4 from "../../images/search/img4.jpg";
-
 //components
 import { Typography, Button, Link, Chip } from "../../components/Wrappers";
 import Widget from "../../components/Widget";
@@ -148,13 +142,6 @@ export default function SearchComp() {
             <Grid item>
               <Widget disableWidgetMenu noBodyPadding inheritHeight>
                 <Grid container>
-                  <Grid item md={2} xs={12}>
-                    <img
-                      src={img1}
-                      alt="admin templates"
-                      style={{ width: "100%", height: "100%" }}
-                    />
-                  </Grid>
                   <Grid item md={8} xs={12}>
                     <Box display={"flex"} flexDirection={"column"} m={3}>
                       <Typography block>
@@ -201,13 +188,6 @@ export default function SearchComp() {
             <Grid item>
               <Widget disableWidgetMenu noBodyPadding inheritHeight>
                 <Grid container>
-                  <Grid item md={2} xs={12}>
-                    <img
-                      src={img2}
-                      alt="admin templates"
-                      style={{ width: "100%", height: "100%" }}
-                    />
-                  </Grid>
                   <Grid item md={8} xs={12}>
                     <Box display={"flex"} flexDirection={"column"} m={3}>
                       <Typography block>
@@ -260,13 +240,6 @@ export default function SearchComp() {
             <Grid item>
               <Widget disableWidgetMenu noBodyPadding inheritHeight>
                 <Grid container>
-                  <Grid item md={2} xs={12}>
-                    <img
-                      src={img3}
-                      alt="admin templates"
-                      style={{ width: "100%", height: "100%" }}
-                    />
-                  </Grid>
                   <Grid item md={8} xs={12}>
                     <Box display={"flex"} flexDirection={"column"} m={3}>
                       <Typography block>
@@ -312,35 +285,6 @@ export default function SearchComp() {
             <Grid item>
               <Widget disableWidgetMenu noBodyPadding inheritHeight>
                 <Grid container>
-                  <Grid item md={2} xs={12}>
-                    <img
-                      src={img4}
-                      alt="admin templates"
-                      style={{ width: "100%", height: "100%" }}
-                    />
-                  </Grid>
-                  <Grid item md={8} xs={12}>
-                    <Box display={"flex"} flexDirection={"column"} m={3}>
-                      <Typography block>
-                        <Box
-                          fontWeight={"fontWeightBold"}
-                          fontSize="h5.fontSize"
-                        >
-                          <Link color="success">
-                            Can I use CSS3 Radial-Gradient?
-                          </Link>{" "}
-                        </Box>
-                        <Box fontSize={".875rem"} mb={1}>
-                          Minsk, NY 20188
-                        </Box>
-                        <Box>
-                          Yes you can! Further more, you should! It let's you
-                          create really beautiful images either for elements or
-                          for the entire background.
-                        </Box>
-                      </Typography>
-                    </Box>
-                  </Grid>
                   <Grid item md={2} xs={12}>
                     <Box
                       m={3}

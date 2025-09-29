@@ -14,10 +14,6 @@ import classnames from 'classnames';
 // styles
 import useStyles from './styles';
 
-// logo
-import logo from './logo.svg';
-import google from '../../images/google.svg';
-
 // context
 import {
   useUserDispatch,
@@ -91,9 +87,8 @@ function Login(props) {
   return (
     <Grid container className={classes.container}>
       <div className={classes.logotypeContainer}>
-        <img src={logo} alt='logo' className={classes.logotypeImage} />
         <Typography className={classes.logotypeText}>
-          React Material Admin Full
+          Back Hoa 
         </Typography>
       </div>
       <div
@@ -196,11 +191,6 @@ function Login(props) {
                       )
                     }
                   >
-                    <img
-                      src={google}
-                      alt='google'
-                      className={classes.googleIcon}
-                    />
                     &nbsp;Sign in with Google
                   </Button>
                   <div className={classes.formDividerContainer}>
@@ -402,11 +392,6 @@ function Login(props) {
                       )
                     }
                   >
-                    <img
-                      src={google}
-                      alt='google'
-                      className={classes.googleIcon}
-                    />
                     &nbsp;Sign in with Google
                   </Button>
                 </React.Fragment>

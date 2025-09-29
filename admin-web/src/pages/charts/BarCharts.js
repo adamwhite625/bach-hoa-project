@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Grid } from "@mui/material";
 import { useTheme } from "@mui/styles";
 import ReactApexChart from "react-apexcharts";
-import img from "../../images/carousel/2.jpg";
 
 // components
 import Widget from "../../components/Widget/Widget";
@@ -168,12 +167,7 @@ const themeOptions = theme => {
       },
       fill: {
         type: "image",
-        opacity: 0.87,
-        image: {
-          src: [img],
-          width: 466,
-          height: 406
-        }
+        opacity: 0.87
       }
     }
   };

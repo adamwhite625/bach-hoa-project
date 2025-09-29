@@ -1,3 +1,12 @@
 /node_modules/
 /.idea/
 build
+docs/
+.env
+.env.local
+.env.*.local
+dist/
+coverage/
+.eslintcache
+.DS_Store
+Thumbs.db

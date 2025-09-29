@@ -32,22 +32,9 @@ import Widget from "../../components/Widget";
 import PageTitle from "../../components/PageTitle";
 import { Typography, Link, Button } from "../../components/Wrappers";
 
-//images
-import img1 from "../../images/product/img1.jpg";
-import img2 from "../../images/product/img2.jpg";
-import img3 from "../../images/product/img3.jpg";
-import img4 from "../../images/product/img4.jpg";
-import img5 from "../../images/product/img5.jpeg";
-import img6 from "../../images/product/img6.jpg";
-import payment1 from "../../images/product/mastercard.svg";
-import payment2 from "../../images/product/paypal.svg";
-import payment3 from "../../images/product/visa.svg";
-import payment4 from "../../images/product/aexpress.svg";
-
 export const rows = [
   {
     id: 1,
-    img: img1,
     title: "Trainers",
     subtitle: "Trainers In White",
     price: 76,
@@ -58,7 +45,6 @@ export const rows = [
   },
   {
     id: 2,
-    img: img2,
     title: "Boots",
     subtitle: "Trainers In Blue",
     price: 37,
@@ -69,7 +55,6 @@ export const rows = [
   },
   {
     id: 3,
-    img: img3,
     title: "Flat sandals",
     subtitle: "Trainers In White",
     price: 70,
@@ -80,7 +65,6 @@ export const rows = [
   },
   {
     id: 4,
-    img: img4,
     title: "Trainers",
     subtitle: "Trainers In Blue",
     price: 85,
@@ -91,7 +75,6 @@ export const rows = [
   },
   {
     id: 5,
-    img: img5,
     title: "Flat sandals",
     subtitle: "Trainers In White",
     price: 12,
@@ -102,7 +85,6 @@ export const rows = [
   },
   {
     id: 6,
-    img: img6,
     title: "Trainers",
     subtitle: "Trainers In Blue",
     price: 76,
@@ -113,7 +95,6 @@ export const rows = [
   },
   {
     id: 7,
-    img: img1,
     title: "Boots",
     subtitle: "Trainers In White",
     price: 76,
@@ -124,7 +105,6 @@ export const rows = [
   },
   {
     id: 8,
-    img: img2,
     title: "Flat sandals",
     subtitle: "Trainers In White",
     price: 76,
@@ -135,7 +115,6 @@ export const rows = [
   },
   {
     id: 9,
-    img: img3,
     title: "Trainers",
     subtitle: "Trainers In White",
     price: 76,
@@ -146,7 +125,6 @@ export const rows = [
   },
   {
     id: 10,
-    img: img4,
     title: "Boots",
     subtitle: "Trainers In Blue",
     price: 76,
@@ -157,7 +135,6 @@ export const rows = [
   },
   {
     id: 11,
-    img: img5,
     title: "Trainers",
     subtitle: "Trainers In White",
     price: 71,
@@ -168,7 +145,6 @@ export const rows = [
   },
   {
     id: 12,
-    img: img6,
     title: "Flat sandals",
     subtitle: "Trainers In Blue",
     price: 76,
@@ -342,22 +318,18 @@ const Product = props => {
                   </Box>
                   <Box display="flex" alignItems="center">
                     <img
-                      src={payment1}
                       alt={"mastercard"}
                       style={{ width: 40, marginRight: 8 }}
                     />
                     <img
-                      src={payment2}
                       alt={"paypal"}
                       style={{ width: 40, marginRight: 8 }}
                     />
                     <img
-                      src={payment3}
                       alt={"visa"}
                       style={{ width: 40, marginRight: 8 }}
                     />
                     <img
-                      src={payment4}
                       alt={"americanexpress"}
                       style={{ width: 40 }}
                     />
@@ -494,7 +466,6 @@ const Product = props => {
               <CardActionArea>
                 <CardMedia
                   className={classes.media}
-                  image={img1}
                   title={rows[0].title}
                 />
                 <CardContent>
@@ -524,7 +495,6 @@ const Product = props => {
               <CardActionArea>
                 <CardMedia
                   className={classes.media}
-                  image={img2}
                   title={rows[1].img}
                 />
                 <CardContent>
@@ -554,7 +524,6 @@ const Product = props => {
               <CardActionArea>
                 <CardMedia
                   className={classes.media}
-                  image={img3}
                   title={rows[2].img}
                 />
                 <CardContent>
@@ -584,7 +553,6 @@ const Product = props => {
               <CardActionArea>
                 <CardMedia
                   className={classes.media}
-                  image={img4}
                   title={rows[3].img}
                 />
                 <CardContent>

@@ -5,7 +5,6 @@ import { SnackbarProvider } from './Snackbar';
 
 // components
 import Layout from './Layout';
-import Documentation from './Documentation/Documentation';
 
 // pages
 import Error from '../pages/error';
@@ -40,7 +39,6 @@ export default function App() {
                 render={() => <Redirect to='/app/dashboard' />}
               />
 
-              <Route path='/documentation' component={Documentation} />
               <PrivateRoute path='/app' component={Layout} />
               <PublicRoute path='/login' component={Login} />
               <PublicRoute path='/verify-email' exact component={Verify} />

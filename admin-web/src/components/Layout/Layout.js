@@ -15,7 +15,6 @@ import useStyles from './styles';
 // components
 import Header from '../Header';
 import Sidebar from '../Sidebar';
-import Footer from '../Footer';
 import { Link } from '../Wrappers';
 import ColorChangeThemePopper from './components/ColorChangeThemePopper';
 
@@ -23,7 +22,6 @@ import EditUser from '../../pages/user/EditUser';
 
 // pages
 import Dashboard from '../../pages/dashboard';
-import Profile from '../../pages/profile'
 import TypographyPage from '../../pages/typography'
 import ColorsPage from '../../pages/colors'
 import GridPage from '../../pages/grid'
@@ -33,15 +31,12 @@ import DynamicTablesPage from '../../pages/tables/dynamic'
 
 import IconsPage from '../../pages/icons'
 import BadgesPage from '../../pages/badge'
-import CarouselsPage from '../../pages/carousel'
-import CardsPage from '../../pages/cards'
 import ModalsPage from '../../pages/modal'
 import NotificationsPage from '../../pages/notifications'
 import NavbarsPage from '../../pages/nav'
 import TooltipsPage from '../../pages/tooltips'
 import TabsPage from '../../pages/tabs'
 import ProgressPage from '../../pages/progress'
-import WidgetsPage from '../../pages/widget'
 
 import Ecommerce from '../../pages/ecommerce'
 import Product from '../../pages/ecommerce/Products'
@@ -56,16 +51,7 @@ import LineCharts from '../../pages/charts/LineCharts'
 import BarCharts from '../../pages/charts/BarCharts'
 import PieCharts from '../../pages/charts/PieCharts'
 
-import DraggableGrid from '../../pages/draggablegrid'
-
-import MapsGoogle from '../../pages/maps'
-import VectorMaps from '../../pages/maps/VectorMap'
-
-import Timeline from '../../pages/timeline'
 import Search from '../../pages/search'
-import Gallery from '../../pages/gallery'
-import Invoice from '../../pages/invoice'
-import Calendar from '../../pages/calendar'
 
 import BreadCrumbs from '../../components/BreadCrumbs';
 
@@ -110,7 +96,6 @@ function Layout(props) {
         <BreadCrumbs />
         <Switch>
           <Route path='/app/dashboard' component={Dashboard} />
-          <Route path="/app/profile" component={Profile} />
           <Route path='/app/user/edit' component={EditUser} />
 
           <Route exact path="/app/core" render={() => <Redirect to="/app/core/typography" />} />
@@ -125,13 +110,10 @@ function Layout(props) {
           <Route exact path="/app/ui" render={() => <Redirect to="/app/ui/icons" />} />
           <Route path="/app/ui/icons" component={IconsPage} />
           <Route path="/app/ui/badge" component={BadgesPage} />
-          <Route path="/app/ui/carousel" component={CarouselsPage} />
           <Route path="/app/ui/modal" component={ModalsPage} />
           <Route path="/app/ui/navbar" component={NavbarsPage} />
           <Route path="/app/ui/tooltips" component={TooltipsPage} />
           <Route path="/app/ui/tabs" component={TabsPage} />
-          <Route path="/app/ui/cards" component={CardsPage} />
-          <Route path="/app/ui/widget" component={WidgetsPage} />
           <Route path="/app/ui/progress" component={ProgressPage} />
           <Route path="/app/ui/notifications" component={NotificationsPage} />
 
@@ -145,18 +127,7 @@ function Layout(props) {
           <Route path="/app/charts/bar" component={BarCharts} />
           <Route path="/app/charts/pie" component={PieCharts} />
 
-          <Route path="/app/grid" component={DraggableGrid} />
-
-          <Route exact path="/app/maps" render={() => <Redirect to="/app/maps/google" />} />
-          <Route path="/app/maps/google" component={MapsGoogle} />
-          <Route path="/app/maps/vector" component={VectorMaps} />
-
-          <Route exact path="/app/extra" render={() => <Redirect to="/app/extra/timeline" />}/>
-          <Route path="/app/extra/timeline" component={Timeline} />
           <Route path="/app/extra/search" component={Search} />
-          <Route path="/app/extra/gallery" component={Gallery} />
-          <Route path="/app/extra/invoice" component={Invoice} />
-          <Route path="/app/extra/calendar" component={Calendar} />
 
           <Route path="/app/ecommerce/management" exact>
             <ProductsProvider>
@@ -177,8 +148,6 @@ function Layout(props) {
           <Route path="/app/ecommerce/product" component={Product} />
           <Route path="/app/ecommerce/gridproducts" component={ProductsGrid}/>
 
-          />
-
           <Route path={'/app/users'} exact component={UsersTablePage} />
           <Route path={'/app/user/new'} exact component={UsersFormPage} />
           <Route
@@ -197,54 +166,6 @@ function Layout(props) {
           <SettingsIcon style={{ color: '#fff' }} />
         </Fab>
         <ColorChangeThemePopper id={id} open={open} anchorEl={anchorEl} />
-        <Footer>
-          <div>
-            <Link
-              color={'primary'}
-              href={'https://flatlogic.com/'}
-              target={'_blank'}
-              className={classes.link}
-            >
-              Flatlogic
-            </Link>
-            <Link
-              color={'primary'}
-              href={'https://flatlogic.com/about'}
-              target={'_blank'}
-              className={classes.link}
-            >
-              About Us
-            </Link>
-            <Link
-              color={'primary'}
-              href={'https://flatlogic.com/blog'}
-              target={'_blank'}
-              className={classes.link}
-            >
-              Blog
-            </Link>
-          </div>
-          <div>
-            <Link href={'https://www.facebook.com/flatlogic'} target={'_blank'}>
-              <IconButton aria-label='facebook'>
-                <FacebookIcon style={{ color: '#6E6E6E99' }} />
-              </IconButton>
-            </Link>
-            <Link href={'https://twitter.com/flatlogic'} target={'_blank'}>
-              <IconButton aria-label='twitter'>
-                <TwitterIcon style={{ color: '#6E6E6E99' }} />
-              </IconButton>
-            </Link>
-            <Link href={'https://github.com/flatlogic'} target={'_blank'}>
-              <IconButton
-                aria-label='github'
-                style={{ padding: '12px 0 12px 12px' }}
-              >
-                <GithubIcon style={{ color: '#6E6E6E99' }} />
-              </IconButton>
-            </Link>
-          </div>
-        </Footer>
       </div>
     </div>
   );

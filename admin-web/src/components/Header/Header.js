@@ -10,7 +10,6 @@ import {
 import classNames from 'classnames';
 
 //images
-import profile from '../../images/main-profile.png';
 import config from '../../config';
 
 // styles
@@ -124,7 +123,7 @@ export default function Header(props) {
             // eslint-disable-next-line no-mixed-operators
             src={
               (currentUser?.avatar?.length >= 1 &&
-              currentUser?.avatar[currentUser.avatar.length - 1].publicUrl) || profile
+              currentUser?.avatar[currentUser.avatar.length - 1].publicUrl)
             }
             classes={{ root: classes.headerIcon }}
           >
