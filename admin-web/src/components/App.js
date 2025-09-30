@@ -30,12 +30,6 @@ export default function App() {
               <Route
                 exact
                 path='/'
-                render={() => <Redirect to='/app/profile' />}
-              />
-
-              <Route
-                exact
-                path='/app'
                 render={() => <Redirect to='/app/dashboard' />}
               />
 
@@ -52,7 +46,6 @@ export default function App() {
     </>
   );
 
-  // #######################################################################
 
   function PrivateRoute({ component, ...rest }) {
     return (

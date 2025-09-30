@@ -88,7 +88,7 @@ function Login(props) {
     <Grid container className={classes.container}>
       <div className={classes.logotypeContainer}>
         <Typography className={classes.logotypeText}>
-          Back Hoa 
+          Bach Hoa
         </Typography>
       </div>
       <div
