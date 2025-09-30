@@ -52,29 +52,6 @@ const CreateProduct = () => {
     discount: 0
   });
 
-  // function sendNotification() {
-  //   const componentProps = {
-  //     type: "feedback",
-  //     message: "Product has been Updated!",
-  //     variant: "contained",
-  //     color: "success"
-  //   };
-  //   const options = {
-  //     type: "info",
-  //     position: toast.POSITION.TOP_RIGHT,
-  //     progressClassName: classes.progress,
-  //     className: classes.notification,
-  //     timeOut: 1000
-  //   };
-  //   return toast(
-  //     <Notification
-  //       {...componentProps}
-  //       className={classes.notificationComponent}
-  //     />,
-  //     options
-  //   );
-  // }
-
   useEffect(() => {
     getProductsRequest(context.setProducts);
     getProductsImages(context.setProducts);

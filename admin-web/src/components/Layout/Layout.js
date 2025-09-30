@@ -61,6 +61,7 @@ import { ProductsProvider } from '../../context/ProductContext'
 
 import UsersFormPage from 'pages/CRUD/Users/form/UsersFormPage';
 import UsersTablePage from 'pages/CRUD/Users/table/UsersTablePage';
+import OrdersTablePage from 'pages/CRUD/Orders/table/OrdersTablePage';
 
 //Sidebar structure
 import structure from '../Sidebar/SidebarStructure'
@@ -155,6 +156,7 @@ function Layout(props) {
             exact
             component={UsersFormPage}
           />
+          <Route path={'/app/orders'} exact component={OrdersTablePage} />
         </Switch>
         <Fab
           color='primary'

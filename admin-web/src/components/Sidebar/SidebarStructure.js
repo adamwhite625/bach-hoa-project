@@ -64,6 +64,13 @@ const structure = [
       },
     ],
   }
+  ,
+  {
+    id: 3,
+    label: 'Orders',
+    link: '/app/orders',
+    icon: <DescriptionIcon />,
+  }
 ];
 
 export default structure;

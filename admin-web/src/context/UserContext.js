@@ -121,13 +121,13 @@ function loginUser(
     if (!!social) {
       window.location.href =
         config.baseURLApi +
-        '/auth/signin/' +
+        '/auth/login/' +
         social +
         '?app=' +
         config.redirectUrl;
     } else if (login.length > 0 && password.length > 0) {
       axios
-        .post('/auth/signin/local', { email: login, password })
+        .post('/auth/', { email: login, password })
         .then((res) => {
           const token = res.data;
           setError(null);

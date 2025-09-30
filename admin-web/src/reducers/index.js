@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 
 import users from 'reducers/users/usersReducers';
+import orders from 'reducers/orders/ordersReducers';
 
 export default (history) =>
   combineReducers({
@@ -10,4 +11,5 @@ export default (history) =>
     auth,
 
     users,
+    orders,
   });
