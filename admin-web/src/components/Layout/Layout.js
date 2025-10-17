@@ -16,9 +16,8 @@ import useStyles from './styles';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
 import { Link } from '../Wrappers';
-import ColorChangeThemePopper from './components/ColorChangeThemePopper';
 
-import EditUser from '../../pages/user/EditUser';
+// import EditUser from '../../pages/user/EditUser';
 
 // pages
 import Dashboard from '../../pages/dashboard';
@@ -59,8 +58,8 @@ import BreadCrumbs from '../../components/BreadCrumbs';
 import { useLayoutState } from '../../context/LayoutContext';
 import { ProductsProvider } from '../../context/ProductContext'
 
-import UsersFormPage from 'pages/CRUD/Users/form/UsersFormPage';
-import UsersTablePage from 'pages/CRUD/Users/table/UsersTablePage';
+// import UsersFormPage from 'pages/CRUD/Users/form/UsersFormPage';
+// import UsersTablePage from 'pages/CRUD/Users/table/UsersTablePage';
 import OrdersTablePage from 'pages/CRUD/Orders/table/OrdersTablePage';
 
 //Sidebar structure
@@ -97,7 +96,7 @@ function Layout(props) {
         <BreadCrumbs />
         <Switch>
           <Route path='/app/dashboard' component={Dashboard} />
-          <Route path='/app/user/edit' component={EditUser} />
+          {/* Removed user edit route */}
 
           <Route exact path="/app/core" render={() => <Redirect to="/app/core/typography" />} />
           <Route path="/app/core/typography" component={TypographyPage} />
@@ -149,13 +148,7 @@ function Layout(props) {
           <Route path="/app/ecommerce/product" component={Product} />
           <Route path="/app/ecommerce/gridproducts" component={ProductsGrid}/>
 
-          <Route path={'/app/users'} exact component={UsersTablePage} />
-          <Route path={'/app/user/new'} exact component={UsersFormPage} />
-          <Route
-            path={'/app/users/:id/edit'}
-            exact
-            component={UsersFormPage}
-          />
+          {/* Removed user CRUD routes */}
           <Route path={'/app/orders'} exact component={OrdersTablePage} />
         </Switch>
         <Fab
@@ -167,7 +160,6 @@ function Layout(props) {
         >
           <SettingsIcon style={{ color: '#fff' }} />
         </Fab>
-        <ColorChangeThemePopper id={id} open={open} anchorEl={anchorEl} />
       </div>
     </div>
   );

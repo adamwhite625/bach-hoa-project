@@ -14,6 +14,7 @@ const app = express();
 // Sử dụng các middleware
 app.use(cors());
 app.use(express.json()); // Để phân tích cú pháp body của request dưới dạng JSON
+app.use(express.urlencoded({ extended: true })); // Để phân tích cú pháp body của request dưới dạng URL-encoded
 
 // Route chính
 app.get('/', (req, res) => {

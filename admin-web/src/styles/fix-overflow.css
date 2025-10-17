@@ -1,0 +1,90 @@
+/* EMERGENCY FIX FOR OVERFLOW ISSUES */
+
+/* Reset all margins and prevent overflow */
+* {
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+}
+
+html {
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+body {
+  overflow-x: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+}
+
+#root {
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+/* Fix Ant Design components */
+.ant-layout {
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+.ant-layout-content {
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+.ant-row {
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.ant-col {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  max-width: 100% !important;
+}
+
+/* Fix sections */
+.hero-section,
+.features-section,
+.products-section {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Fix container */
+.container {
+  max-width: 1140px !important;
+  margin: 0 auto !important;
+  padding: 0 15px !important;
+  overflow-x: hidden !important;
+}
+
+/* Fix cards */
+.ant-card {
+  overflow: hidden !important;
+  max-width: 100% !important;
+}
+
+/* Fix images */
+img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Emergency: Hide scrollbar if still appears */
+body::-webkit-scrollbar-x {
+  display: none !important;
+}
+
+/* Fix banner */
+.user-banner {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
