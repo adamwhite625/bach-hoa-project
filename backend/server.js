@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 const connectDB = require('./config/db');
 
 // Tải các biến môi trường
@@ -14,7 +15,7 @@ const app = express();
 // Sử dụng các middleware
 app.use(cors());
 app.use(express.json()); // Để phân tích cú pháp body của request dưới dạng JSON
-app.use(express.urlencoded({ extended: true })); // Để phân tích cú pháp body của request dưới dạng URL-encoded
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Route chính
 app.get('/', (req, res) => {
@@ -27,6 +28,7 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/categories', require('./routes/categoryRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
+app.use('/file', require('./routes/fileRoutes'));
 
 const PORT = process.env.PORT || 5000;
 

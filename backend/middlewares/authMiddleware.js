@@ -3,28 +3,37 @@ const User = require('../models/userModel');
 
 const protect = async (req, res, next) => {
     let token;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        try {
+    try {
+        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
             token = req.headers.authorization.split(' ')[1];
+
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            req.user = await User.findById(decoded.id).select('-password');
+
+            // Support both payload shapes:
+            // - old: { id: '...' }
+            // - new: { user: { id: '...', ... } }
+            const userId = decoded?.user?.id || decoded?.id;
+            if (!userId) {
+                return res.status(401).json({ message: 'Not authorized, token invalid' });
+            }
+
+            req.user = await User.findById(userId).select('-password');
             next();
-        } catch (error) {
-            console.error(error);
-            res.status(401).json({ message: 'Not authorized, token failed' });
+        } else {
+            res.status(401).json({ message: 'Not authorized, no token' });
         }
-    }
-    if (!token) {
-        res.status(401).json({ message: 'Not authorized, no token' });
+    } catch (error) {
+        console.error(error);
+        res.status(401).json({ message: 'Not authorized, token failed' });
     }
 };
 
 const admin = (req, res, next) => {
-    const role = req.user?.role;
-    if (role && role.toLowerCase() === 'admin') {
-        return next();
+    if (req.user && req.user.role === 'admin') {
+        next();
+    } else {
+        res.status(403).json({ message: 'Not authorized as an admin' });
     }
-    return res.status(403).json({ message: 'Not authorized as an admin' });
 };
 
 module.exports = { protect, admin };

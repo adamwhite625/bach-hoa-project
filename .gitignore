@@ -1,3 +1,4 @@
+# -------------------------
 # Node.js dependencies
 node_modules/
 
@@ -39,3 +40,20 @@ coverage/
 # Misc
 *.tgz
 *.gz
+
+# -------------------------
+# Android / Java / Gradle
+
+*.iml
+.gradle/
+captures/
+.externalNativeBuild/
+local.properties
+android-app/app/src/main/generated/
+*.apk
+*.ap_
+*.dex
+*.class
+*.jar
+*.keystore
+gradle-wrapper.jar
