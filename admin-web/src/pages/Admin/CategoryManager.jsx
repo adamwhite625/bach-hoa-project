@@ -58,7 +58,6 @@ const CategoryManager = () => {
         open={open}
         onOk={() => form.submit()}
         onCancel={() => setOpen(false)}
-        destroyOnClose
       >
         <Form layout="vertical" form={form} onFinish={onCreate}>
           <Form.Item name="name" label="Tên danh mục" rules={[{ required: true, message: 'Nhập tên danh mục' }]}>

@@ -14,7 +14,7 @@ export const AdminGuard = ({ children }) => {
     return <Navigate to="/admin/login" state={{ from: location }} replace />;
   }
   const user = getStoredUser();
-  if (user && user.role && user.role !== 'admin') {
+  if (user && user.role && user.role.toLowerCase() !== 'admin') {
     return <Navigate to="/admin/login" replace />;
   }
   return children;

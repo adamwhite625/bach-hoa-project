@@ -16,7 +16,6 @@ export const CategoryService = {
   create: async ({ name, description, image }) => {
     try {
       const payload = { name: name?.trim(), description: description?.trim(), image: image?.trim() };
-      console.log('Creating category with payload:', payload);
       const res = await axios.post(API_ENDPOINTS.CATEGORIES.LIST, payload);
       if (res?._id || res?.id) return { EC: 0, DT: res, EM: 'Tạo danh mục thành công' };
       if (res?.EC === 0 && res?.DT) return { EC: 0, DT: res.DT, EM: res.EM || 'Tạo danh mục thành công' };
