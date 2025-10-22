@@ -1,4 +1,73 @@
 const Product = require('../models/productModel');
+const cloudinary = require('../config/cloudinary');
+const streamifier = require('streamifier');
+
+// @desc    Search products with filters and sorting
+// @route   GET /api/products/search
+// @access  Public
+const searchProducts = async (req, res) => {
+    try {
+        const { 
+            keyword,
+            category,
+            minPrice,
+            maxPrice,
+            sortBy = 'createdAt',
+            sortOrder = 'desc',
+            page = 1,
+            limit = 10
+        } = req.query;
+
+        // Build query
+        const query = { isActive: true };
+
+        // Search by keyword in name or description
+        if (keyword) {
+            query.$or = [
+                { name: { $regex: keyword, $options: 'i' } },
+                { description: { $regex: keyword, $options: 'i' } }
+            ];
+        }
+
+        // Filter by category
+        if (category) {
+            query.category = category;
+        }
+
+        // Filter by price range
+        if (minPrice !== undefined || maxPrice !== undefined) {
+            query.price = {};
+            if (minPrice !== undefined) query.price.$gte = Number(minPrice);
+            if (maxPrice !== undefined) query.price.$lte = Number(maxPrice);
+        }
+
+        // Calculate skip for pagination
+        const skip = (page - 1) * limit;
+
+        // Build sort object
+        const sort = {};
+        sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+
+        // Execute query with pagination
+        const products = await Product.find(query)
+            .populate('category', 'name')
+            .sort(sort)
+            .skip(skip)
+            .limit(Number(limit));
+
+        // Get total count for pagination
+        const total = await Product.countDocuments(query);
+
+        res.json({
+            products,
+            page: Number(page),
+            pages: Math.ceil(total / limit),
+            total
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 const getProducts = async (req, res) => {
     try {
@@ -26,8 +95,28 @@ const createProduct = async (req, res) => {
     try {
         const { name, sku, description, images, brand, category, price, quantity } = req.body;
         const product = new Product({
-            name, sku, description, images, brand, category, price, quantity, user: req.user._id,
+            name, sku, description, images: images || [], brand, category, price, quantity, user: req.user._id,
         });
+
+        // If files uploaded via multer memory storage
+        if (req.files && req.files.length > 0) {
+            const uploadPromises = req.files.map(file => {
+                return new Promise((resolve, reject) => {
+                    const stream = cloudinary.uploader.upload_stream({ folder: 'products' }, (error, result) => {
+                        if (error) return reject(error);
+                        resolve(result.secure_url);
+                    });
+                    streamifier.createReadStream(file.buffer).pipe(stream);
+                });
+            });
+
+            try {
+                const uploadedUrls = await Promise.all(uploadPromises);
+                product.images = product.images.concat(uploadedUrls);
+            } catch (err) {
+                console.error('Cloudinary product images upload error:', err);
+            }
+        }
         const createdProduct = await product.save();
         res.status(201).json(createdProduct);
     } catch (error) {
@@ -74,6 +163,26 @@ const updateProduct = async (req, res) => {
             product.sku = sku || product.sku;
             product.description = description || product.description;
             product.images = images || product.images;
+
+            // If new files uploaded, upload to Cloudinary and append
+            if (req.files && req.files.length > 0) {
+                const uploadPromises = req.files.map(file => {
+                    return new Promise((resolve, reject) => {
+                        const stream = cloudinary.uploader.upload_stream({ folder: 'products' }, (error, result) => {
+                            if (error) return reject(error);
+                            resolve(result.secure_url);
+                        });
+                        streamifier.createReadStream(file.buffer).pipe(stream);
+                    });
+                });
+
+                try {
+                    const uploadedUrls = await Promise.all(uploadPromises);
+                    product.images = product.images.concat(uploadedUrls);
+                } catch (err) {
+                    console.error('Cloudinary product images upload error:', err);
+                }
+            }
             product.brand = brand || product.brand;
             product.category = category || product.category;
             product.price = price !== undefined ? price : product.price;
@@ -109,4 +218,12 @@ const deleteProduct = async (req, res) => {
     }
 };
 
-module.exports = { getProducts, getProductById, createProduct, createProductReview, updateProduct, deleteProduct };
+module.exports = { 
+    getProducts, 
+    getProductById, 
+    createProduct, 
+    createProductReview, 
+    updateProduct, 
+    deleteProduct,
+    searchProducts 
+};
