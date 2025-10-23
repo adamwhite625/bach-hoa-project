@@ -15,13 +15,25 @@ const AdminLogin = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // Kiểm tra auth khi component mount
     const token = localStorage.getItem('access_token');
-    if (!token) return;
-    try {
-      const u = JSON.parse(localStorage.getItem('user') || 'null');
-      if (u?.role === 'Admin') navigate('/admin', { replace: true });
-    } catch {}
-  }, [navigate]);
+    const userStr = localStorage.getItem('user');
+    
+    if (token && userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        if (user?.role === 'Admin') {
+          const from = location.state?.from?.pathname || '/admin';
+          navigate(from, { replace: true });
+        }
+      } catch (err) {
+        console.error('Error parsing user data:', err);
+        // Xóa dữ liệu không hợp lệ
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user');
+      }
+    }
+  }, []);
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -31,29 +43,52 @@ const AdminLogin = () => {
       const password = String(values.password || '');
       const res = await handleLogin(email, password);
 
-     if (res) {
-        if (res.role !== 'Admin') {
+      if (res && res.EC === 0) {
+        // Kiểm tra role từ user object trong response
+        if (res.user?.role !== 'Admin') {
           setError('Tài khoản không có quyền truy cập admin');
           setLoading(false);
           return;
         }
-        localStorage.setItem('access_token', res.token);
-     }
-   }
-   catch (err) {
+        
+        // Lưu token và thông tin user
+        localStorage.setItem('access_token', res.access_token);
+        localStorage.setItem('user', JSON.stringify(res.user));
+        
+        if (remember) {
+          localStorage.setItem('remember_email', values.email);
+        } else {
+          localStorage.removeItem('remember_email');
+        }
+
+        // Hiển thị thông báo thành công
+        notification.success({
+          message: 'Đăng nhập thành công',
+          description: 'Chào mừng bạn đến với trang quản trị'
+        });
+
+        // Điều hướng đến trang admin hoặc trang được yêu cầu trước đó
+        const from = location.state?.from?.pathname || '/admin';
+        navigate(from, { replace: true });
+      } else {
+        // Xử lý lỗi từ API
+        const errorMessage = res?.message || 'Đăng nhập thất bại';
+        setError(errorMessage);
+        notification.error({ 
+          message: 'Đăng nhập thất bại', 
+          description: errorMessage 
+        });
+      }
+    } catch (err) {
       console.error(err);
-      setError(err.message || 'Đăng nhập thất bại');
-      notification.error({ message: 'Đăng nhập thất bại', description: err.message || 'Vui lòng thử lại' });
+      setError('Lỗi kết nối server');
+      notification.error({ 
+        message: 'Lỗi kết nối', 
+        description: 'Không thể kết nối đến server. Vui lòng thử lại sau.' 
+      });
     } finally {
       setLoading(false);
     }
-    if (remember) {
-      localStorage.setItem('remember_email', values.email);
-    } else {
-      localStorage.removeItem('remember_email');
-    }
-    const from = location.state?.from?.pathname || '/admin';
-    navigate(from, { replace: true });
   }
 
 

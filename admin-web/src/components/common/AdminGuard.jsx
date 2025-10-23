@@ -13,10 +13,15 @@ export const AdminGuard = ({ children }) => {
   if (!isAuthenticated()) {
     return <Navigate to="/admin/login" state={{ from: location }} replace />;
   }
+  
   const user = getStoredUser();
-  if (user && user.role && user.role !== 'admin') {
-    return <Navigate to="/admin/login" replace />;
+  if (!user || !user.role || user.role !== 'Admin') { // Sửa thành 'Admin' viết hoa
+    console.log('Invalid admin role:', user?.role);
+    localStorage.removeItem('access_token'); // Xóa token nếu role không hợp lệ
+    localStorage.removeItem('user');
+    return <Navigate to="/admin/login" state={{ from: location }} replace />;
   }
+  
   return children;
 };
 

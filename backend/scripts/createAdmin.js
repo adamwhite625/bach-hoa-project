@@ -1,13 +1,13 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import User from '../models/userModel.js';
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const User = require('../models/userModel');
 
 dotenv.config();
 
 async function createAdmin() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    const adminEmail = 'BachHoa@shop.com';
+    const adminEmail = 'nguyenhaithien2k5@gmail.com';
 
     // Kiểm tra xem admin đã tồn tại chưa
     const existing = await User.findOne({ email: adminEmail });
@@ -17,11 +17,12 @@ async function createAdmin() {
     }
 
     const admin = await User.create({
-      firstName: 'Admin',
-      lastName: 'Bach Hoa',
+      firstName: 'Nguyen',
+      lastName: 'Hai Thien',
       email: adminEmail,
       password: '12345678',
-      role: 'admin'
+      role: 'Admin',
+      avatar: 'https://res.cloudinary.com/root/image/upload/v1/avatars/default-avatar.png'
     });
 
     console.log('✅ Tạo tài khoản admin thành công:', admin.email);

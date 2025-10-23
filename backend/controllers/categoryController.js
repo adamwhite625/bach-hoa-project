@@ -1,6 +1,8 @@
 const Category = require('../models/categoryModel');
 const Product = require('../models/productModel');
 const asyncHandler = require('express-async-handler');
+const cloudinary = require('../config/cloudinary');
+const streamifier = require('streamifier');
 
 // @desc    Get all categories
 // @route   GET /api/categories
@@ -14,8 +16,8 @@ const getCategories = asyncHandler(async (req, res) => {
 // @route   POST /api/categories
 // @access  Private/Admin
 const createCategory = asyncHandler(async (req, res) => {
-    const { name, description, image } = req.body;
-
+    const { name, description } = req.body;
+    
     // Check if category exists
     const existingCategory = await Category.findOne({ name });
     if (existingCategory) {
@@ -23,10 +25,39 @@ const createCategory = asyncHandler(async (req, res) => {
         throw new Error('Danh mục đã tồn tại');
     }
 
+    // Debug file upload
+    console.log('File in request:', req.file);
+    console.log('Cloudinary config:', process.env.CLOUDINARY_CLOUD_NAME);
+
+    let imageUrl;
+    
+    // Upload image to cloudinary if exists
+    if (req.file) {
+        try {
+            const result = await new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    {
+                        folder: 'categories',
+                    },
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result);
+                    }
+                );
+                streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+            });
+            imageUrl = result.secure_url;
+        } catch (error) {
+            res.status(500);
+            throw new Error('Lỗi upload ảnh: ' + error.message);
+        }
+    }
+
+    // Create category
     const category = await Category.create({
         name,
         description,
-        image
+        ...(imageUrl && { image: imageUrl })
     });
 
     res.status(201).json(category);

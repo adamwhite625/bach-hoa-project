@@ -8,10 +8,11 @@ const {
     getCategoryProducts
 } = require('../controllers/categoryController');
 const { protect, admin } = require('../middlewares/authMiddleware');
+const upload = require('../middlewares/uploadMiddleware');
 
 router.route('/')
     .get(getCategories)
-    .post(protect, admin, createCategory);
+    .post(protect, admin, upload.single('image'), createCategory);
 
 router.route('/:id')
     .put(protect, admin, updateCategory)
