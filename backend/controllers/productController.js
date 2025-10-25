@@ -226,5 +226,5 @@ module.exports = {
     createProductReview, 
     updateProduct, 
     deleteProduct,
-    searchProducts 
+    searchProducts
 };

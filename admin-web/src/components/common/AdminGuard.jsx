@@ -15,7 +15,7 @@ export const AdminGuard = ({ children }) => {
   }
   
   const user = getStoredUser();
-  if (user && user.role && user.role !== 'admin') {
+  if (user && user.role && user.role.toLowerCase() !== 'admin') {
     return <Navigate to="/admin/login" replace />;
   }
   

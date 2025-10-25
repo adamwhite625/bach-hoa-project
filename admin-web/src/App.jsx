@@ -12,6 +12,7 @@ import AdminOrders from "./pages/Admin/OrderManager";
 import AdminCategories from "./pages/Admin/CategoryManager";
 import AdminUsers from "./pages/Admin/UserManager";
 import AdminDiscounts from "./pages/Admin/DiscountManager";
+import AdminSettings from "./pages/Admin/AccountSettings";
 import AdminLogin from "./pages/auth/AdminLogin";
 import AdminGuard from "./components/common/AdminGuard";
 
@@ -33,14 +34,11 @@ const App = () => {
           <Route path="users" element={<AdminUsers />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="discounts" element={<AdminDiscounts />} />
+          <Route path="settings" element={<AdminSettings />} />
         </Route>
 
-        {/* Catch all other routes */}
-        <Route path="*" element={<Navigate to="/admin" replace />} />
-
-        {/* Redirect root and any unknown path to /admin or login depending on auth */}
-        <Route path="/" element={<Navigate to="/admin" replace />} />
-        <Route path="*" element={<Navigate to="/admin" replace />} />
+  {/* Catch all other routes */}
+  <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
     </Router>
   );

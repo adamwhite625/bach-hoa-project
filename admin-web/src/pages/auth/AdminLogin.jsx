@@ -32,16 +32,17 @@ const AdminLogin = () => {
       const email = String(values.email || '').trim();
       const password = String(values.password || '');
       const res = await handleLogin(email, password);
+      console.log('Login response:', res);
 
-     if (res) {
-        if (res.role !== 'Admin') {
+     if (res.EC === 0) {
+        if (res.user.role !== 'Admin') {
           setError('Tài khoản không có quyền truy cập admin');
           localStorage.removeItem('access_token');
           localStorage.removeItem('user');
           setLoading(false);
           return;
         }
-        localStorage.setItem('access_token', res.token);
+        localStorage.setItem('access_token', res.access_token);
      }
    }
    catch (err) {

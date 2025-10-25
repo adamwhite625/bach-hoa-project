@@ -152,4 +152,4 @@ const getCategoryProducts = asyncHandler(async (req, res) => {
     });
 });
 
-module.exports = { createCategory, getCategories };
+module.exports = { createCategory, getCategories, deleteCategory, updateCategory, getCategoryProducts };

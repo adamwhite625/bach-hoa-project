@@ -21,7 +21,7 @@ async function createAdmin() {
       lastName: 'Hai Thien',
       email: adminEmail,
       password: '12345678',
-      role: 'admin'
+      role: 'Admin'
     });
 
     console.log('✅ Tạo tài khoản admin thành công:', admin.email);

@@ -22,8 +22,6 @@ const handleLogin = (email, password) => {
     password
   };
 
-  console.log("Login data:", data); // Debug log
-
   return axios.post(URL, data);
 }
 

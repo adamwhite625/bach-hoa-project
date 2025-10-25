@@ -25,8 +25,7 @@ const navItems = [
   { key: '/admin/orders', icon: <ShoppingCartOutlined />, label: 'Đơn hàng' },
   { key: '/admin/discounts', icon: <GiftOutlined />, label: 'Mã giảm giá' },
   { key: '/admin/users', icon: <UserOutlined />, label: 'Người dùng' },
-  { key: '/admin/reports', icon: <BarChartOutlined />, label: 'Báo cáo', disabled: true },
-  { key: '/admin/settings', icon: <SettingOutlined />, label: 'Cài đặt', disabled: true }
+  { key: '/admin/settings', icon: <SettingOutlined />, label: 'Cài đặt' }
 ];
 
 const AdminLayout = () => {
