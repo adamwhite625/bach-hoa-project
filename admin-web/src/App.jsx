@@ -10,6 +10,8 @@ import AdminDashboard from "./pages/Admin/Dashboard";
 import AdminProducts from "./pages/Admin/ProductManager";
 import AdminOrders from "./pages/Admin/OrderManager";
 import AdminCategories from "./pages/Admin/CategoryManager";
+import AdminUsers from "./pages/Admin/UserManager";
+import AdminDiscounts from "./pages/Admin/DiscountManager";
 import AdminLogin from "./pages/auth/AdminLogin";
 import AdminGuard from "./components/common/AdminGuard";
 
@@ -25,7 +27,9 @@ const App = () => {
           <Route index element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="users" element={<AdminUsers />} />
           <Route path="categories" element={<AdminCategories />} />
+          <Route path="discounts" element={<AdminDiscounts />} />
         </Route>
 
         {/* Redirect root and any unknown path to /admin or login depending on auth */}

@@ -54,10 +54,12 @@ const RAW_ENDPOINTS = Object.freeze({
     LOGIN: '/auth/login'
   }),
   PRODUCTS: Object.freeze(crud('products')),
+  USERS: Object.freeze(crud('users')),
   CATEGORIES: Object.freeze({
-    LIST: '/categories',
+    ...crud('categories'),
     LIST_Q: (params = {}) => buildUrl('/categories', params)
   }),
+  DISCOUNTS: Object.freeze(crud('discounts')),
   ORDERS: Object.freeze({
     LIST: '/orders',
     CREATE: '/orders',

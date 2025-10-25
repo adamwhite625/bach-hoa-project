@@ -7,6 +7,8 @@ import {
   ShoppingCartOutlined,
   BarChartOutlined,
   SettingOutlined,
+  UserOutlined,
+  GiftOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   ArrowLeftOutlined
@@ -21,6 +23,8 @@ const navItems = [
   { key: '/admin/products', icon: <ShoppingOutlined />, label: 'Sản phẩm' },
   { key: '/admin/categories', icon: <AppstoreOutlined />, label: 'Danh mục' },
   { key: '/admin/orders', icon: <ShoppingCartOutlined />, label: 'Đơn hàng' },
+  { key: '/admin/discounts', icon: <GiftOutlined />, label: 'Mã giảm giá' },
+  { key: '/admin/users', icon: <UserOutlined />, label: 'Người dùng' },
   { key: '/admin/reports', icon: <BarChartOutlined />, label: 'Báo cáo', disabled: true },
   { key: '/admin/settings', icon: <SettingOutlined />, label: 'Cài đặt', disabled: true }
 ];
@@ -43,8 +47,9 @@ const AdminLayout = () => {
 
   const selectedKeys = useMemo(() => {
     const path = location.pathname;
-    const found = navItems.find(i => path === i.key || path.startsWith(i.key + '/'));
-    return found ? [found.key] : ['/admin'];
+    const sorted = [...navItems].sort((a, b) => b.key.length - a.key.length);
+    const match = sorted.find((item) => path === item.key || path.startsWith(`${item.key}/`));
+    return match ? [match.key] : ['/admin'];
   }, [location.pathname]);
 
   const onMenuClick = useCallback(({ key }) => {

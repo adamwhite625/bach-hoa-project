@@ -66,6 +66,7 @@ const createProductReview = async (req, res) => {
 const updateProduct = async (req, res) => {
     try {
         const { name, sku, description, images, brand, category, price, quantity, isActive } = req.body;
+        
         const product = await Product.findById(req.params.id);
 
         if (product) {
