@@ -15,14 +15,13 @@ const AdminLogin = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // Kiểm tra auth khi component mount
     const token = localStorage.getItem('access_token');
     if (!token) return;
     try {
       const u = JSON.parse(localStorage.getItem('user') || 'null');
-      if (u?.role && u.role.toLowerCase() === 'admin') navigate('/admin', { replace: true });
-    } catch {
-      localStorage.removeItem('user');
-    }
+      if (u?.role === 'Admin') navigate('/admin', { replace: true });
+    } catch {}
   }, [navigate]);
 
   const onFinish = async (values) => {
@@ -33,31 +32,25 @@ const AdminLogin = () => {
       const email = String(values.email || '').trim();
       const password = String(values.password || '');
       const res = await handleLogin(email, password);
-      if (res) {
-        const role = (res.role || '').toLowerCase();
-        if (role !== 'admin') {
+
+     if (res) {
+        if (res.role !== 'Admin') {
           setError('Tài khoản không có quyền truy cập admin');
           localStorage.removeItem('access_token');
           localStorage.removeItem('user');
           setLoading(false);
           return;
         }
-        if (res.token) localStorage.setItem('access_token', res.token);
-        localStorage.setItem('user', JSON.stringify(res));
-        loginSuccess = true;
-      }
-    }
+        localStorage.setItem('access_token', res.token);
+     }
+   }
    catch (err) {
       console.error(err);
       setError(err.message || 'Đăng nhập thất bại');
       notification.error({ message: 'Đăng nhập thất bại', description: err.message || 'Vui lòng thử lại' });
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('user');
     } finally {
       setLoading(false);
     }
-    if (!loginSuccess) return;
-
     if (remember) {
       localStorage.setItem('remember_email', values.email);
     } else {

@@ -13,8 +13,12 @@ const userSchema = mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    gender: { type: String, enum: ['Male', 'Female', 'Other'], default: 'Other' },
     password: { type: String, required: true },
     phone: { type: String },
+    avatar: { type: String },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
     role: {
         type: String,
         enum: ['Customer', 'Admin', 'Sales', 'Warehouse'],

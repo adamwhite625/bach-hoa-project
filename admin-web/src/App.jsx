@@ -19,6 +19,9 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        {/* Redirect root to admin */}
+        <Route path="/" element={<Navigate to="/admin" replace />} />
+
         {/* Admin login */}
         <Route path="/admin/login" element={<AdminLogin />} />
 
@@ -31,6 +34,9 @@ const App = () => {
           <Route path="categories" element={<AdminCategories />} />
           <Route path="discounts" element={<AdminDiscounts />} />
         </Route>
+
+        {/* Catch all other routes */}
+        <Route path="*" element={<Navigate to="/admin" replace />} />
 
         {/* Redirect root and any unknown path to /admin or login depending on auth */}
         <Route path="/" element={<Navigate to="/admin" replace />} />

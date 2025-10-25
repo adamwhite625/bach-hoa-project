@@ -13,10 +13,12 @@ export const AdminGuard = ({ children }) => {
   if (!isAuthenticated()) {
     return <Navigate to="/admin/login" state={{ from: location }} replace />;
   }
+  
   const user = getStoredUser();
-  if (user && user.role && user.role.toLowerCase() !== 'admin') {
+  if (user && user.role && user.role !== 'admin') {
     return <Navigate to="/admin/login" replace />;
   }
+  
   return children;
 };
 

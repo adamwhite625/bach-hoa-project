@@ -51,7 +51,8 @@ const prefixAll = (node) => {
 // ---------------- Raw endpoint (relative) constants ----------------
 const RAW_ENDPOINTS = Object.freeze({
   AUTH: Object.freeze({
-    LOGIN: '/auth/login'
+    LOGIN: '/auth/login',
+    ADMIN_LOGIN: '/auth/admin/login'
   }),
   PRODUCTS: Object.freeze(crud('products')),
   USERS: Object.freeze(crud('users')),
