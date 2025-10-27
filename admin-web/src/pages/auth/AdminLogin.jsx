@@ -43,6 +43,8 @@ const AdminLogin = () => {
           return;
         }
         localStorage.setItem('access_token', res.access_token);
+        localStorage.setItem('user', JSON.stringify(res.user));
+        loginSuccess = true;
      }
    }
    catch (err) {
