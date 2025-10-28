@@ -15,14 +15,12 @@ const createUserApi = (fullName, email, password, phone) => {
 }
 
 const handleLogin = (email, password) => {
-  const URL = API_ENDPOINTS.AUTH.LOGIN;
+  const URL = API_ENDPOINTS.AUTH.ADMIN_LOGIN;
 
   const data = {
     email,
     password
   };
-
-  console.log("Login data:", data); // Debug log
 
   return axios.post(URL, data);
 }

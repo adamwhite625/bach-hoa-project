@@ -15,6 +15,7 @@ const AdminLogin = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // Kiểm tra auth khi component mount
     const token = localStorage.getItem('access_token');
     if (!token) return;
     try {
@@ -26,18 +27,24 @@ const AdminLogin = () => {
   const onFinish = async (values) => {
     setLoading(true);
     setError('');
+    let loginSuccess = false;
     try {
       const email = String(values.email || '').trim();
       const password = String(values.password || '');
       const res = await handleLogin(email, password);
+      console.log('Login response:', res);
 
-     if (res) {
-        if (res.role !== 'Admin') {
+     if (res.EC === 0) {
+        if (res.user.role !== 'Admin') {
           setError('Tài khoản không có quyền truy cập admin');
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('user');
           setLoading(false);
           return;
         }
-        localStorage.setItem('access_token', res.token);
+        localStorage.setItem('access_token', res.access_token);
+        localStorage.setItem('user', JSON.stringify(res.user));
+        loginSuccess = true;
      }
    }
    catch (err) {

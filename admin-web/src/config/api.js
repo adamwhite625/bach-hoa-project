@@ -51,13 +51,18 @@ const prefixAll = (node) => {
 // ---------------- Raw endpoint (relative) constants ----------------
 const RAW_ENDPOINTS = Object.freeze({
   AUTH: Object.freeze({
-    LOGIN: '/auth/login'
+    ADMIN_LOGIN: '/auth/admin/login'
   }),
   PRODUCTS: Object.freeze(crud('products')),
+  USERS: Object.freeze({
+    ...crud('users'),
+    PROFILE: '/users/profile'
+  }),
   CATEGORIES: Object.freeze({
-    LIST: '/categories',
+    ...crud('categories'),
     LIST_Q: (params = {}) => buildUrl('/categories', params)
   }),
+  DISCOUNTS: Object.freeze(crud('discounts')),
   ORDERS: Object.freeze({
     LIST: '/orders',
     CREATE: '/orders',

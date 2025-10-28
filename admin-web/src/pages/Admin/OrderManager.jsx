@@ -1,33 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Table,
   Card,
   Space,
   Button,
-  Tag,
   Select,
   Input,
   DatePicker,
-  Modal,
   Typography,
   message,
   Descriptions,
   Badge,
-  Drawer
+  Drawer,
+  Row,
+  Col,
+  Statistic,
+  Empty,
+  Steps,
+  Divider,
+  Popconfirm,
+  Skeleton,
+  Tag
 } from 'antd';
 import {
   SearchOutlined,
-  EditOutlined,
   EyeOutlined,
-  DeleteOutlined
+  DeleteOutlined,
+  ReloadOutlined,
+  ShoppingCartOutlined,
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  DollarCircleOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 import { OrderService } from '../../services/api/orders';
 import { useNavigate } from 'react-router-dom';
 
-const { Title } = Typography;
+dayjs.extend(isBetween);
+
+const { Title, Text } = Typography;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
+
+const SkeletonTable = () => (
+  <Space direction="vertical" style={{ width: '100%' }} size="middle">
+    <Skeleton active paragraph={{ rows: 2 }} />
+    <Skeleton active paragraph={{ rows: 2 }} />
+  </Space>
+);
+
+const formatNumber = (value) => new Intl.NumberFormat('vi-VN').format(Number(value) || 0);
+const formatCurrency = (value) => new Intl.NumberFormat('vi-VN', {
+  style: 'currency',
+  currency: 'VND',
+  maximumFractionDigits: 0
+}).format(Number(value) || 0);
 
 const OrderManager = () => {
   const [orders, setOrders] = useState([]);
@@ -41,11 +69,7 @@ const OrderManager = () => {
   });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     setLoading(true);
     const res = await OrderService.list();
     if (res.EC === 0) {
@@ -55,38 +79,115 @@ const OrderManager = () => {
       setOrders([]);
     }
     setLoading(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   const handleStatusChange = async (orderId, newStatus) => {
-    const res = await OrderService.updateStatus(orderId, newStatus);
-    if (res.EC === 0) {
-      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
-      message.success('Cập nhật trạng thái thành công');
-    } else {
-      message.error(res.EM || 'Không thể cập nhật trạng thái đơn hàng');
+    const hide = message.loading('Đang cập nhật trạng thái...', 0);
+    try {
+      const res = await OrderService.updateStatus(orderId, newStatus);
+      hide();
+      if (res.EC === 0) {
+        const updated = res.DT || { id: orderId, status: newStatus };
+        setOrders(prev => prev.map(o => (o.id === orderId ? { ...o, ...updated } : o)));
+        if (selectedOrder?.id === orderId) {
+          setSelectedOrder(prev => (prev ? { ...prev, ...updated } : prev));
+        }
+        message.success('Cập nhật trạng thái thành công');
+      } else {
+        message.error(res.EM || 'Không thể cập nhật trạng thái đơn hàng');
+      }
+    } catch (error) {
+      hide();
+      message.error('Không thể cập nhật trạng thái đơn hàng');
     }
   };
 
-  const handleDeleteOrder = (orderId) => {
-    Modal.confirm({
-      title: 'Xác nhận xóa đơn hàng',
-      content: 'Bạn có chắc chắn muốn xóa đơn hàng này không?',
-      okText: 'Xóa',
-      cancelText: 'Hủy',
-      okButtonProps: { danger: true },
-      onOk: async () => {
-        try {
-          const res = await OrderService.remove(orderId);
-          if (res.EC === 0) {
-            setOrders(prev => prev.filter(order => order.id !== orderId));
-            message.success('Xóa đơn hàng thành công');
-          } else message.error(res.EM || 'Không thể xóa đơn hàng');
-        } catch (error) {
-          message.error('Không thể xóa đơn hàng');
+  const handleDeleteOrder = async (orderId) => {
+    try {
+      const res = await OrderService.remove(orderId);
+      if (res.EC === 0) {
+        setOrders(prev => prev.filter(order => order.id !== orderId));
+        message.success('Xóa đơn hàng thành công');
+        if (selectedOrder?.id === orderId) {
+          setDrawerVisible(false);
+          setSelectedOrder(null);
         }
+      } else {
+        message.error(res.EM || 'Không thể xóa đơn hàng');
       }
-    });
+    } catch (error) {
+      message.error('Không thể xóa đơn hàng');
+    }
   };
+
+  const filteredOrders = useMemo(() => {
+    const { status, dateRange, search } = filters;
+    return orders.filter(order => {
+      const matchesStatus = status === 'all' || order.status === status;
+      const matchesSearch = !search || [order.id, order.customerName, order.email, order.phone]
+        .filter(Boolean)
+        .some((field) => String(field).toLowerCase().includes(search.trim().toLowerCase()))
+      ;
+      const matchesDate = !dateRange?.length
+        || (order.createdAt && dayjs(order.createdAt).isBetween(dateRange[0], dateRange[1], 'day', '[]'));
+      return matchesStatus && matchesSearch && matchesDate;
+    });
+  }, [orders, filters]);
+
+  const metrics = useMemo(() => {
+    if (!orders.length) {
+      return {
+        totalOrders: 0,
+        totalRevenue: 0,
+        pending: 0,
+        completed: 0,
+        cancelled: 0
+      };
+    }
+    return orders.reduce((acc, order) => {
+      acc.totalOrders += 1;
+      acc.totalRevenue += order.total || 0;
+      if (order.status === 'pending') acc.pending += 1;
+      if (order.status === 'completed') acc.completed += 1;
+      if (order.status === 'cancelled') acc.cancelled += 1;
+      return acc;
+    }, { totalOrders: 0, totalRevenue: 0, pending: 0, completed: 0, cancelled: 0 });
+  }, [orders]);
+
+  const summaryCards = useMemo(() => ([
+    {
+      key: 'totalOrders',
+      title: 'Tổng đơn hàng',
+      value: metrics.totalOrders,
+      icon: <ShoppingCartOutlined style={{ color: '#1d39c4' }} />,
+      formatter: formatNumber
+    },
+    {
+      key: 'totalRevenue',
+      title: 'Doanh thu lũy kế',
+      value: metrics.totalRevenue,
+      icon: <DollarCircleOutlined style={{ color: '#52c41a' }} />,
+      formatter: formatCurrency
+    },
+    {
+      key: 'pending',
+      title: 'Đơn đang xử lý',
+      value: metrics.pending,
+      icon: <ClockCircleOutlined style={{ color: '#faad14' }} />,
+      formatter: formatNumber
+    },
+    {
+      key: 'completed',
+      title: 'Đơn hoàn thành',
+      value: metrics.completed,
+      icon: <CheckCircleOutlined style={{ color: '#13c2c2' }} />,
+      formatter: formatNumber
+    }
+  ]), [metrics]);
 
   const columns = [
     {
@@ -109,6 +210,14 @@ const OrderManager = () => {
       title: 'Khách hàng',
       dataIndex: 'customerName',
       key: 'customerName',
+      render: (name, record) => (
+        <Space direction="vertical" size={0}>
+          <span style={{ fontWeight: 500 }}>{name || '—'}</span>
+          <Text type="secondary" style={{ fontSize: 12 }}>
+            {record.email || 'Không có email'}
+          </Text>
+        </Space>
+      )
     },
     {
       title: 'Tổng tiền',
@@ -147,6 +256,7 @@ const OrderManager = () => {
       title: 'Ngày đặt',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      render: (value) => value ? dayjs(value).format('DD/MM/YYYY HH:mm') : '—',
       sorter: (a, b) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix(),
     },
     {
@@ -163,13 +273,18 @@ const OrderManager = () => {
           >
             Chi tiết
           </Button>
-          <Button
-            icon={<DeleteOutlined />}
-            danger
-            onClick={() => handleDeleteOrder(record.id)}
+          <Popconfirm
+            title="Xác nhận xóa đơn hàng"
+            description="Bạn chắc chắn muốn xóa đơn hàng này?"
+            okText="Xóa"
+            cancelText="Hủy"
+            okButtonProps={{ danger: true }}
+            onConfirm={() => handleDeleteOrder(record.id)}
           >
-            Xóa
-          </Button>
+            <Button icon={<DeleteOutlined />} danger>
+              Xóa
+            </Button>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -187,27 +302,80 @@ const OrderManager = () => {
   };
 
   return (
-    <div style={{ padding: '24px' }}>
-      <Card>
-        <Space direction="vertical" style={{ width: '100%' }} size="large">
-          <Title level={2}>Quản lý đơn hàng</Title>
+    <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <Card
+        bordered={false}
+        style={{
+          borderRadius: 16,
+          background: 'linear-gradient(135deg, #f0f5ff 0%, #ffffff 100%)'
+        }}
+      >
+        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+          <Space align="center" size={12} wrap>
+            <ShoppingCartOutlined style={{ fontSize: 24, color: '#1d39c4' }} />
+            <Title level={3} style={{ margin: 0, color: '#1d39c4' }}>Quản lý đơn hàng</Title>
+            <Tag color="blue" style={{ borderRadius: 16 }}>
+              Tổng {formatNumber(metrics.totalOrders)} đơn
+            </Tag>
+          </Space>
+          <Text type="secondary">
+            Theo dõi trạng thái xử lý và chi tiết từng đơn để đảm bảo luồng giao hàng thông suốt.
+          </Text>
+          <Space size={8} wrap>
+            <Tag color="processing">Đang xử lý: {formatNumber(metrics.pending)}</Tag>
+            <Tag color="success">Hoàn thành: {formatNumber(metrics.completed)}</Tag>
+            <Tag color="red">Đã hủy: {formatNumber(metrics.cancelled)}</Tag>
+          </Space>
+        </Space>
+      </Card>
 
-          {/* Filters */}
-          <Space wrap>
+      <Row gutter={[16, 16]}>
+        {summaryCards.map((card) => (
+          <Col key={card.key} xs={24} sm={12} xl={6}>
+            <Card bordered={false} style={{ borderRadius: 16, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+              <Statistic
+                title={card.title}
+                value={card.value}
+                prefix={card.icon}
+                valueStyle={{ fontSize: 22, fontWeight: 600 }}
+                formatter={(value) => (card.formatter ? card.formatter(value) : value)}
+              />
+            </Card>
+          </Col>
+        ))}
+      </Row>
+
+      <Card bordered={false} style={{ borderRadius: 18 }}>
+        <Space direction="vertical" size="large" style={{ width: '100%' }}>
+          <Space style={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+            <Space size={12} wrap>
+              <Title level={4} style={{ margin: 0 }}>Danh sách đơn hàng</Title>
+              <Tag color="blue">
+                Hiển thị {formatNumber(filteredOrders.length)} / {formatNumber(orders.length)} đơn
+              </Tag>
+            </Space>
+            <Space size={12} wrap>
+              <Button icon={<ReloadOutlined />} onClick={fetchOrders} loading={loading}>
+                Tải lại
+              </Button>
+            </Space>
+          </Space>
+
+          <Space wrap size={12}>
             <Input
-              placeholder="Tìm kiếm đơn hàng..."
+              placeholder="Tìm theo mã đơn, tên khách, email..."
               prefix={<SearchOutlined />}
-              style={{ width: 250 }}
+              style={{ width: 260 }}
               value={filters.search}
               onChange={e => setFilters({ ...filters, search: e.target.value })}
+              allowClear
             />
             <Select
-              style={{ width: 150 }}
-              placeholder="Trạng thái"
+              style={{ width: 180 }}
               value={filters.status}
               onChange={value => setFilters({ ...filters, status: value })}
             >
-              <Option value="all">Tất cả</Option>
+              <Option value="all">Tất cả trạng thái</Option>
               <Option value="pending">Chờ xử lý</Option>
               <Option value="processing">Đang xử lý</Option>
               <Option value="shipping">Đang giao</Option>
@@ -215,20 +383,20 @@ const OrderManager = () => {
               <Option value="cancelled">Đã hủy</Option>
             </Select>
             <RangePicker
-              value={filters.dateRange}
-              onChange={dates => setFilters({ ...filters, dateRange: dates })}
+              value={filters.dateRange?.length ? filters.dateRange : null}
+              onChange={dates => setFilters({ ...filters, dateRange: dates || [] })}
             />
           </Space>
 
-          {/* Orders Table */}
           <Table
             columns={columns}
-            dataSource={orders}
+            dataSource={filteredOrders}
             loading={loading}
+            locale={{ emptyText: loading ? <SkeletonTable /> : <Empty description="Không có đơn hàng" /> }}
             rowKey="id"
             pagination={{
               showSizeChanger: true,
-              showTotal: (total) => `Tổng số ${total} đơn hàng`,
+              showTotal: (total) => `Tổng ${total} đơn hàng`
             }}
             onRow={(record) => ({
               onClick: () => {
@@ -246,8 +414,11 @@ const OrderManager = () => {
         title="Chi tiết đơn hàng"
         placement="right"
         width={640}
-        onClose={() => setDrawerVisible(false)}
-        visible={drawerVisible}
+        onClose={() => {
+          setDrawerVisible(false);
+          setSelectedOrder(null);
+        }}
+        open={drawerVisible}
       >
         {selectedOrder && (
           <Space direction="vertical" size="large" style={{ width: '100%' }}>
@@ -276,7 +447,29 @@ const OrderManager = () => {
               <Descriptions.Item label="Phương thức thanh toán">
                 {selectedOrder.paymentMethod}
               </Descriptions.Item>
+              <Descriptions.Item label="Ngày đặt">
+                {selectedOrder.createdAt ? dayjs(selectedOrder.createdAt).format('DD/MM/YYYY HH:mm') : '—'}
+              </Descriptions.Item>
             </Descriptions>
+
+            <Steps
+              size="small"
+              current={(() => {
+                if (selectedOrder.status === 'cancelled') return 0;
+                const steps = ['pending', 'processing', 'shipping', 'completed'];
+                return Math.max(steps.indexOf(selectedOrder.status), 0);
+              })()}
+              items={selectedOrder.status === 'cancelled' ? [
+                { title: 'Đã hủy', status: 'error' }
+              ] : [
+                { title: 'Chờ xử lý' },
+                { title: 'Đang xử lý' },
+                { title: 'Đang giao' },
+                { title: 'Hoàn thành' }
+              ]}
+            />
+
+            <Divider style={{ margin: '16px 0' }}>Sản phẩm</Divider>
 
             <Table
               title={() => <strong>Sản phẩm đặt mua</strong>}

@@ -1,10 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { getProducts, getProductById, createProduct, createProductReview } = require('../controllers/productController');
+const { getProducts, getProductById, createProduct, createProductReview, searchProducts, deleteProduct, updateProduct } = require('../controllers/productController');
 const { protect, admin } = require('../middlewares/authMiddleware');
+const uploadMemory = require('../middlewares/multerMemory');
 
-router.route('/').get(getProducts).post(protect, admin, createProduct);
+// Search route must be before /:id route to not treat 'search' as an ID
+router.get('/search', searchProducts);
+router.delete('/:id', protect, admin, deleteProduct);
+router.route('/').get(getProducts).post(protect, admin, uploadMemory.array('images', 8), createProduct);
 router.route('/:id/reviews').post(protect, createProductReview);
-router.route('/:id').get(getProductById);
+router.route('/:id').get(getProductById).put(protect, admin, updateProduct);
 
 module.exports = router;
