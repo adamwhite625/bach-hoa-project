@@ -67,8 +67,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     private void setupBackButton() {
         // Gán sự kiện click cho ImageButton quay lại
         binding.btnBackSmall.setOnClickListener(v -> {
-            // Hoạt động giống như nút back cứng của điện thoại
-            onBackPressed();
+            // Đóng Activity hiện tại và quay về màn hình trước
+            finish();
         });
     }
 
