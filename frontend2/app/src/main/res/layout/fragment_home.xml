@@ -14,9 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
-        app:elevation="0dp"
         app:liftOnScroll="false"
-        app:useMaterialThemeColors="false">
+        app:elevation="4dp">
 
         <LinearLayout
             android:id="@+id/header_container"
@@ -42,11 +41,6 @@
                     android:clickable="true"
                     android:focusable="true">
 
-                    <!-- THAY ĐỔI 1: Đã xóa ImageView của icon Menu -->
-
-                    <!-- THAY ĐỔI 2: Đã xóa View của vạch ngăn cách -->
-
-                    <!-- THAY ĐỔI 3: Cập nhật lại TextView tìm kiếm -->
                     <TextView
                         android:id="@+id/fake_search_box"
                         android:layout_width="0dp"
@@ -91,7 +85,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Các TextView và RecyclerView của bạn giữ nguyên... -->
+            <!-- ======================= SLIDER BANNER (CÓ BO GÓC) ======================= -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/view_pager_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp" />
+
+            </androidx.cardview.widget.CardView>
+            <!-- ======================= KẾT THÚC SLIDER ======================= -->
+
+
+
+            <!-- Tiêu đề Danh mục -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -116,6 +130,7 @@
                 tools:listitem="@layout/item_category"
                 tools:orientation="horizontal" />
 
+            <!-- Tiêu đề Sản phẩm nổi bật -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

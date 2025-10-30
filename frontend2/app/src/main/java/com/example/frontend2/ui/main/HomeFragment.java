@@ -1,30 +1,37 @@
 package com.example.frontend2.ui.main;
 
-import android.graphics.Color;
+// CÁC IMPORT CẦN THIẾT CHO CẢ RECYCLERVIEW VÀ SLIDER
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat; // THÊM IMPORT
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.frontend2.R;
 import com.example.frontend2.data.model.Category;
 import com.example.frontend2.data.model.Product;
-import com.example.frontend2.databinding.FragmentHomeBinding;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
-import com.google.android.material.appbar.AppBarLayout; // THÊM IMPORT
+import com.example.frontend2.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,6 +44,11 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
     private ProductAdapter productAdapter;
     private ApiService apiService;
     private static final String TAG = "HomeFragment";
+
+    // --- BIẾN DÀNH CHO SLIDER BANNER ---
+    private SliderAdapter sliderAdapter;
+    private final Handler sliderHandler = new Handler(Looper.getMainLooper());
+    private Timer sliderTimer;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,49 +71,65 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Thiết lập RecyclerView
+        // Thiết lập các Views
         setupRecyclerViews();
-
-        // ======================= BẮT ĐẦU: THÊM CODE HIỆU ỨNG CUỘN =======================
-        setupHeaderScrollEffect();
-        // ======================= KẾT THÚC: THÊM CODE HIỆU ỨNG CUỘN =======================
+        setupBannerSlider();
 
         // Tải dữ liệu từ API
         fetchCategories();
         fetchProducts();
     }
 
-    // Tách logic hiệu ứng cuộn ra một hàm riêng để code sạch hơn
-    private void setupHeaderScrollEffect() {
-        // Lấy các màu từ file colors.xml một cách an toàn
-        int colorPrimary = ContextCompat.getColor(requireContext(), R.color.primary); // Màu xanh
-        int colorBg = ContextCompat.getColor(requireContext(), R.color.bg);       // Màu nền của trang
+    private void setupBannerSlider() {
+        // 1. Chuẩn bị danh sách ảnh từ drawable
+        List<Integer> imageList = Arrays.asList(
+                R.drawable.slide1,
+                R.drawable.slide2,
+                R.drawable.slide3,
+                R.drawable.slide4
+        );
 
-        binding.appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isHeaderShown = true;
+        // 2. Khởi tạo adapter và gán cho ViewPager2
+        sliderAdapter = new SliderAdapter(imageList);
+        binding.viewPagerBanner.setAdapter(sliderAdapter);
 
+        // 3. (Tùy chọn) Thêm hiệu ứng và bo góc
+        binding.viewPagerBanner.setClipToPadding(false);
+        binding.viewPagerBanner.setClipChildren(false);
+        binding.viewPagerBanner.setOffscreenPageLimit(3);
+
+        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+        compositePageTransformer.addTransformer(new MarginPageTransformer(30)); // Khoảng cách giữa các slide
+//        compositePageTransformer.addTransformer((page, position) -> {
+//            float r = 1 - Math.abs(position);
+//            page.setScaleY(0.85f + r * 0.15f); // Hiệu ứng thu nhỏ slide ở 2 bên
+//        });
+        binding.viewPagerBanner.setPageTransformer(compositePageTransformer);
+
+        // 4. Bắt đầu tự động cuộn
+        startAutoSlider(imageList.size());
+    }
+
+    private void startAutoSlider(final int count) {
+        sliderTimer = new Timer();
+        sliderTimer.schedule(new TimerTask() {
             @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                // verticalOffset là độ dịch chuyển. 0 là trạng thái mở rộng, giá trị âm khi cuộn lên.
-
-                // Kiểm tra xem người dùng đã cuộn chưa.
-                // Nếu verticalOffset là 0, tức là header đang hiển thị đầy đủ, chưa bị cuộn.
-                if (verticalOffset == 0) {
-                    // Nếu trạng thái trước đó là header đã bị cuộn, giờ mới đổi lại màu nền sáng
-                    if (!isHeaderShown) {
-                        binding.headerContainer.setBackgroundColor(colorBg);
-                        isHeaderShown = true;
-                    }
-                } else {
-                    // Ngược lại, nếu người dùng đã cuộn dù chỉ một chút
-                    // và trạng thái trước đó là header chưa bị cuộn, giờ mới đổi sang màu xanh
-                    if (isHeaderShown) {
-                        binding.headerContainer.setBackgroundColor(colorPrimary);
-                        isHeaderShown = false;
-                    }
-                }
+            public void run() {
+                sliderHandler.post(() -> {
+                    if (binding == null) return; // Tránh crash nếu fragment đã bị hủy
+                    int currentItem = binding.viewPagerBanner.getCurrentItem();
+                    int nextItem = (currentItem + 1) % count;
+                    binding.viewPagerBanner.setCurrentItem(nextItem, true); // true để cuộn mượt
+                });
             }
-        });
+        }, 1500, 1500); // Bắt đầu sau 1s, lặp lại mỗi 1s
+    }
+
+    private void stopAutoSlider() {
+        if (sliderTimer != null) {
+            sliderTimer.cancel();
+            sliderTimer = null;
+        }
     }
 
     private void setupRecyclerViews() {
@@ -112,16 +140,12 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
         binding.recyclerCategory.setAdapter(categoryAdapter);
 
         // Sản phẩm hiển thị dạng lưới 2 cột
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        binding.recyclerProduct.setLayoutManager(gridLayoutManager);
+        binding.recyclerProduct.setLayoutManager(new GridLayoutManager(getContext(), 2));
         binding.recyclerProduct.setAdapter(productAdapter);
 
-        // Tối ưu hiệu năng
-        binding.recyclerProduct.setHasFixedSize(true);
-
-        // Tắt cuộn lồng vì đang trong NestedScrollView
-        binding.recyclerProduct.setNestedScrollingEnabled(false);
+        // Không cần setNestedScrollingEnabled(false) ở đây nữa vì đã làm trong XML
     }
+
     private void fetchCategories() {
         apiService.getCategories().enqueue(new Callback<List<Category>>() {
             @Override
@@ -129,14 +153,12 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
                 if (response.isSuccessful() && response.body() != null) {
                     categoryAdapter.updateData(response.body());
                 } else {
-                    Toast.makeText(getContext(), "Không có dữ liệu danh mục", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Lỗi khi lấy danh mục: " + response.code() + " - " + response.message());
+                    Log.e(TAG, "Lỗi khi lấy danh mục: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Category>> call, @NonNull Throwable t) {
-                Toast.makeText(getContext(), "Lỗi khi tải danh mục", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Lỗi kết nối API danh mục: ", t);
             }
         });
@@ -149,14 +171,12 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
                 if (response.isSuccessful() && response.body() != null) {
                     productAdapter.updateData(response.body());
                 } else {
-                    Toast.makeText(getContext(), "Không có dữ liệu sản phẩm", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Lỗi khi lấy sản phẩm: " + response.code() + " - " + response.message());
+                    Log.e(TAG, "Lỗi khi lấy sản phẩm: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Product>> call, @NonNull Throwable t) {
-                Toast.makeText(getContext(), "Lỗi khi tải sản phẩm", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Lỗi kết nối API sản phẩm: ", t);
             }
         });
@@ -164,12 +184,23 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
 
     @Override
     public void onItemClick(Product product) {
-        Toast.makeText(getContext(), "Đã chọn: " + product.getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), ProductDetailActivity.class);
+
+        // 2. GÓI DỮ LIỆU VÀO THÙNG HÀNG
+        //    Chúng ta dùng phương thức putExtra để đặt ID của sản phẩm vào Intent.
+        //    - "PRODUCT_ID": Đây là cái "nhãn" dán trên gói hàng. Nó là một chuỗi String do bạn tự đặt.
+        //                    Bên nhận sẽ phải dùng đúng cái nhãn này để lấy đúng món đồ.
+        //    - product.getId(): Đây là "món hàng" bên trong, chính là ID của sản phẩm được click.
+        intent.putExtra("productId", product.getId());
+        // 3. GỬI "THÙNG HÀNG" ĐI
+        //    Hệ thống Android sẽ nhận Intent này, tìm và mở ProductDetailActivity.
+        startActivity(intent);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        stopAutoSlider(); // QUAN TRỌNG: Dừng slider khi thoát màn hình để tránh rò rỉ bộ nhớ
         binding = null;
     }
 }

@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- THAY ĐỔI QUAN TRỌNG: Khóa cứng cả CHIỀU RỘNG và CHIỀU CAO -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:padding="8dp">
+    android:layout_width="90dp"
+    android:layout_height="120dp"
+    android:gravity="center_horizontal"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp">
 
     <ImageView
         android:id="@+id/imageCategory"
@@ -12,14 +17,16 @@
         android:layout_height="64dp"
         android:scaleType="centerCrop"
         android:layout_marginBottom="4dp" />
-<!--        android:background="@drawable/rounded_bg"-->
 
     <TextView
         android:id="@+id/textCategoryName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tên danh mục"
         android:textSize="12sp"
         android:textColor="@color/black"
-        android:gravity="center" />
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
 </LinearLayout>
