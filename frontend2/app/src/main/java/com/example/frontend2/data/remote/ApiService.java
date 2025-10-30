@@ -12,7 +12,8 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
-import  retrofit2.http.GET;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
 
 public interface ApiService {
     @POST("/api/auth/login")
@@ -26,4 +27,7 @@ public interface ApiService {
 
     @GET("/api/categories")
     Call<List<Category>> getCategories();
+
+    @GET("/api/users/profile")  // Endpoint chính xác từ backend
+    Call<User> getCurrentUser(@Header("Authorization") String token);
 }
