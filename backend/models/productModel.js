@@ -11,7 +11,7 @@ const productSchema = mongoose.Schema({
     name: { type: String, required: true, trim: true },
     sku: { type: String, required: true, unique: true },
     description: { type: String, required: true },
-    images: [{ type: String, required: true }],
+    image: { type: String, required: true },
     brand: { type: String },
     category: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Category' },
     price: { type: Number, required: true, default: 0 },

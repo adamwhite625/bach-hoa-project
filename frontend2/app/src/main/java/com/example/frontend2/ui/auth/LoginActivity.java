@@ -73,9 +73,14 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
 //                Log.d(TAG, response.toString());
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                    User user = response.body();
+                    // Lưu token vào SharedPreferences
+                    getSharedPreferences("MyPrefs", MODE_PRIVATE)
+                        .edit()
+                        .putString("token", user.getToken())
+                        .apply();
 
-                    // TODO: Save the user token
+                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
