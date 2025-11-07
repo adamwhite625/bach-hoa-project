@@ -4,6 +4,7 @@ import com.example.frontend2.data.model.Category;
 import com.example.frontend2.data.model.LoginRequest;
 import com.example.frontend2.data.model.MessageResponse;
 import com.example.frontend2.data.model.Order;
+import com.example.frontend2.data.model.Product;
 import com.example.frontend2.data.model.ProductDetail;
 import com.example.frontend2.data.model.ProductInList;
 import com.example.frontend2.data.model.ResetPasswordRequest;
@@ -17,6 +18,9 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
+import  retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -51,6 +55,10 @@ public interface ApiService {
     Call<List<ProductInList>> getProducts();
 
     @GET("api/products/{id}")
+    Call<Product> getProductById(@Path("id") String productId);
+    @GET("/api/products")
+    Call<List<ProductInList>> getProducts();
+    @GET("/api/products/{id}")
     Call<ProductDetail> getProductById(@Path("id") String productId);
 
     // --- Categories ---
