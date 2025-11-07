@@ -52,7 +52,7 @@ public interface ApiService {
 
     // --- Products ---
     @GET("api/products")
-    Call<List<Product>> getProducts();
+    Call<List<ProductInList>> getProducts();
 
     @GET("api/products/{id}")
     Call<Product> getProductById(@Path("id") String productId);
