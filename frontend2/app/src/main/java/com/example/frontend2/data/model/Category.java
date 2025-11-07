@@ -12,7 +12,6 @@ public class Category {
     private String description;
     private String image;
 
-    // Getters và Setters bây giờ khớp hoàn toàn với tên biến
     public String getId() {
         return id;
     }

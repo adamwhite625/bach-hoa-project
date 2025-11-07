@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
@@ -18,11 +17,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.frontend2.R;
 import com.example.frontend2.data.model.Category;
-import com.example.frontend2.data.model.Product;
+import com.example.frontend2.data.model.ProductInList;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.FragmentHomeBinding;
@@ -165,9 +163,9 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
     }
 
     private void fetchProducts() {
-        apiService.getProducts().enqueue(new Callback<List<Product>>() {
+        apiService.getProducts().enqueue(new Callback<List<ProductInList>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Product>> call, @NonNull Response<List<Product>> response) {
+            public void onResponse(@NonNull Call<List<ProductInList>> call, @NonNull Response<List<ProductInList>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     productAdapter.updateData(response.body());
                 } else {
@@ -176,24 +174,18 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Product>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<ProductInList>> call, @NonNull Throwable t) {
                 Log.e(TAG, "Lỗi kết nối API sản phẩm: ", t);
             }
         });
     }
-
     @Override
-    public void onItemClick(Product product) {
+    public void onItemClick(ProductInList productInList) {
         Intent intent = new Intent(getContext(), ProductDetailActivity.class);
 
-        // 2. GÓI DỮ LIỆU VÀO THÙNG HÀNG
-        //    Chúng ta dùng phương thức putExtra để đặt ID của sản phẩm vào Intent.
-        //    - "PRODUCT_ID": Đây là cái "nhãn" dán trên gói hàng. Nó là một chuỗi String do bạn tự đặt.
-        //                    Bên nhận sẽ phải dùng đúng cái nhãn này để lấy đúng món đồ.
-        //    - product.getId(): Đây là "món hàng" bên trong, chính là ID của sản phẩm được click.
-        intent.putExtra("productId", product.getId());
-        // 3. GỬI "THÙNG HÀNG" ĐI
-        //    Hệ thống Android sẽ nhận Intent này, tìm và mở ProductDetailActivity.
+        // Gửi product_id (đặt key thống nhất là "product_id")
+        intent.putExtra("product_id", productInList.getId());
+
         startActivity(intent);
     }
 

@@ -36,7 +36,6 @@ android {
 }
 
 dependencies {
-    // Thêm dòng này để sử dụng thư viện cho Android TV
     implementation("androidx.leanback:leanback:1.0.0")
     implementation("com.github.bumptech.glide:glide:4.16.0") //Thêm thư viện Glide chính (tải & hiển thị ảnh)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0") //Dùng compiler của Glide để tạo code tự động
