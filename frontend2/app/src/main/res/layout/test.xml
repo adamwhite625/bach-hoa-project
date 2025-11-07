@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:padding="16dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Thanh tìm kiếm -->
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="Bạn muốn mua gì?"
+            android:paddingStart="40dp"
+            android:background="@drawable/search_background"
+            android:drawableStart="@android:drawable/ic_menu_search"
+            android:drawablePadding="8dp"
+            android:backgroundTint="#E0E0E0" />
+
+        <!-- Tiêu đề Giỏ hàng -->
+        <TextView
+            android:id="@+id/tvCartTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Giỏ hàng"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="#000000"
+            android:layout_below="@id/etSearch"
+            android:layout_marginTop="12dp"
+            android:layout_centerHorizontal="true" />
+
+        <!-- Hai nút giao hàng và nhận tại cửa hàng -->
+        <LinearLayout
+            android:id="@+id/layoutTabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvCartTitle"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnDelivery"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="Giao hàng tận nơi"
+                android:backgroundTint="#00AEEF"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btnPickup"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="Nhận tại cửa hàng"
+                android:backgroundTint="#E0E0E0"
+                android:textColor="#000000"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- Địa chỉ giao hàng -->
+        <LinearLayout
+            android:id="@+id/layoutAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layoutTabs"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:background="@android:color/white"
+            android:elevation="2dp"
+            android:backgroundTint="#FFFFFF">
+
+            <TextView
+                android:text="Địa chỉ: Khu phố 3A, P. Linh Trung, TP. Thủ Đức - Anh Chai C2, 0123456789"
+                android:textColor="#000000"
+                android:textSize="14sp" />
+
+            <TextView
+                android:text="Giao từ: 120 Yên Lãng, Đống Đa, Hà Nội"
+                android:textColor="#757575"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- Chọn thời gian giao -->
+        <Spinner
+            android:id="@+id/spinnerTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layoutAddress"
+            android:layout_marginTop="12dp"
+            android:background="@android:color/white"
+            android:padding="12dp" />
+
+        <!-- Danh sách sản phẩm -->
+        <LinearLayout
+            android:id="@+id/layoutProducts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/spinnerTime"
+            android:layout_marginTop="12dp">
+
+            <!-- Sản phẩm 1 -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:background="@android:color/white"
+                android:layout_marginBottom="8dp"
+                android:elevation="2dp">
+
+                <ImageView
+                    android:id="@+id/imgEggs"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_launcher_background"
+                    android:layout_alignParentStart="true" />
+
+                <TextView
+                    android:id="@+id/tvEggName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trứng gà hộp 10 quả"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_toEndOf="@id/imgEggs"
+                    android:layout_marginStart="12dp" />
+
+                <TextView
+                    android:id="@+id/tvEggPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="30.000đ"
+                    android:textSize="14sp"
+                    android:textColor="#00AEEF"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignBaseline="@id/tvEggName" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_toEndOf="@id/imgEggs"
+                    android:layout_below="@id/tvEggName"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="4dp">
+
+                    <Button
+                        android:text="-"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp" />
+
+                    <TextView
+                        android:text="1"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:gravity="center" />
+
+                    <Button
+                        android:text="+"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:text="Xóa"
+                    android:textColor="#D32F2F"
+                    android:textSize="13sp"
+                    android:layout_below="@id/imgEggs"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="4dp" />
+            </RelativeLayout>
+
+            <!-- Sản phẩm 2 -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:background="@android:color/white"
+                android:elevation="2dp">
+
+                <ImageView
+                    android:id="@+id/imgPork"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_launcher_background"
+                    android:layout_alignParentStart="true" />
+
+                <TextView
+                    android:id="@+id/tvPorkName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chân giò heo nhập khẩu Đức túi 500g"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_toEndOf="@id/imgPork"
+                    android:layout_marginStart="12dp" />
+
+                <TextView
+                    android:id="@+id/tvPorkPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="34.500đ"
+                    android:textSize="14sp"
+                    android:textColor="#00AEEF"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignBaseline="@id/tvPorkName" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_toEndOf="@id/imgPork"
+                    android:layout_below="@id/tvPorkName"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="4dp">
+
+                    <Button
+                        android:text="-"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp" />
+
+                    <TextView
+                        android:text="1"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:gravity="center" />
+
+                    <Button
+                        android:text="+"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:text="Xóa"
+                    android:textColor="#D32F2F"
+                    android:textSize="13sp"
+                    android:layout_below="@id/imgPork"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="4dp" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <!-- Tổng đơn hàng -->
+        <Button
+            android:id="@+id/btnOrder"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Đặt hàng 64.500đ"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:backgroundTint="#00AEEF"
+            android:layout_below="@id/layoutProducts"
+            android:layout_marginTop="16dp" />
+
+        <!-- Thanh toán -->
+        <LinearLayout
+            android:id="@+id/layoutPayment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="space_between"
+            android:layout_below="@id/btnOrder"
+            android:layout_marginTop="12dp"
+            android:padding="12dp"
+            android:background="@android:color/white"
+            android:elevation="2dp">
+
+            <TextView
+                android:text="Thanh toán (tiền mặt, thẻ, ví, ...)"
+                android:textSize="14sp"
+                android:layout_weight="1" />
+
+            <Button
+                android:text="Tiền mặt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#C8E6C9" />
+
+            <Button
+                android:text="Đổi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="#E0E0E0" />
+        </LinearLayout>
+
+        <!-- Ghi chú -->
+        <EditText
+            android:id="@+id/etNote"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_below="@id/layoutPayment"
+            android:layout_marginTop="12dp"
+            android:hint="Yêu cầu khác (nếu có)"
+            android:background="@android:color/white"
+            android:padding="12dp" />
+
+        <!-- Checkbox -->
+        <CheckBox
+            android:id="@+id/cbDeleteAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Xóa hết sản phẩm"
+            android:layout_below="@id/etNote"
+            android:layout_marginTop="8dp" />
+    </RelativeLayout>
+</ScrollView>

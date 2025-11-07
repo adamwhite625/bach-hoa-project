@@ -27,6 +27,7 @@
         <activity android:name=".ui.main.ProductDetailActivity" />
         <activity android:name=".ui.auth.RegisterActivity" />
         <activity android:name=".ui.auth.ForgotPasswordActivity" />
+        <activity android:name=".ui.main.EditProfileActivity" />
     </application>
 
 </manifest>
