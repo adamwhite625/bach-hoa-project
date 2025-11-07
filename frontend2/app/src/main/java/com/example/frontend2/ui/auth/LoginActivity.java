@@ -10,10 +10,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.frontend2.R;
-import com.example.frontend2.api.UserService;
 import com.example.frontend2.data.model.LoginRequest;
 import com.example.frontend2.data.model.User;
 import com.example.frontend2.data.remote.ApiClient;
+import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.ui.main.MainActivity;
 import com.example.frontend2.utils.SharedPrefManager;
 
@@ -25,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText etUsername;
     private EditText etPassword;
-    private UserService userService;
+    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         TextView registerTextView = findViewById(R.id.tv_register);
         TextView forgotPasswordTextView = findViewById(R.id.tv_forgot_password);
 
-        userService = ApiClient.getRetrofitInstance().create(UserService.class);
+        apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
 
         loginButton.setOnClickListener(v -> login());
 
@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         LoginRequest loginRequest = new LoginRequest(email, password);
-        Call<User> call = userService.loginUser(loginRequest);
+        Call<User> call = apiService.loginUser(loginRequest);
 
         call.enqueue(new Callback<User>() {
             @Override

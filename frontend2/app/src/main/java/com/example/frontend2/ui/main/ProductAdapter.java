@@ -1,7 +1,6 @@
 package com.example.frontend2.ui.main;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,25 +13,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.frontend2.R;
-import com.example.frontend2.data.model.Product;
-import com.google.gson.Gson;
+import com.example.frontend2.data.model.ProductInList;
 
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
     private final Context context;
-    private final List<Product> productList;
+    private final List<ProductInList> productInListList;
     private final OnItemClickListener listener;
 
     // Interface callback khi click
     public interface OnItemClickListener {
-        void onItemClick(Product product);
+        void onItemClick(ProductInList productInList);
     }
 
-    public ProductAdapter(Context context, List<Product> productList, OnItemClickListener listener) {
+    public ProductAdapter(Context context, List<ProductInList> productInListList, OnItemClickListener listener) {
         this.context = context;
-        this.productList = productList;
+        this.productInListList = productInListList;
         this.listener = listener;
     }
 
@@ -45,18 +43,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        Product product = productList.get(position);
-        holder.bind(product, listener);
+        ProductInList productInList = productInListList.get(position);
+        holder.bind(productInList, listener);
     }
 
     @Override
     public int getItemCount() {
-        return productList != null ? productList.size() : 0;
+        return productInListList != null ? productInListList.size() : 0;
     }
 
-    public void updateData(List<Product> newData) {
-        this.productList.clear();
-        this.productList.addAll(newData);
+    public void updateData(List<ProductInList> newData) {
+        this.productInListList.clear();
+        this.productInListList.addAll(newData);
         notifyDataSetChanged();
     }
 
@@ -71,15 +69,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             priceText = itemView.findViewById(R.id.product_price);
         }
 
-        public void bind(Product product, OnItemClickListener listener) {
+        public void bind(ProductInList productInList, OnItemClickListener listener) {
             // Log sản phẩm ra để kiểm tra
-            nameText.setText(product.getName());
-            priceText.setText(String.format("%,.0f ₫", product.getPrice()));
+            nameText.setText(productInList.getName());
+            priceText.setText(String.format("%,.0f ₫", productInList.getPrice()));
 
             // ✅ Load ảnh (vì giờ là String, không phải List)
-            if (product.getImage() != null && !product.getImage().isEmpty()) {
+            if (productInList.getImage() != null && !productInList.getImage().isEmpty()) {
                 Glide.with(itemView.getContext())
-                        .load(product.getImage())
+                        .load(productInList.getImage())
                         .placeholder(R.drawable.placeholder)
                         .error(R.drawable.error_image)
                         .into(imageView);
@@ -89,9 +87,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
             // Xử lý click item
             itemView.setOnClickListener(v -> {
-                if (listener != null) listener.onItemClick(product);
+                if (listener != null) listener.onItemClick(productInList);
                 else Toast.makeText(itemView.getContext(),
-                        "Sản phẩm: " + product.getName(), Toast.LENGTH_SHORT).show();
+                        "Sản phẩm: " + productInList.getName(), Toast.LENGTH_SHORT).show();
             });
         }
     }

@@ -4,7 +4,8 @@ import com.example.frontend2.data.model.Category;
 import com.example.frontend2.data.model.LoginRequest;
 import com.example.frontend2.data.model.MessageResponse;
 import com.example.frontend2.data.model.Order;
-import com.example.frontend2.data.model.Product;
+import com.example.frontend2.data.model.ProductDetail;
+import com.example.frontend2.data.model.ProductInList;
 import com.example.frontend2.data.model.ResetPasswordRequest;
 import com.example.frontend2.data.model.User;
 
@@ -47,10 +48,10 @@ public interface ApiService {
 
     // --- Products ---
     @GET("api/products")
-    Call<List<Product>> getProducts();
+    Call<List<ProductInList>> getProducts();
 
     @GET("api/products/{id}")
-    Call<Product> getProductById(@Path("id") String productId);
+    Call<ProductDetail> getProductById(@Path("id") String productId);
 
     // --- Categories ---
     @GET("api/categories")
