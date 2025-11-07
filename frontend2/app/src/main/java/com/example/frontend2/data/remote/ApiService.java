@@ -2,7 +2,8 @@ package com.example.frontend2.data.remote;
 
 import com.example.frontend2.data.model.LoginRequest;
 import com.example.frontend2.data.model.MessageResponse;
-import com.example.frontend2.data.model.Product;
+import com.example.frontend2.data.model.ProductDetail;
+import com.example.frontend2.data.model.ProductInList;
 import com.example.frontend2.data.model.ResetPasswordRequest;
 import com.example.frontend2.data.model.User;
 import com.example.frontend2.data.model.Category;
@@ -14,7 +15,6 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 import  retrofit2.http.GET;
 import retrofit2.http.Path;
-import retrofit2.http.GET;
 import retrofit2.http.Header;
 
 public interface ApiService {
@@ -25,9 +25,9 @@ public interface ApiService {
     Call<MessageResponse> resetPassword(@Body ResetPasswordRequest resetPasswordRequest);
 
     @GET("/api/products")
-    Call<List<Product>> getProducts();
+    Call<List<ProductInList>> getProducts();
     @GET("/api/products/{id}")
-    Call<Product> getProductById(@Path("id") String productId);
+    Call<ProductDetail> getProductById(@Path("id") String productId);
 
     @GET("/api/categories")
     Call<List<Category>> getCategories();

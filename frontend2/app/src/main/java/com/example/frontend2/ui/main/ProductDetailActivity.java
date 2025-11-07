@@ -1,23 +1,25 @@
 package com.example.frontend2.ui.main; // Hoặc package của bạn
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import android.text.Html;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide; // Cần thêm thư viện Glide để load ảnh
-import com.example.frontend2.data.model.Product; // Model sản phẩm của bạn
+import com.example.frontend2.data.model.ImageInfo;
+import com.example.frontend2.data.model.ProductDetail;
 import com.example.frontend2.data.remote.ApiClient;
+import com.example.frontend2.ui.main.ImageUrlSliderAdapter;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.ActivityProductDetailBinding; // <-- Quan trọng: tên file binding
 
 import java.text.NumberFormat;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -29,7 +31,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private static final String TAG = "ProductDetailActivity";
     private ActivityProductDetailBinding binding; // Sử dụng ViewBinding
     private ApiService apiService;
-    private SliderAdapter sliderAdapter;
+    private ImageUrlSliderAdapter imageUrlSliderAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +48,14 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         // Lấy ID sản phẩm từ Intent
         Intent intent = getIntent();
-        String productId = intent.getStringExtra("PRODUCT_ID");
+        String productId = intent.getStringExtra("product_id");
         if (productId != null) {
             // Nếu có ID hợp lệ, gọi API để lấy chi tiết sản phẩm
             fetchProductDetails(productId);
         } else {
             // Xử lý lỗi nếu không nhận được ID
             Toast.makeText(this, "Không tìm thấy sản phẩm", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Không nhận được PRODUCT_ID từ Intent");
+            Log.e(TAG, "Không nhận được product_id từ Intent");
             finish(); // Đóng Activity nếu có lỗi
         }
 
@@ -76,15 +78,15 @@ public class ProductDetailActivity extends AppCompatActivity {
         binding.scroll.setVisibility(View.GONE); // Ẩn nội dung đi trong lúc tải
         // Hiển thị ProgressBar nếu có
 
-        apiService.getProductById(productId).enqueue(new Callback<Product>() {
+        apiService.getProductById(productId).enqueue(new Callback<ProductDetail>() {
             @Override
-            public void onResponse(@NonNull Call<Product> call, @NonNull Response<Product> response) {
+            public void onResponse(@NonNull Call<ProductDetail> call, @NonNull Response<ProductDetail> response) {
                 binding.scroll.setVisibility(View.VISIBLE); // Hiện lại nội dung sau khi tải xong
 
                 if (response.isSuccessful() && response.body() != null) {
-                    Product product = response.body();
+                    ProductDetail productDetail = response.body();
                     // Hiển thị dữ liệu lên giao diện
-                    displayProductData(product);
+                    displayProductData(productDetail);
                 } else {
                     Toast.makeText(ProductDetailActivity.this, "Lỗi khi tải dữ liệu sản phẩm", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Lỗi API: " + response.code() + " - " + response.message());
@@ -92,7 +94,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<Product> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<ProductDetail> call, @NonNull Throwable t) {
                 binding.scroll.setVisibility(View.VISIBLE); // Hiện lại nội dung dù có lỗi
                 Toast.makeText(ProductDetailActivity.this, "Lỗi kết nối mạng", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Lỗi Failure: ", t);
@@ -100,15 +102,15 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void displayProductData(Product product) {
+    private void displayProductData(ProductDetail productDetail) {
         // Dùng NumberFormat để định dạng giá tiền cho đẹp (ví dụ: 10,000đ)
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
         // Cập nhật các TextView
-        binding.tvCategory.setText(product.getCategory().getName()); // Giả sử Product có getCategoryName()
-        binding.tvProductTitle.setText(product.getName());
-        binding.tvPrice.setText(currencyFormat.format(product.getPrice()));
-        binding.tvDescription.setText(product.getDescription());
+        binding.tvProductName.setText(productDetail.getName());
+        binding.tvProductTitle.setText(productDetail.getName());
+        binding.tvPrice.setText(currencyFormat.format(productDetail.getPrice()));
+        binding.tvDescription.setText(Html.fromHtml(productDetail.getDescription(), Html.FROM_HTML_MODE_LEGACY));
 
         // Xử lý giá cũ và gạch ngang
 //        if (product.getOldPrice() > 0 && product.getOldPrice() > product.getPrice()) {
@@ -122,15 +124,15 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         // Cập nhật slider ảnh
         // Giả sử product.getImageUrls() trả về một List<String>
-        // sliderAdapter = new SliderAdapter(product.getImageUrls());
+        List<ImageInfo> listImageInfo = productDetail.getDetailImages();
+        List<String> listUrlImageInfo = new ArrayList<>();
 
-        // VÍ DỤ TẠM VỚI ẢNH CỨNG
-//        sliderAdapter = new SliderAdapter(Arrays.asList(
-//                R.drawable.slide1,
-//                R.drawable.slide2,
-//                R.drawable.slide3
-//        ));
-//        binding.sliderProduct.setAdapter(sliderAdapter);
+        for (ImageInfo imageInfo : listImageInfo) {
+            listUrlImageInfo.add(imageInfo.getUrl());
+        }
+        imageUrlSliderAdapter = new ImageUrlSliderAdapter(listUrlImageInfo);
+
+        binding.sliderProduct.setAdapter(imageUrlSliderAdapter);
 
         // Bạn có thể thêm CircleIndicator cho slider ở đây nếu muốn
     }
