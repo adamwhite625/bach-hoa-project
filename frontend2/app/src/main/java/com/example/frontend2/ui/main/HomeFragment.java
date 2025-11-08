@@ -35,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment implements ProductAdapter.OnItemClickListener {
+public class HomeFragment extends Fragment implements ProductAdapter.OnItemClickListener, CategoryAdapter.OnCategoryClickListener {
 
     private FragmentHomeBinding binding;
     private CategoryAdapter categoryAdapter;
@@ -52,8 +52,6 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
-        categoryAdapter = new CategoryAdapter(getContext(), new ArrayList<>());
-        productAdapter = new ProductAdapter(getContext(), new ArrayList<>(), this);
     }
 
     @Nullable
@@ -67,13 +65,12 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // Thiết lập các Views
         setupRecyclerViews();
+
+        // 2. Thiết lập Banner Slider
         setupBannerSlider();
 
-        // Tải dữ liệu từ API
+        // 3. Tải dữ liệu từ API
         fetchCategories();
         fetchProducts();
     }
@@ -131,17 +128,15 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
     }
 
     private void setupRecyclerViews() {
-        // Danh mục hiển thị ngang
-        binding.recyclerCategory.setLayoutManager(
-                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
-        );
+        // Thiết lập Category RecyclerView
+        binding.recyclerCategory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        categoryAdapter = new CategoryAdapter(getContext(), new ArrayList<>(), this); // không cần ép kiểu nếu implement đúng
         binding.recyclerCategory.setAdapter(categoryAdapter);
 
-        // Sản phẩm hiển thị dạng lưới 2 cột
+        // Thiết lập Product RecyclerView
         binding.recyclerProduct.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        productAdapter = new ProductAdapter(getContext(), new ArrayList<>(), this); // không cần ép kiểu nếu implement đúng
         binding.recyclerProduct.setAdapter(productAdapter);
-
-        // Không cần setNestedScrollingEnabled(false) ở đây nữa vì đã làm trong XML
     }
 
     private void fetchCategories() {
@@ -184,8 +179,25 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
         Intent intent = new Intent(getContext(), ProductDetailActivity.class);
 
         // Gửi product_id (đặt key thống nhất là "product_id")
+        Log.d(TAG, productInList.getId());
         intent.putExtra("product_id", productInList.getId());
 
+        startActivity(intent);
+    }
+
+    @Override
+    public void onCategoryClick(Category category) {
+        // 1. Log để kiểm tra (lấy thông tin từ đối tượng category)
+        Log.d(TAG, "Clicked on Category: " + category.getName() + " with ID: " + category.getId());
+
+        // 2. Tạo Intent để mở màn hình ProductListActivity
+        Intent intent = new Intent(getActivity(), ProductListActivity.class);
+
+        // 3. Đính kèm dữ liệu (ID và Tên) lấy trực tiếp từ đối tượng category
+        intent.putExtra("CATEGORY_ID", category.getId());
+        intent.putExtra("CATEGORY_NAME", category.getName());
+
+        // 4. Bắt đầu Activity mới
         startActivity(intent);
     }
 

@@ -15,62 +15,6 @@
         android:background="@color/primary"
         app:elevation="4dp"
         app:liftOnScroll="false">
-
-        <!-- ====== THANH TÌM KIẾM ====== -->
-        <LinearLayout
-            android:id="@+id/header_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            app:layout_scrollFlags="noScroll">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <!-- Thanh tìm kiếm -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/search_bar_layout"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/search_bg"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <TextView
-                        android:id="@+id/fake_search_box"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:drawableStart="@drawable/ic_search"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:text="Bạn muốn mua gì?"
-                        android:textColor="#555555"
-                        android:textSize="14sp"
-                        app:drawableTint="#555555"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <!-- Icon giỏ hàng -->
-                <ImageView
-                    android:id="@+id/cart_icon"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/ic_cart"
-                    app:tint="@android:color/white" />
-            </LinearLayout>
-        </LinearLayout>
-
         <!-- ====== THANH TIÊU ĐỀ SẢN PHẨM ====== -->
         <RelativeLayout
             android:id="@+id/fixed_product_header"
