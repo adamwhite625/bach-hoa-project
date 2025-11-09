@@ -54,6 +54,7 @@ const ProductManager = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [form] = Form.useForm();
   const [previewUrl, setPreviewUrl] = useState('');
+  const [detailPreviewUrls, setDetailPreviewUrls] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
@@ -97,9 +98,14 @@ const ProductManager = () => {
     if (!product) return product;
     const categoryObj = typeof product.category === 'object' ? product.category : null;
     const categoryId = categoryObj ? (categoryObj._id || categoryObj.id) : product.category;
-    const primaryImage = Array.isArray(product.images) && product.images.length
-      ? product.images[0]
-      : (product.image || '');
+    const normalizeArray = (arr) => (
+      Array.isArray(arr)
+        ? arr.map((item) => (typeof item === 'string' ? item : item?.url)).filter(Boolean)
+        : []
+    );
+    const gallery = normalizeArray(product.images);
+    const detailGallery = normalizeArray(product.detailImages);
+    const primaryImage = gallery.length ? gallery[0] : (product.image || '');
     const categoryName = categoryObj?.name || categories.find((c) => c._id === categoryId)?.name || '';
 
     return {
@@ -108,6 +114,8 @@ const ProductManager = () => {
       quantity: product.quantity ?? product.stock ?? 0,
       stock: product.quantity ?? product.stock ?? 0,
       image: primaryImage,
+      images: gallery,
+      detailImages: detailGallery,
       categoryId,
       categoryName,
       isActive: typeof product.isActive === 'boolean' ? product.isActive : true
@@ -145,13 +153,18 @@ const ProductManager = () => {
         isActive: typeof product.isActive === 'boolean' ? product.isActive : true,
         imagesText: Array.isArray(product.images)
           ? product.images.join('\n')
-          : (product.image ? product.image : '')
+          : (product.image ? product.image : ''),
+        detailImagesText: Array.isArray(product.detailImages)
+          ? product.detailImages.join('\n')
+          : ''
       };
       form.setFieldsValue(initial);
       setPreviewUrl(parseImages(initial.imagesText)[0] || '');
+      setDetailPreviewUrls(parseImages(initial.detailImagesText));
     } else {
       form.resetFields();
       setPreviewUrl('');
+      setDetailPreviewUrls([]);
     }
     setModalVisible(true);
   };
@@ -165,22 +178,28 @@ const ProductManager = () => {
     setEditingProduct(null);
     form.resetFields();
     setPreviewUrl('');
+    setDetailPreviewUrls([]);
   };
 
   const onFinish = async (values) => {
     try {
       const images = parseImages(values.imagesText);
+      const detailImages = parseImages(values.detailImagesText);
       const payload = {
         name: values.name?.trim(),
         sku: values.sku?.trim(),
         description: values.description?.trim(),
         images,
+        detailImages,
         brand: values.brand?.trim() || undefined,
         category: values.category,
         price: Number(values.price) || 0,
         quantity: Number(values.quantity) || 0,
         isActive: !!values.isActive
       };
+      if (images.length) {
+        payload.image = images[0];
+      }
 
       if (!payload.name || !payload.sku || !payload.description || !payload.category || !images.length) {
         message.error('Vui lòng nhập đầy đủ tên, SKU, mô tả, danh mục và ít nhất 1 ảnh');
@@ -240,6 +259,9 @@ const ProductManager = () => {
     if (typeof all.imagesText === 'string') {
       const first = parseImages(all.imagesText)[0] || '';
       setPreviewUrl(first);
+    }
+    if (typeof all.detailImagesText === 'string') {
+      setDetailPreviewUrls(parseImages(all.detailImagesText));
     }
   };
 
@@ -671,11 +693,41 @@ const ProductManager = () => {
             <TextArea rows={isMobile ? 3 : 4} placeholder="https://...jpg\nhttps://...jpg" />
           </Form.Item>
 
+          <Form.Item
+            name="detailImagesText"
+            label="Ảnh mô tả chi tiết (không bắt buộc)"
+            tooltip="Nhập mỗi URL một dòng để hiển thị trong phần mô tả chi tiết sản phẩm"
+          >
+            <TextArea rows={isMobile ? 3 : 4} placeholder="https://...detail-1.jpg\nhttps://...detail-2.jpg" />
+          </Form.Item>
+
           {previewUrl ? (
             <Card size="small" style={{ marginBottom: 16, borderRadius: 12 }}>
               <Space direction="vertical" size={8}>
                 <Text type="secondary">Xem trước ảnh đầu tiên</Text>
                 <Image src={previewUrl} alt="preview" width={220} style={{ objectFit: 'cover' }} />
+              </Space>
+            </Card>
+          ) : null}
+
+          {detailPreviewUrls.length ? (
+            <Card size="small" style={{ marginBottom: 16, borderRadius: 12 }}>
+              <Space direction="vertical" size={8} style={{ width: '100%' }}>
+                <Text type="secondary">Ảnh mô tả chi tiết</Text>
+                <Image.PreviewGroup>
+                  <Space size={8} wrap>
+                    {detailPreviewUrls.map((url, index) => (
+                      <Image
+                        key={`${url}-${index}`}
+                        src={url}
+                        alt={`detail-${index + 1}`}
+                        width={120}
+                        height={120}
+                        style={{ objectFit: 'cover', borderRadius: 8 }}
+                      />
+                    ))}
+                  </Space>
+                </Image.PreviewGroup>
               </Space>
             </Card>
           ) : null}

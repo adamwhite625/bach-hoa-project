@@ -7,11 +7,17 @@ const reviewSchema = mongoose.Schema({
     comment: { type: String, required: true }
 }, { timestamps: true });
 
+
+const productImageSchema = new mongoose.Schema({
+  url: { type: String, required: true }
+});
+
 const productSchema = mongoose.Schema({
     name: { type: String, required: true, trim: true },
     sku: { type: String, required: true, unique: true },
     description: { type: String, required: true },
-    image: { type: String, required: true },
+    image: { type: String, required: true }, // Ảnh đại diện sản phẩm
+    detailImages: [productImageSchema], // Ảnh mô tả chi tiết sản phẩm
     brand: { type: String },
     category: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Category' },
     price: { type: Number, required: true, default: 0 },

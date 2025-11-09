@@ -2,6 +2,18 @@ const Product = require('../models/productModel');
 const cloudinary = require('../config/cloudinary');
 const streamifier = require('streamifier');
 
+const normalizeImagePayload = (list = []) => {
+    if (!Array.isArray(list)) return [];
+    return list
+        .filter(Boolean)
+        .map((item) => {
+            if (typeof item === 'string') return { url: item };
+            if (item?.url) return { url: item.url };
+            return null;
+        })
+        .filter(Boolean);
+};
+
 // @desc    Search products with filters and sorting
 // @route   GET /api/products/search
 // @access  Public
@@ -93,10 +105,31 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
-        const { name, sku, description, images, brand, category, price, quantity } = req.body;
+        const { name, sku, description, images, detailImages, brand, category, price, quantity } = req.body;
         const product = new Product({
-            name, sku, description, images: images || [], brand, category, price, quantity, user: req.user._id,
+            name,
+            sku,
+            description,
+            image: req.body.image,
+            images: normalizeImagePayload(images),
+            detailImages: normalizeImagePayload(detailImages),
+            brand,
+            category,
+            price,
+            quantity,
+            user: req.user._id,
         });
+
+        if (!product.image) {
+            const fallbackImage = product.images?.[0]?.url || product.detailImages?.[0]?.url || '';
+            if (fallbackImage) {
+                product.image = fallbackImage;
+            }
+        }
+
+        if (!product.image && product.images?.length) {
+            product.image = product.images[0].url;
+        }
 
         // If files uploaded via multer memory storage
         if (req.files && req.files.length > 0) {
@@ -112,7 +145,7 @@ const createProduct = async (req, res) => {
 
             try {
                 const uploadedUrls = await Promise.all(uploadPromises);
-                product.images = product.images.concat(uploadedUrls);
+                product.images = product.images.concat(uploadedUrls.map((url) => ({ url })));
             } catch (err) {
                 console.error('Cloudinary product images upload error:', err);
             }
@@ -154,7 +187,7 @@ const createProductReview = async (req, res) => {
 // @route   PUT /api/products/:id
 const updateProduct = async (req, res) => {
     try {
-        const { name, sku, description, images, brand, category, price, quantity, isActive } = req.body;
+        const { name, sku, description, images, detailImages, brand, category, price, quantity, isActive } = req.body;
         
         const product = await Product.findById(req.params.id);
 
@@ -163,7 +196,15 @@ const updateProduct = async (req, res) => {
             product.name = name || product.name;
             product.sku = sku || product.sku;
             product.description = description || product.description;
-            product.images = images || product.images;
+            if (images !== undefined) {
+                product.images = normalizeImagePayload(images);
+            }
+            if (req.body.image) {
+                product.image = req.body.image;
+            }
+            if (detailImages !== undefined) {
+                product.detailImages = normalizeImagePayload(detailImages);
+            }
 
             // If new files uploaded, upload to Cloudinary and append
             if (req.files && req.files.length > 0) {
@@ -179,7 +220,7 @@ const updateProduct = async (req, res) => {
 
                 try {
                     const uploadedUrls = await Promise.all(uploadPromises);
-                    product.images = product.images.concat(uploadedUrls);
+                    product.images = product.images.concat(uploadedUrls.map((url) => ({ url })));
                 } catch (err) {
                     console.error('Cloudinary product images upload error:', err);
                 }
@@ -189,6 +230,12 @@ const updateProduct = async (req, res) => {
             product.price = price !== undefined ? price : product.price;
             product.quantity = quantity !== undefined ? quantity : product.quantity;
             product.isActive = isActive !== undefined ? isActive : product.isActive;
+
+            if (product.images?.length) {
+                product.image = product.images[0].url;
+            } else if (!product.image && product.detailImages?.length) {
+                product.image = product.detailImages[0].url;
+            }
 
             const updatedProduct = await product.save();
             res.json(updatedProduct);
