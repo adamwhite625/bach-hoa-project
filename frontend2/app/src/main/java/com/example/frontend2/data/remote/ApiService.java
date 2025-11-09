@@ -6,6 +6,7 @@ import com.example.frontend2.data.model.MessageResponse;
 import com.example.frontend2.data.model.Order;
 import com.example.frontend2.data.model.ProductDetail;
 import com.example.frontend2.data.model.ProductInList;
+import com.example.frontend2.data.model.ProductListResponse;
 import com.example.frontend2.data.model.ResetPasswordRequest;
 import com.example.frontend2.data.model.User;
 
@@ -56,9 +57,11 @@ public interface ApiService {
     // --- Categories ---
     @GET("api/categories")
     Call<List<Category>> getCategories();
+    // File: ApiService.java
+    @GET ("api/categories/{id}/products")
+    Call<ProductListResponse> getProductsByCategory(@Path("id") String categoryId);
 
     // --- Orders ---
     @GET("api/orders/myorders")
     Call<List<Order>> getMyOrders(@Header("Authorization") String token);
 }
-s

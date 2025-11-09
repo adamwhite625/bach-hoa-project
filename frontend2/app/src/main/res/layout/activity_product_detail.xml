@@ -4,127 +4,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:fitsSystemWindows="false">
 
-    <!-- Thanh tim kiem -->
+    <!-- ============ APPBAR (THANH TÌM KIẾM + TIÊU ĐỀ) ============ -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
-        app:liftOnScroll="false"
-        app:elevation="4dp">
-
-        <LinearLayout
-            android:id="@+id/header_container"
+        app:elevation="4dp"
+        app:liftOnScroll="false">
+        <!-- ====== THANH TIÊU ĐỀ SẢN PHẨM ====== -->
+        <RelativeLayout
+            android:id="@+id/fixed_product_header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            app:layout_scrollFlags="noScroll">
+            android:layout_height="48dp"
+            android:background="#FFFFFF"
+            android:elevation="2dp"
+            android:paddingHorizontal="12dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ImageButton
+                android:id="@+id/btn_back_small"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_back" />
+
+            <TextView
+                android:id="@+id/tv_product_title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <!-- Thanh tìm kiếm màu trắng bo góc -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/search_bar_layout"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/search_bg"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <TextView
-                        android:id="@+id/fake_search_box"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:drawableStart="@drawable/ic_search"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:text="Bạn muốn mua gì?"
-                        android:textColor="#555555"
-                        android:textSize="14sp"
-                        app:drawableTint="#555555"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <ImageView
-                    android:id="@+id/cart_icon"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/ic_cart"
-                    app:tint="@android:color/white" />
-            </LinearLayout>
-        </LinearLayout>
+                android:layout_centerInParent="true"
+                android:text="Rau cải"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+        </RelativeLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Main content in a ScrollView -->
-    <ScrollView
+
+    <!-- ============ NỘI DUNG CHÍNH ============ -->
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="64dp"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:clipToPadding="false"
+        android:paddingBottom="72dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Back + category title (below top blue area) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:background="#FFFFFF">
-
-                <ImageButton
-                    android:id="@+id/btn_back_small"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_arrow_back" />
-
-                <TextView
-                    android:id="@+id/tv_product_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Rau cải"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:layout_marginStart="8dp"/>
-            </LinearLayout>
-
-            <!-- ======================= SLIDER BANNER (CÓ BO GÓC) ======================= -->
+            <!-- SLIDER -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
                 app:cardElevation="4dp">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/slider_product"
                     android:layout_width="match_parent"
                     android:layout_height="240dp" />
-
             </androidx.cardview.widget.CardView>
-            <!-- ======================= KẾT THÚC SLIDER ======================= -->
 
-            <!-- Product title and share link -->
+            <!-- Tên sản phẩm -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -153,7 +104,7 @@
                     android:layout_marginStart="8dp"/>
             </LinearLayout>
 
-            <!-- Price row -->
+            <!-- Giá -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -167,20 +118,19 @@
                     android:id="@+id/tv_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10000đ"
+                    android:text="10.000đ"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#FF0000"/>
             </LinearLayout>
 
-            <!-- Divider -->
+            <!-- Mô tả -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
                 android:background="#F2F2F2"
                 android:layout_marginTop="12dp"/>
 
-            <!-- Description -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -200,18 +150,19 @@
                     android:id="@+id/tv_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Cải ngọt là một trong những loại rau cải phổ biến, được sử dụng rộng rãi trong bữa ăn hằng ngày của người Việt..."
+                    android:text="Cải ngọt là một trong những loại rau cải phổ biến, được sử dụng rộng rãi trong bữa ăn hằng ngày..."
                     android:textSize="14sp"
                     android:textColor="#444444"/>
             </LinearLayout>
 
-            <!-- Bottom spacing so content not hidden by nav buttons -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="24dp"/>
-
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
+
+
+    <!-- ============ NÚT THÊM VÀO GIỎ HÀNG ============ -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_to_cart"
         android:layout_width="match_parent"
@@ -223,9 +174,6 @@
         android:textSize="16sp"
         android:backgroundTint="@color/primary"
         app:cornerRadius="0dp"
-        app:iconTint="@android:color/white"
-        app:iconPadding="8dp"
-        android:elevation="6dp" />
-
+        android:elevation="6dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
