@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 //   private static final String BASE_URL = "http://10.0.2.2:5000/";
-    private static final String BASE_URL = "http://192.168.1.11:5000";
+    private static final String BASE_URL = "http://192.168.1.12:5000";
 
     // 2. Đối tượng Retrofit duy nhất (Singleton)
     private static Retrofit retrofit = null;
