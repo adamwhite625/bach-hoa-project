@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_alignParentBottom="true"
+            android:background="@drawable/search_bg" 
             android:drawableStart="@drawable/ic_search"
             android:drawablePadding="12dp"
             android:hint="Tìm kiếm đơn hàng..."
