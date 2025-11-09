@@ -1,26 +1,44 @@
 import axios from '../axios.customize';
 import { API_ENDPOINTS } from '../../config/api';
 
+const toImageArray = (list) => {
+  if (!Array.isArray(list)) return [];
+  return list
+    .map((item) => {
+      if (typeof item === 'string') return item;
+      if (item?.url) return item.url;
+      return null;
+    })
+    .filter(Boolean);
+};
+
 // chuẩn hoá sản phẩm từ API về định dạng dùng trong UI
-const normalizeProduct = (p) => ({
-  _id: p._id || p.id,
-  name: p.name || p.title || 'Sản phẩm',
-  sku: p.sku || p.SKU || '',
-  brand: p.brand || '',
-  price: Number(p.price) || 0,
-  description: p.description || '',
-  image: p.image || p.thumbnail || p.images?.[0] || '',
-  images: Array.isArray(p.images) ? p.images : (p.image ? [p.image] : []),
-  category: p.category || p.categoryId || null,
-  stock: p.stock ?? p.quantity ?? 0,
-  quantity: p.quantity ?? p.stock ?? 0,
-  createdAt: p.createdAt || p.updatedAt || null,
-  ratings: p.ratings || p.rating || 0,
-  isNew: p.isNew || false,
-  isBestSeller: p.isBestSeller || false,
-  isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
-  status: p.status || (typeof p.isActive === 'boolean' ? (p.isActive ? 'active' : 'inactive') : undefined),
-});
+const normalizeProduct = (p) => {
+  const gallery = toImageArray(p.images);
+  const detailGallery = toImageArray(p.detailImages);
+  const primaryImage = p.image || p.thumbnail || gallery[0] || '';
+
+  return {
+    _id: p._id || p.id,
+    name: p.name || p.title || 'Sản phẩm',
+    sku: p.sku || p.SKU || '',
+    brand: p.brand || '',
+    price: Number(p.price) || 0,
+    description: p.description || '',
+    image: primaryImage,
+    images: gallery.length ? gallery : (primaryImage ? [primaryImage] : []),
+    detailImages: detailGallery,
+    category: p.category || p.categoryId || null,
+    stock: p.stock ?? p.quantity ?? 0,
+    quantity: p.quantity ?? p.stock ?? 0,
+    createdAt: p.createdAt || p.updatedAt || null,
+    ratings: p.ratings || p.rating || 0,
+    isNew: p.isNew || false,
+    isBestSeller: p.isBestSeller || false,
+    isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
+    status: p.status || (typeof p.isActive === 'boolean' ? (p.isActive ? 'active' : 'inactive') : undefined),
+  };
+};
 
 const success = (DT, EM = 'Success') => ({ EC: 0, DT, EM });
 const failure = (EM = 'Lỗi kết nối', EC = -1, DT = null) => ({ EC, DT, EM });

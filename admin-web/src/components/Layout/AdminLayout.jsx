@@ -76,7 +76,7 @@ const AdminLayout = () => {
         width={230}
         className="admin-sider"
       >
-        <div className="admin-logo">{collapsed ? 'AD' : 'Admin Panel'}</div>
+        <div className="admin-logo">{collapsed ? 'AD' : 'Bach Hoa Admin'}</div>
         <Menu
           theme="dark"
           mode="inline"
@@ -122,7 +122,7 @@ const AdminLayout = () => {
             <Outlet />
           </div>
         </Content>
-        <Footer className="admin-footer">© {new Date().getFullYear()} Admin Panel • E-commerce</Footer>
+        <Footer className="admin-footer">© {new Date().getFullYear()} Bach Hoa Admin • E-commerce</Footer>
       </Layout>
     </Layout>
   );
