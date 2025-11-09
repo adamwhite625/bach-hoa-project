@@ -10,16 +10,16 @@
     <RelativeLayout
         android:id="@+id/topSection"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="120dp" 
         android:layout_alignParentTop="true"
         android:background="@color/primary"
-        android:padding="12dp">
+        android:padding="16dp">
 
         <EditText
             android:id="@+id/searchBar"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_centerInParent="true"
+            android:layout_alignParentBottom="true" 
             android:background="@drawable/search_bg"
             android:drawableStart="@drawable/ic_search"
             android:drawablePadding="8dp"
@@ -71,6 +71,17 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/userEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/userName"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp"
+                android:text="email@example.com"
+                android:textColor="@color/gray_text"
+                android:textSize="14sp" />
+
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
@@ -90,49 +101,6 @@
             android:paddingEnd="16dp"
             android:paddingBottom="16dp">
 
-            <!-- Notifications Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/notificationsCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="4dp">
-
-                <TextView
-                    android:id="@+id/notificationsOption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="16dp"
-                    android:text="Thông báo"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-            </androidx.cardview.widget.CardView>
-
-            <!-- Vouchers Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/vouchersCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="4dp">
-
-                <TextView
-                    android:id="@+id/vouchersOption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="16dp"
-                    android:text="Phiếu mua hàng"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-            </androidx.cardview.widget.CardView>
-
             <!-- Personal Info Section Card -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/personalInfoCard"
@@ -149,15 +117,6 @@
                     android:padding="16dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:text="Thông tin cá nhân"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
                         android:id="@+id/editProfileOption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -168,96 +127,6 @@
                         android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#EAEAEA" />
-
-                    <TextView
-                        android:id="@+id/shippingAddressOption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Địa chỉ nhận hàng"
-                        android:textSize="16sp"
-                        android:paddingVertical="12dp"
-                        android:textColor="@color/black"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"/>
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Customer Support Section Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/customerSupportCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:text="Hỗ trợ khách hàng"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/consultingOption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingVertical="12dp"
-                        android:text="Tư vấn: 1900 1234"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#EAEAEA" />
-
-                    <TextView
-                        android:id="@+id/findStoreOption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingVertical="12dp"
-                        android:text="Tìm kiếm cửa hàng"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#EAEAEA" />
-
-                    <TextView
-                        android:id="@+id/otherPoliciesOption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingVertical="12dp"
-                        android:text="Các chính sách khác"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -281,7 +150,7 @@
                     android:padding="16dp"
                     android:text="Đăng xuất"
                     android:gravity="center"
-                    android:textColor="@color/price"
+                    android:textColor="@color/price" 
                     android:textSize="16sp" />
             </androidx.cardview.widget.CardView>
 
