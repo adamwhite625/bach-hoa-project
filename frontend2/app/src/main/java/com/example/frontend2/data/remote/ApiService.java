@@ -12,6 +12,8 @@ import com.example.frontend2.data.model.ResetPasswordFinalRequest;
 import com.example.frontend2.data.model.ResetPasswordRequest;
 import com.example.frontend2.data.model.User;
 
+import com.google.gson.JsonElement;
+
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +67,10 @@ public interface ApiService {
 
     @GET("api/products/{id}")
     Call<ProductDetail> getProductById(@Path("id") String productId);
+
+    @GET("api/products/search")
+        // THAY ĐỔI Ở ĐÂY: Nhận về dữ liệu dưới dạng JsonElement thô
+    Call<JsonElement> searchProducts(@Query("keyword") String keyword);
 
     // --- Categories ---
     @GET("api/categories")
