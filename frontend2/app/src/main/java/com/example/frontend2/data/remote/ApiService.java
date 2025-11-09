@@ -7,6 +7,8 @@ import com.example.frontend2.data.model.Order;
 import com.example.frontend2.data.model.ProductDetail;
 import com.example.frontend2.data.model.ProductInList;
 import com.example.frontend2.data.model.ProductListResponse;
+import com.example.frontend2.data.model.RegisterRequest;
+import com.example.frontend2.data.model.ResetPasswordFinalRequest;
 import com.example.frontend2.data.model.ResetPasswordRequest;
 import com.example.frontend2.data.model.User;
 
@@ -25,15 +27,22 @@ import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
 
     // --- Auth ---
+    @POST("api/auth/register")
+    Call<User> registerUser(@Body RegisterRequest registerRequest);
+
     @POST("api/auth/login")
     Call<User> loginUser(@Body LoginRequest loginRequest);
 
+    @POST("api/auth/forgot-password")
+    Call<MessageResponse> forgotPassword(@Body ResetPasswordRequest request);
+
     @POST("api/auth/reset-password")
-    Call<MessageResponse> resetPassword(@Body ResetPasswordRequest resetPasswordRequest);
+    Call<MessageResponse> resetPassword(@Body ResetPasswordFinalRequest request);
 
     // --- User ---
     @GET("api/users/profile")
@@ -51,15 +60,15 @@ public interface ApiService {
     @GET("api/products")
     Call<List<ProductInList>> getProducts();
 
+    @GET("api/products")
+    Call<ProductListResponse> getProductsByCategory(@Query("category") String categoryId);
+
     @GET("api/products/{id}")
     Call<ProductDetail> getProductById(@Path("id") String productId);
 
     // --- Categories ---
     @GET("api/categories")
     Call<List<Category>> getCategories();
-    // File: ApiService.java
-    @GET ("api/categories/{id}/products")
-    Call<ProductListResponse> getProductsByCategory(@Path("id") String categoryId);
 
     // --- Orders ---
     @GET("api/orders/myorders")

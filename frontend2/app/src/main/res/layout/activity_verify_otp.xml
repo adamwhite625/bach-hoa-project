@@ -6,7 +6,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".ui.auth.ForgotPasswordActivity">
+    tools:context=".ui.auth.VerifyOtpActivity">
 
     <!-- PHẦN 1: LOGO VÀ TIÊU ĐỀ -->
     <LinearLayout
@@ -25,11 +25,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Quên mật khẩu"
+            android:text="Xác thực OTP"
             android:textColor="#00BFFF"
             android:textSize="34sp"
             android:textStyle="bold" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="Vui lòng nhập mã 6 số đã được gửi đến email của bạn."
+            android:textSize="16sp" />
     </LinearLayout>
 
     <!-- PHẦN 2: FORM -->
@@ -41,30 +48,32 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/et_email"
-            android:layout_width="match_parent"
+            android:id="@+id/et_otp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_text_background"
-            android:drawableStart="@drawable/icon_user_resized"
-            android:drawablePadding="12dp"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
+            android:hint="_ _ _ _ _ _"
+            android:inputType="numberPassword"
+            android:letterSpacing="0.5"
+            android:maxLength="6"
             android:minHeight="56dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp" />
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:textAlignment="center"
+            android:textSize="20sp" />
 
         <Button
-            android:id="@+id/btn_confirm"
+            android:id="@+id/btn_verify"
             android:layout_width="245dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="32dp"
             android:backgroundTint="#00AFFA"
-            android:text="Xác nhận"
+            android:text="Xác thực"
             android:textSize="18sp" />
     </LinearLayout>
 
-    <!-- PHẦN 3: QUAY LẠI ĐĂNG NHẬP -->
+    <!-- PHẦN 3: GỬI LẠI MÃ -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -72,10 +81,10 @@
         android:gravity="center">
 
         <TextView
-            android:id="@+id/tv_back_to_login"
+            android:id="@+id/tv_resend_otp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Quay lại Đăng nhập"
+            android:text="Gửi lại mã"
             android:textColor="#00BFFF"
             android:textStyle="bold" />
     </LinearLayout>
