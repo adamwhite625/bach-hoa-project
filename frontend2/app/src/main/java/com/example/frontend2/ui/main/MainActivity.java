@@ -26,22 +26,26 @@ public class MainActivity extends AppCompatActivity {
     private final BottomNavigationView.OnItemSelectedListener navListener =
             item -> {
                 Fragment selectedFragment = null;
-                int itemId = item.getItemId();
+                int id = item.getItemId();
 
-                if (itemId == R.id.nav_home) {
+                if (id == R.id.nav_home) {
                     selectedFragment = new HomeFragment();
-                } else if (itemId == R.id.nav_orders) {
+                } else if (id == R.id.nav_orders) {
                     selectedFragment = new OrdersFragment();
-                } else if (itemId == R.id.nav_cart) {
+                } else if (id == R.id.nav_cart) {
                     selectedFragment = new CartFragment();
-                } else if (itemId == R.id.nav_profile) {
+                } else if (id == R.id.nav_profile) {
                     selectedFragment = new ProfileFragment();
                 }
 
                 if (selectedFragment != null) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, selectedFragment)
+                            .commit();
+                    return true;
                 }
 
-                return true;
+                return false;
             };
 }

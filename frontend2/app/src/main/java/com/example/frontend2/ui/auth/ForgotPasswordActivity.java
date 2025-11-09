@@ -1,18 +1,20 @@
 package com.example.frontend2.ui.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.frontend2.R;
 import com.example.frontend2.data.model.MessageResponse;
 import com.example.frontend2.data.model.ResetPasswordRequest;
+import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
-import com.example.frontend2.data.remote.RetrofitClient;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,7 +22,7 @@ import retrofit2.Response;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
-    private EditText etEmail, etNewPassword, etConfirmNewPassword;
+    private EditText etEmail;
     private ApiService apiService;
 
     @Override
@@ -28,48 +30,42 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
-        etEmail = findViewById(R.id.et_email_forgot);
-        etNewPassword = findViewById(R.id.et_new_password);
-        etConfirmNewPassword = findViewById(R.id.et_confirm_new_password);
-        Button btnResetPassword = findViewById(R.id.btn_reset_password);
+        apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
 
-        apiService = RetrofitClient.getClient().create(ApiService.class);
+        etEmail = findViewById(R.id.et_email);
+        Button btnConfirm = findViewById(R.id.btn_confirm);
+        TextView tvBackToLogin = findViewById(R.id.tv_back_to_login);
 
-        btnResetPassword.setOnClickListener(v -> resetPassword());
+        btnConfirm.setOnClickListener(v -> sendResetRequest());
+
+        tvBackToLogin.setOnClickListener(v -> finish());
     }
 
-    private void resetPassword() {
+    private void sendResetRequest() {
         String email = etEmail.getText().toString().trim();
-        String newPassword = etNewPassword.getText().toString().trim();
-        String confirmNewPassword = etConfirmNewPassword.getText().toString().trim();
 
-        if (email.isEmpty() || newPassword.isEmpty() || confirmNewPassword.isEmpty()) {
-            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+        if (email.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập email của bạn", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (!newPassword.equals(confirmNewPassword)) {
-            Toast.makeText(this, "Mật khẩu mới không khớp", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        ResetPasswordRequest request = new ResetPasswordRequest(email, newPassword);
-        Call<MessageResponse> call = apiService.resetPassword(request);
-
-        call.enqueue(new Callback<MessageResponse>() {
+        ResetPasswordRequest request = new ResetPasswordRequest(email);
+        // Đổi tên phương thức gọi API cho đúng
+        apiService.forgotPassword(request).enqueue(new Callback<MessageResponse>() {
             @Override
-            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(ForgotPasswordActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
-                    finish();
-                } else {
-                    Toast.makeText(ForgotPasswordActivity.this, "Lỗi: Email không tồn tại hoặc có lỗi xảy ra", Toast.LENGTH_LONG).show();
-                }
+            public void onResponse(@NonNull Call<MessageResponse> call, @NonNull Response<MessageResponse> response) {
+                // Backend luôn trả về 200 OK để bảo mật, nên ta chỉ cần hiển thị thông báo và chuyển màn hình
+                Toast.makeText(ForgotPasswordActivity.this, "Yêu cầu đã được gửi đi.", Toast.LENGTH_LONG).show();
+
+                // Chuyển sang màn hình ResetPasswordActivity
+                Intent intent = new Intent(ForgotPasswordActivity.this, ResetPasswordActivity.class);
+                intent.putExtra("USER_EMAIL", email); // Truyền email qua màn hình tiếp theo
+                startActivity(intent);
             }
 
             @Override
-            public void onFailure(Call<MessageResponse> call, Throwable t) {
-                Toast.makeText(ForgotPasswordActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            public void onFailure(@NonNull Call<MessageResponse> call, @NonNull Throwable t) {
+                Toast.makeText(ForgotPasswordActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

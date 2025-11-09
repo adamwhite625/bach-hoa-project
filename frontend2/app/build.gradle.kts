@@ -29,10 +29,24 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
-
+    val lifecycleVersion = "2.8.3"
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:${lifecycleVersion}")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycleVersion}")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.leanback:leanback:1.0.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0") //Thêm thư viện Glide chính (tải & hiển thị ảnh)
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0") //Dùng compiler của Glide để tạo code tự động
+    implementation ("com.google.android.material:material:1.11.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

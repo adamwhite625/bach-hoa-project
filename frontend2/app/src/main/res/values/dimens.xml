@@ -1,0 +1,4 @@
+<!-- File: res/values/dimens.xml -->
+<resources>
+    <dimen name="fly_to_cart_size">20dp</dimen>
+</resources>

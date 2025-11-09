@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- 1. Màu nền đơn sắc -->
+    <solid android:color="#00AFFA" />
+
+    <!--
+        2. Bo tròn các góc.
+        Bạn chỉ cần bo 2 góc dưới (bottomLeft và bottomRight)
+        để tạo hiệu ứng header đẹp mắt.
+    -->
+    <corners
+        android:bottomLeftRadius="30dp"
+        android:bottomRightRadius="30dp"/>
+
+</shape>

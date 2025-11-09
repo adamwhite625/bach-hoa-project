@@ -2,7 +2,6 @@ package com.example.frontend2.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,9 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.frontend2.R;
 import com.example.frontend2.data.model.LoginRequest;
 import com.example.frontend2.data.model.User;
+import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
-import com.example.frontend2.data.remote.RetrofitClient;
 import com.example.frontend2.ui.main.MainActivity;
+import com.example.frontend2.utils.SharedPrefManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         TextView registerTextView = findViewById(R.id.tv_register);
         TextView forgotPasswordTextView = findViewById(R.id.tv_forgot_password);
 
-        apiService = RetrofitClient.getClient().create(ApiService.class);
+        apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
 
         loginButton.setOnClickListener(v -> login());
 
@@ -69,9 +69,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                    User user = response.body();
+                    SharedPrefManager.getInstance(getApplicationContext()).saveAuthToken(user.getToken());
 
-                    // TODO: Save the user token
+                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
