@@ -13,22 +13,43 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Frontend2"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+
+        <!-- CÁC ACTIVITY ĐÃ CÓ -->
+        <activity
+            android:name=".ui.main.ProductListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.ProductDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.RegisterActivity"
+            android:exported="false" />
+
+        <!-- KHAI BÁO CÁC ACTIVITY QUÊN MẬT KHẨU -->
+        <activity
+            android:name=".ui.auth.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ResetPasswordActivity"
+            android:exported="false" />
+
+        <!-- ACTIVITY CHÍNH VÀ LAUNCHER -->
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.main.MainActivity" />
-        <activity android:name=".ui.main.ProductDetailActivity" />
-        <activity android:name=".ui.main.ProductListActivity"/>
-        <activity android:name=".ui.auth.RegisterActivity" />
-        <activity android:name=".ui.auth.ForgotPasswordActivity" />
-        <activity android:name=".ui.main.EditProfileActivity" />
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

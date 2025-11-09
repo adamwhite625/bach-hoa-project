@@ -281,7 +281,7 @@
                     android:padding="16dp"
                     android:text="Đăng xuất"
                     android:gravity="center"
-                    android:textColor="@color/price" 
+                    android:textColor="@color/price"
                     android:textSize="16sp" />
             </androidx.cardview.widget.CardView>
 
