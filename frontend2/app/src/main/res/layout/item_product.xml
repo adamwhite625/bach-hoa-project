@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     card_view:cardCornerRadius="12dp"
-    card_view:cardElevation="4dp">
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,21 +24,6 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:adjustViewBounds="true" />
-
-            <!--            <TextView-->
-            <!--                android:id="@+id/product_discount"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_alignParentEnd="true"-->
-            <!--                android:layout_margin="4dp"-->
-            <!--                android:background="@drawable/bg_discount_badge"-->
-            <!--                android:paddingHorizontal="8dp"-->
-            <!--                android:paddingVertical="2dp"-->
-            <!--                android:text="-50%"-->
-            <!--                android:textColor="#FFFFFF"-->
-            <!--                android:textSize="12sp"-->
-            <!--                android:textStyle="bold"-->
-            <!--                android:visibility="gone" />-->
         </RelativeLayout>
 
         <TextView
@@ -75,21 +60,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
+                android:paddingBottom="6dp"
                 android:text="10000đ"
                 android:textColor="#FF0000"
                 android:textStyle="bold"
                 android:textSize="13sp" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/product_buy_button"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:text="MUA"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            android:background="#CBEAFF"
-            android:layout_marginTop="4dp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

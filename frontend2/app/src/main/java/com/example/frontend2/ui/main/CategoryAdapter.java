@@ -1,3 +1,4 @@
+// File: CategoryAdapter.java (Phiên bản cuối cùng)
 package com.example.frontend2.ui.main;
 
 import android.content.Context;
@@ -17,10 +18,18 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     private Context context;
     private List<Category> categoryList;
+    private final OnCategoryClickListener listener;
 
-    public CategoryAdapter(Context context, List<Category> categoryList) {
+    public interface OnCategoryClickListener {
+        void onCategoryClick(Category category);
+    }
+    // =======================================================================
+
+    // Hàm khởi tạo để nhận thêm listener
+    public CategoryAdapter(Context context, List<Category> categoryList, OnCategoryClickListener listener) {
         this.context = context;
         this.categoryList = categoryList;
+        this.listener = listener; // Gán listener được truyền vào
     }
 
     @NonNull
@@ -35,19 +44,27 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         Category category = categoryList.get(position);
         holder.txtName.setText(category.getName());
         Glide.with(context).load(category.getImage()).into(holder.imgCategory);
+
+        // Gán sự kiện click cho toàn bộ item
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                // Khi người dùng click, gọi phương thức của listener và truyền dữ liệu đi
+                listener.onCategoryClick(category);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
+        if (categoryList == null) {
+            return 0;
+        }
         return categoryList.size();
     }
+
     public void updateData(List<Category> newData) {
-        // 1. Xóa toàn bộ dữ liệu cũ trong danh sách
         this.categoryList.clear();
-        // 2. Thêm tất cả dữ liệu mới được truyền vào
         this.categoryList.addAll(newData);
-        // 3. Thông báo cho Adapter rằng toàn bộ dữ liệu đã thay đổi
-        //    RecyclerView sẽ vẽ lại tất cả các item
         notifyDataSetChanged();
     }
 
