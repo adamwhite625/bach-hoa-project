@@ -1,8 +1,6 @@
-// File: com/example/frontend2/ui/main/ProductListActivity.java
 package com.example.frontend2.ui.main;
 
-import android.content.Intent;
-import android.os.Bundle;
+import android.content.Intent;import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -12,11 +10,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.example.frontend2.data.model.ProductInList;
-import com.example.frontend2.data.model.ProductListResponse;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.ActivityProductListBinding;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement; // <-- Import cần thiết cho giải pháp 2
+import com.google.gson.reflect.TypeToken; // <-- Import cần thiết cho giải pháp 2
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +25,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-// FIX 1: Implement đúng tên interface lồng bên trong ProductAdapter
 public class ProductListActivity extends AppCompatActivity implements ProductAdapter.OnItemClickListener {
 
     private static final String TAG = "ProductListActivity";
-    private ActivityProductListBinding binding; // Sử dụng ViewBinding
+    private ActivityProductListBinding binding;
     private ApiService apiService;
-    private ProductAdapter productAdapter; // Dùng lại ProductAdapter của bạn
+    private ProductAdapter productAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,102 +38,106 @@ public class ProductListActivity extends AppCompatActivity implements ProductAda
         binding = ActivityProductListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // 1. Khởi tạo ApiService
         apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
 
-        // 2. Lấy dữ liệu từ Intent gửi đến
-        Intent intent = getIntent();
-        String categoryId = intent.getStringExtra("CATEGORY_ID");
-        String categoryName = intent.getStringExtra("CATEGORY_NAME");
+        String categoryId = getIntent().getStringExtra("CATEGORY_ID");
+        String categoryName = getIntent().getStringExtra("CATEGORY_NAME");
 
-        // 3. Thiết lập Toolbar
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Hiển thị nút Back
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setTitle(categoryName != null ? categoryName : "Sản phẩm"); // Đặt tên danh mục làm tiêu đề
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(categoryName != null ? categoryName : "Sản phẩm");
         }
 
-        // 4. Thiết lập RecyclerView
         setupRecyclerView();
 
-        // 5. Gọi API để lấy sản phẩm theo danh mục
         if (categoryId != null) {
-            fetchProductsByCategory(categoryId);
+            fetchProductsByCategoryId(categoryId);
         } else {
-            Toast.makeText(this, "Không tìm thấy danh mục", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "CATEGORY_ID is null.");
-            finish(); // Đóng Activity nếu không có ID
+            Toast.makeText(this, "ID danh mục không hợp lệ", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "CATEGORY_ID không hợp lệ.");
+            finish();
         }
     }
 
     private void setupRecyclerView() {
         binding.recyclerProducts.setLayoutManager(new GridLayoutManager(this, 2));
-
-        // FIX 2: Khởi tạo adapter. Bây giờ "this" đã được hiểu đúng là một ProductAdapter.OnItemClickListener
         productAdapter = new ProductAdapter(this, new ArrayList<>(), this);
         binding.recyclerProducts.setAdapter(productAdapter);
     }
 
-    private void fetchProductsByCategory(String categoryId) {
+    private void fetchProductsByCategoryId(String categoryId) {
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.recyclerProducts.setVisibility(View.GONE);
+//        if (binding.tvEmptyList != null) binding.tvEmptyList.setVisibility(View.GONE);
 
-        // FIX 1: Kiểu dữ liệu trong Callback đã được đổi thành "ProductListResponse"
-        // để khớp với định nghĩa mới trong ApiService.
-        apiService.getProductsByCategory(categoryId).enqueue(new Callback<ProductListResponse>() {
+
+        apiService.getProductsByCategoryId(categoryId).enqueue(new Callback<JsonElement>() { // <-- Sửa Callback để nhận JsonElement
             @Override
-            public void onResponse(@NonNull Call<ProductListResponse> call, @NonNull Response<ProductListResponse> response) {
-                // Dù thành công hay thất bại, cũng nên ẩn ProgressBar đi
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 binding.progressBar.setVisibility(View.GONE);
-                binding.recyclerProducts.setVisibility(View.VISIBLE);
 
-                // FIX 2: response.body() bây giờ là một đối tượng ProductListResponse, không phải List.
                 if (response.isSuccessful() && response.body() != null) {
+                    JsonElement responseBody = response.body();
+                    List<ProductInList> productList = new ArrayList<>();
 
-                    // FIX 3: Lấy danh sách sản phẩm TỪ BÊN TRONG đối tượng response.
-                    // Đây là bước quan trọng nhất.
-                    List<ProductInList> productList = response.body().getProducts();
-                    Log.d(TAG, productList.toString());
-                    // Kiểm tra xem danh sách lấy ra có rỗng hay không
+                    // === LOGIC TỰ PHÂN TÍCH JSON BẮT ĐẦU TỪ ĐÂY ===
+                    try {
+                        if (responseBody.isJsonObject()) {
+                            JsonElement productsElement = responseBody.getAsJsonObject().get("products");
+
+                            if (productsElement != null && productsElement.isJsonArray()) {
+                                Gson gson = new Gson();
+                                Type type = new TypeToken<ArrayList<ProductInList>>(){}.getType();
+                                productList = gson.fromJson(productsElement, type);
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Lỗi tự phân tích JSON: ", e);
+                        productList.clear(); // Đảm bảo danh sách trống nếu có lỗi
+                    }
+                    // === KẾT THÚC LOGIC TỰ PHÂN TÍCH JSON ===
+
+
                     if (productList != null && !productList.isEmpty()) {
-                        // Nếu có sản phẩm, cập nhật dữ liệu cho adapter
+                        binding.recyclerProducts.setVisibility(View.VISIBLE);
                         productAdapter.updateData(productList);
                     } else {
-                        // Nếu không có sản phẩm, hiển thị thông báo
                         Toast.makeText(ProductListActivity.this, "Không có sản phẩm nào trong danh mục này", Toast.LENGTH_LONG).show();
-                        // Bạn cũng có thể hiện một text view "Danh sách trống" ở đây
+//                        if (binding.tvEmptyList != null) {
+//                            binding.tvEmptyList.setText("Không có sản phẩm nào");
+//                            binding.tvEmptyList.setVisibility(View.VISIBLE);
+//                        }
                     }
                 } else {
-                    // Xử lý khi API trả về lỗi (ví dụ: 404 Not Found, 500 Server Error)
                     Toast.makeText(ProductListActivity.this, "Lỗi khi tải sản phẩm: " + response.code(), Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "API Error: " + response.code() + " - " + response.message());
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<ProductListResponse> call, @NonNull Throwable t) {
-                // Xử lý khi không có kết nối mạng hoặc lỗi phân tích JSON
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 binding.progressBar.setVisibility(View.GONE);
-                binding.recyclerProducts.setVisibility(View.VISIBLE); // Vẫn hiện recycler để người dùng thấy list trống
                 Toast.makeText(ProductListActivity.this, "Lỗi kết nối mạng", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "API Failure: ", t);
+//                if (binding.tvEmptyList != null) {
+//                    binding.tvEmptyList.setText("Lỗi kết nối. Vui lòng thử lại.");
+//                    binding.tvEmptyList.setVisibility(View.VISIBLE);
+//                }
             }
         });
     }
 
-    // FIX 3: Override đúng phương thức từ interface của bạn (onItemClick với tham số ProductInList)
     @Override
     public void onItemClick(ProductInList productInList) {
         Intent intent = new Intent(this, ProductDetailActivity.class);
-        intent.putExtra("product_id", productInList.getId()); // Lấy ID từ đối tượng productInList
+        intent.putExtra("product_id", productInList.getId());
         startActivity(intent);
     }
 
-    // Xử lý sự kiện khi nhấn nút Back trên Toolbar
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed(); // Hoặc finish();
+        finish();
         return true;
     }
 }

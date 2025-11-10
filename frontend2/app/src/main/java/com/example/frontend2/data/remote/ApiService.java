@@ -76,6 +76,9 @@ public interface ApiService {
     @GET("api/categories")
     Call<List<Category>> getCategories();
 
+    @GET("api/categories/{id}/products")
+    Call<JsonElement> getProductsByCategoryId(@Path("id") String categoryId);
+
     // --- Orders ---
     @GET("api/orders/myorders")
     Call<List<Order>> getMyOrders(@Header("Authorization") String token);
