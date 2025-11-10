@@ -16,6 +16,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
+        <!-- ACTIVITY MỚI: ĐỊA CHỈ NHẬN HÀNG -->
+        <activity
+            android:name=".ui.main.ShippingAddressActivity"
+            android:exported="false" />
+
         <!-- CÁC ACTIVITY ĐÃ CÓ -->
         <activity
             android:name=".ui.main.ProductListActivity"

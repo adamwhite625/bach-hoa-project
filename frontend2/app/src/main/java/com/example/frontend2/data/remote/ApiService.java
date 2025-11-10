@@ -10,6 +10,8 @@ import com.example.frontend2.data.model.ProductListResponse;
 import com.example.frontend2.data.model.RegisterRequest;
 import com.example.frontend2.data.model.ResetPasswordFinalRequest;
 import com.example.frontend2.data.model.ResetPasswordRequest;
+import com.example.frontend2.data.model.ShippingAddress;
+import com.example.frontend2.data.model.ShippingAddressResponse;
 import com.example.frontend2.data.model.User;
 
 import com.google.gson.JsonElement;
@@ -58,6 +60,16 @@ public interface ApiService {
             @Part MultipartBody.Part file
     );
 
+    // --- Shipping Address ---
+    @GET("api/users/shipping-address")
+    Call<ShippingAddressResponse> getShippingAddress(@Header("Authorization") String token);
+
+    @PUT("api/users/shipping-address")
+    Call<ShippingAddressResponse> updateShippingAddress(
+            @Header("Authorization") String token,
+            @Body ShippingAddress shippingAddress
+    );
+
     // --- Products ---
     @GET("api/products")
     Call<List<ProductInList>> getProducts();
@@ -69,7 +81,6 @@ public interface ApiService {
     Call<ProductDetail> getProductById(@Path("id") String productId);
 
     @GET("api/products/search")
-        // THAY ĐỔI Ở ĐÂY: Nhận về dữ liệu dưới dạng JsonElement thô
     Call<JsonElement> searchProducts(@Query("keyword") String keyword);
 
     // --- Categories ---

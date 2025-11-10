@@ -51,7 +51,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupClickListeners() {
-        // Sử dụng đúng ID từ file XML: editProfileOption
+        // Listener cho Sửa thông tin cá nhân
         binding.editProfileOption.setOnClickListener(v -> {
             if (currentUser != null) {
                 Intent intent = new Intent(getActivity(), EditProfileActivity.class);
@@ -62,7 +62,13 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        // Sử dụng đúng ID từ file XML: logoutOption
+        // Listener cho Địa chỉ nhận hàng
+        binding.shippingAddressOption.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ShippingAddressActivity.class);
+            startActivity(intent);
+        });
+
+        // Listener cho Đăng xuất
         binding.logoutOption.setOnClickListener(v -> {
             SharedPrefManager.getInstance(getContext()).clear();
 
@@ -102,6 +108,8 @@ public class ProfileFragment extends Fragment {
 
     private void updateUI(User user) {
         binding.userName.setText(user.getFullName());
+        // Thêm dòng này để hiển thị email
+        binding.userEmail.setText(user.getEmail()); 
         Glide.with(this)
                 .load(user.getAvatar())
                 .placeholder(R.drawable.placeholder)
