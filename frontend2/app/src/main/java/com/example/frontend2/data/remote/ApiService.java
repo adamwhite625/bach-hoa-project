@@ -10,6 +10,8 @@ import com.example.frontend2.data.model.ProductListResponse;
 import com.example.frontend2.data.model.RegisterRequest;
 import com.example.frontend2.data.model.ResetPasswordFinalRequest;
 import com.example.frontend2.data.model.ResetPasswordRequest;
+import com.example.frontend2.data.model.ShippingAddress;
+import com.example.frontend2.data.model.ShippingAddressResponse;
 import com.example.frontend2.data.model.User;
 import com.example.frontend2.data.model.CartResponse;
 import com.example.frontend2.data.model.UpdateCartRequest;
@@ -61,6 +63,16 @@ public interface ApiService {
             @Header("Authorization") String token,
             @PartMap Map<String, RequestBody> partMap,
             @Part MultipartBody.Part file
+    );
+
+    // --- Shipping Address ---
+    @GET("api/users/shipping-address")
+    Call<ShippingAddressResponse> getShippingAddress(@Header("Authorization") String token);
+
+    @PUT("api/users/shipping-address")
+    Call<ShippingAddressResponse> updateShippingAddress(
+            @Header("Authorization") String token,
+            @Body ShippingAddress shippingAddress
     );
 
     // --- Products ---
