@@ -2,7 +2,7 @@ const Cart = require('../models/cartModel');
 const Product = require('../models/productModel');
 
 // @desc    Add/Update item to cart
-// @route   POST /api/cart
+// @route   POST /api/carts
 // @access  Private
 const addToCart = async (req, res) => {
     try {
@@ -44,7 +44,7 @@ const addToCart = async (req, res) => {
 };
 
 // @desc    Get user cart
-// @route   GET /api/cart
+// @route   GET /api/carts
 // @access  Private
 const getCart = async (req, res) => {
     try {
@@ -62,7 +62,7 @@ const getCart = async (req, res) => {
 };
 
 // @desc    Update cart item quantity
-// @route   PUT /api/cart/:itemId
+// @route   PUT /api/carts/:itemId
 // @access  Private
 const updateCartItem = async (req, res) => {
     try {
@@ -97,7 +97,7 @@ const updateCartItem = async (req, res) => {
 };
 
 // @desc    Remove item from cart
-// @route   DELETE /api/cart/:itemId
+// @route   DELETE /api/carts/:itemId
 // @access  Private
 const removeFromCart = async (req, res) => {
     try {
