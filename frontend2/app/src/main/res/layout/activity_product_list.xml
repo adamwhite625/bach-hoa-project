@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/primary"
+            android:textStyle="bold"
             app:titleTextColor="@color/black"
             app:navigationIcon="@drawable/ic_arrow_back" /> <!-- Optional: thêm icon quay lại -->
 
