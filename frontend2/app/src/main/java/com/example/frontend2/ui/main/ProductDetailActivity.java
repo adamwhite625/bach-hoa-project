@@ -1,15 +1,14 @@
 // File: com/example/frontend2/ui/main/ProductDetailActivity.java
-
 package com.example.frontend2.ui.main;
 
-// === CÁC IMPORT ĐÃ ĐƯỢC KHÔI PHỤC VÀ SẮP XẾP LẠI ===
 import android.animation.Animator;
-import androidx.lifecycle.Observer;
-import android.animation.AnimatorListenerAdapter; // <-- ĐÃ KHÔI PHỤC
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -24,10 +23,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.example.frontend2.R;
 import com.example.frontend2.data.model.ImageInfo;
 import com.example.frontend2.data.model.ProductDetail;
-import com.example.frontend2.ui.main.CartManager;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.ActivityProductDetailBinding;
+import com.example.frontend2.utils.SharedPrefManager; // SỬA: Import lớp quản lý SharedPreferences
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -38,13 +37,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductDetailActivity extends AppCompatActivity {
+// Implement interface để lắng nghe sự kiện từ BottomSheet
+public class ProductDetailActivity extends AppCompatActivity implements AddToCartBottomSheetFragment.CartUpdateListener {
 
     private static final String TAG = "ProductDetailActivity";
     private ActivityProductDetailBinding binding;
     private ApiService apiService;
     private ImageUrlSliderAdapter imageUrlSliderAdapter;
-
     private ProductDetail currentProduct;
 
     @Override
@@ -56,7 +55,23 @@ public class ProductDetailActivity extends AppCompatActivity {
         apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
 
         setupBackButton();
+        fetchProductDataFromIntent();
 
+        // Khi nhấn nút "Thêm vào giỏ hàng", sẽ hiển thị BottomSheet
+        binding.btnAddToCart.setOnClickListener(v -> {
+            if (currentProduct != null) {
+                showAddToCartBottomSheet();
+            } else {
+                Toast.makeText(this, "Vui lòng chờ tải xong dữ liệu sản phẩm", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Cập nhật số lượng trên icon giỏ hàng khi activity được tạo
+        // Tạm thời có thể gọi ở đây, nhưng tốt nhất là lấy từ server khi vào app
+        updateCartBadge();
+    }
+
+    private void fetchProductDataFromIntent() {
         Intent intent = getIntent();
         String productId = intent.getStringExtra("product_id");
         if (productId != null) {
@@ -66,25 +81,51 @@ public class ProductDetailActivity extends AppCompatActivity {
             Log.e(TAG, "Không nhận được PRODUCT_ID từ Intent");
             finish();
         }
-
-        binding.btnAddToCart.setOnClickListener(v -> {
-            if (currentProduct != null) {
-                // 1. Thêm sản phẩm vào CartManager
-                CartManager.getInstance().addProductToCart(currentProduct);
-                Toast.makeText(this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
-
-                // 2. Cập nhật giao diện badge NGAY LẬP TỨC
-                updateCartBadge();
-
-                // 3. Chạy animation
-                runFlyToCartAnimation(v);
-            }
-        });
-
-        // === THAY ĐỔI CÁCH CẬP NHẬT GIAO DIỆN ===
-        // Bắt đầu "quan sát" LiveData từ CartManager
-        updateCartBadge();
     }
+
+    private void showAddToCartBottomSheet() {
+        AddToCartBottomSheetFragment bottomSheet = AddToCartBottomSheetFragment.newInstance(currentProduct);
+        bottomSheet.show(getSupportFragmentManager(), "AddToCartBottomSheetFragmentTag");
+    }
+
+    // ====================================================================
+    // ===          SỬA LẠI HÀM NÀY ĐỂ LẤY VÀ TRUYỀN TOKEN            ===
+    // ====================================================================
+    /**
+     * Hàm này được gọi từ BottomSheet sau khi người dùng xác nhận số lượng.
+     * @param quantity Số lượng sản phẩm người dùng đã chọn.
+     */
+    @Override
+    public void onCartUpdated(int quantity) {
+        Log.d(TAG, "Nhận được sự kiện onCartUpdated với số lượng: " + quantity);
+
+        // 1. LẤY TOKEN TỪ SHARED PREFERENCES
+        String token = SharedPrefManager.getInstance(this).getAuthToken();
+
+        // Kiểm tra token có hợp lệ không
+        if (token == null || token.isEmpty()) {
+            Toast.makeText(this, "Bạn cần đăng nhập để thực hiện chức năng này", Toast.LENGTH_LONG).show();
+            // TODO: Chuyển người dùng đến màn hình Đăng nhập
+            // startActivity(new Intent(this, LoginActivity.class));
+            return;
+        }
+
+        // 2. GỌI CARTMANAGER VÀ TRUYỀN TOKEN VÀO
+        // Thêm "Bearer " vào trước token theo chuẩn OAuth2
+        CartManager.getInstance().addProductToCart("Bearer " + token, currentProduct, quantity);
+        Toast.makeText(this, "Đang thêm " + quantity + " sản phẩm vào giỏ...", Toast.LENGTH_SHORT).show();
+
+        // 3. CẬP NHẬT GIAO DIỆN SAU KHI GỌI API
+        // Vì API cần thời gian để phản hồi, chúng ta không thể cập nhật số lượng ngay lập tức.
+        // Cách tốt nhất là dùng Callback hoặc LiveData từ CartManager.
+        // Cách đơn giản là cập nhật sau một khoảng thời gian ngắn để chờ API.
+        new Handler(Looper.getMainLooper()).postDelayed(this::updateCartBadge, 1500); // Cập nhật sau 1.5 giây
+
+        // 4. CHẠY ANIMATION CHO THÊM PHẦN SINH ĐỘNG
+        runFlyToCartAnimation(binding.btnAddToCart);
+    }
+
+    // ----- CÁC HÀM KHÁC KHÔNG THAY ĐỔI -----
 
     private void setupBackButton() {
         binding.btnBackSmall.setOnClickListener(v -> finish());
@@ -97,11 +138,9 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<ProductDetail> call, @NonNull Response<ProductDetail> response) {
                 binding.scroll.setVisibility(View.VISIBLE);
                 if (response.isSuccessful() && response.body() != null) {
-                    ProductDetail productDetail = response.body();
-                    displayProductData(productDetail);
+                    displayProductData(response.body());
                 } else {
                     Toast.makeText(ProductDetailActivity.this, "Lỗi khi tải dữ liệu", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Lỗi API: " + response.code());
                 }
             }
 
@@ -109,7 +148,6 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<ProductDetail> call, @NonNull Throwable t) {
                 binding.scroll.setVisibility(View.VISIBLE);
                 Toast.makeText(ProductDetailActivity.this, "Lỗi kết nối mạng", Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Lỗi Failure: ", t);
             }
         });
     }
@@ -122,18 +160,29 @@ public class ProductDetailActivity extends AppCompatActivity {
         binding.tvPrice.setText(currencyFormat.format(productDetail.getPrice()));
         binding.tvDescription.setText(Html.fromHtml(productDetail.getDescription(), Html.FROM_HTML_MODE_LEGACY));
 
-        List<ImageInfo> listImageInfo = productDetail.getDetailImages();
         List<String> listUrlImageInfo = new ArrayList<>();
-        for (ImageInfo imageInfo : listImageInfo) {
-            listUrlImageInfo.add(imageInfo.getUrl());
+        if (productDetail.getDetailImages() != null) {
+            for (ImageInfo imageInfo : productDetail.getDetailImages()) {
+                listUrlImageInfo.add(imageInfo.getUrl());
+            }
         }
         imageUrlSliderAdapter = new ImageUrlSliderAdapter(listUrlImageInfo);
         binding.sliderProduct.setAdapter(imageUrlSliderAdapter);
     }
 
+    private void updateCartBadge() {
+        int itemCount = CartManager.getInstance().getCartItemCount();
+        Log.d(TAG, "Đang cập nhật badge. Số lượng từ CartManager: " + itemCount);
+
+        if (itemCount > 0) {
+            binding.cartBadge.setVisibility(View.VISIBLE);
+            binding.cartBadge.setText(String.valueOf(itemCount));
+        } else {
+            binding.cartBadge.setVisibility(View.GONE);
+        }
+    }
+
     private void runFlyToCartAnimation(View viewToAnimate) {
-        // === ĐỔI LẠI TÊN HÀM CHO ĐÚNG ===
-        // ... code tạo animation của bạn không thay đổi ...
         CoordinatorLayout rootLayout = binding.getRoot();
         ImageView flyingView = new ImageView(this);
         flyingView.setImageResource(R.drawable.circle_red_shape);
@@ -161,32 +210,14 @@ public class ProductDetailActivity extends AppCompatActivity {
         animatorSet.setDuration(800);
         animatorSet.setInterpolator(new AccelerateInterpolator());
 
-        // === DỌN DẸP LẠI LISTENER ===
         animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                // Nhiệm vụ của listener bây giờ rất đơn giản:
-                // 1. Dọn dẹp "chấm đỏ"
                 rootLayout.removeView(flyingView);
-                // 2. Tạo hiệu ứng cho icon giỏ hàng
                 animateCartIcon();
-                // 3. KHÔNG CẦN CẬP NHẬT BADGE Ở ĐÂY NỮA! LiveData đã lo việc đó.
             }
         });
-
         animatorSet.start();
-    }
-
-    private void updateCartBadge() {
-        int itemCount = CartManager.getInstance().getCartItemCount();
-        Log.d("CartDebug", "Đang cập nhật badge. Số lượng: " + itemCount);
-
-        if (itemCount > 0) {
-            binding.cartBadge.setVisibility(View.VISIBLE);
-            binding.cartBadge.setText(String.valueOf(itemCount));
-        } else {
-            binding.cartBadge.setVisibility(View.GONE);
-        }
     }
 
     private void animateCartIcon() {
@@ -204,7 +235,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Luôn cập nhật lại icon giỏ hàng khi quay lại màn hình
         updateCartBadge();
     }
 }
-

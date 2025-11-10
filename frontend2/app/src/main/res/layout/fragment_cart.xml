@@ -1,152 +1,211 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_cart_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F6F6F6">
+    android:background="#FAFAFA"
+    >
 
-    <!-- Thanh tìm kiếm -->
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_layout"
+    <!-- Layout chính -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primary"
-        app:liftOnScroll="false"
-        app:elevation="4dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/header_container"
+        <!-- Thanh tiêu đề -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar_cart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            app:layout_scrollFlags="noScroll">
+            android:backgroundTint="@color/primary"
+            android:elevation="4dp"
+            app:title="Giỏ hàng của bạn"
+            app:titleTextColor="@color/white"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/white"
+            app:titleCentered="true" />
 
-            <LinearLayout
+        <!-- Nội dung -->
+        <LinearLayout
+            android:id="@+id/cart_content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="12dp"
+            android:paddingTop="8dp">
+
+            <!-- Phần chọn phương thức giao hàng -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:layout_marginBottom="10dp"
+                app:cardElevation="3dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@color/white">
 
-                <!-- Thanh tìm kiếm -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/search_bar_layout"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/search_bg"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btn_giao_tan_noi"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:text="Giao tận nơi"
+                            android:textColor="@color/primary"
+                            app:cornerRadius="10dp"
+                            app:strokeColor="@color/primary" />
+
+                        <Button
+                            android:id="@+id/btn_nhan_tai_cua_hang"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:text="Nhận tại cửa hàng"
+                            android:textColor="#757575"
+                            app:cornerRadius="10dp"
+                            app:strokeColor="#BDBDBD" />
+                    </LinearLayout>
 
                     <TextView
-                        android:id="@+id/fake_search_box"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
+                        android:id="@+id/tv_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
                         android:drawableStart="@drawable/ic_search"
                         android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:text="Bạn muốn mua gì?"
-                        android:textColor="#555555"
+                        android:textColor="@color/black"
                         android:textSize="14sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+                        tools:text="Giao đến: Khu phố 6, Linh Trung, Thủ Đức" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-
-    <!-- Tiêu đề Giỏ hàng -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Giỏ hàng"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:padding="12dp"/>
-
-    <!-- Thông tin giao hàng -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:padding="12dp"
-        android:elevation="2dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <Button
-                android:id="@+id/btn_giao_tan_noi"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
+            <!-- Danh sách sản phẩm -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_cart_items"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
-                android:text="Giao hàng tận nơi"
-                android:backgroundTint="@color/primary" />
+                android:overScrollMode="never"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_cart" />
 
-            <Button
-                android:id="@+id/btn_nhan_tai_cua_hang"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
-                android:layout_weight="1"
-                android:text="Nhận tại cửa hàng"
-                android:backgroundTint="#E0E0E0"/>
+            <!-- Thanh tổng tiền -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/bottom_summary_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tổng cộng"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true" />
+                        <TextView
+                            android:id="@+id/text_total_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="159.000 ₫"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/primary"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true" />
+                    </RelativeLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_checkout"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="12dp"
+                        android:text="Tiến hành đặt hàng"
+                        android:textAllCaps="false"
+                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                        app:cornerRadius="10dp"
+                        app:backgroundTint="@color/primary"
+                        app:icon="@drawable/ic_shopping_cart"
+                        app:iconTint="@color/white"
+                        app:iconPadding="8dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Địa chỉ: Khu phố 34, Phường Linh Trung, TP. Thủ Đức"
-            android:paddingTop="8dp"/>
     </LinearLayout>
 
-    <!-- Danh sách sản phẩm -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_cart"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="8dp"/>
-
-    <!-- Tổng tiền + nút đặt hàng -->
+    <!-- Giỏ hàng trống -->
     <LinearLayout
+        android:id="@+id/layout_empty_cart"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical"
-        android:elevation="4dp"
-        android:padding="12dp">
+        android:visibility="gone"
+        android:background="#FAFAFA"
+        tools:visibility="visible">
+
+        <ImageView
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:src="@drawable/placeholder"
+            app:tint="#C0C0C0" />
 
         <TextView
-            android:id="@+id/tv_total_price"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tổng đơn hàng: 64.500đ"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:gravity="end"/>
+            android:layout_marginTop="16dp"
+            android:text="Giỏ hàng của bạn đang trống"
+            android:textColor="#424242"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btn_checkout"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Đặt hàng 64.500đ"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/primary"
-            android:textColor="@color/white"
-            android:layout_marginTop="8dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="Hãy lựa chọn những sản phẩm tươi ngon\nđể thêm vào giỏ hàng nhé!"
+            android:textColor="#777777" />
     </LinearLayout>
 
-</LinearLayout>
+    <!-- Loading -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/primary"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</FrameLayout>
