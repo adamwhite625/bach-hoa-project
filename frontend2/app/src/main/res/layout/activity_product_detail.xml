@@ -260,8 +260,10 @@
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:backgroundTint="@color/primary"
         app:cornerRadius="0dp"
-        android:elevation="6dp"/>
+        android:elevation="6dp"
+        android:background="@drawable/button_state_selector"
+        app:backgroundTint="@null" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
