@@ -1,5 +1,7 @@
+// File: com/example/frontend2/ui/main/CartFragment.java
 package com.example.frontend2.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider; // SỬA 1: Import ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.frontend2.data.model.CartItem;
@@ -18,8 +21,8 @@ import com.example.frontend2.data.model.UpdateCartRequest;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.FragmentCartBinding;
-// SỬA 1: Import đúng lớp SharedPrefManager của bạn
 import com.example.frontend2.utils.SharedPrefManager;
+import com.example.frontend2.ui.main.CartSharedViewModel; // SỬA 2: Import SharedViewModel
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -39,10 +42,17 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemInte
     private List<CartItem> cartItems = new ArrayList<>();
     private ApiService apiService;
 
+    // SỬA 3: Khai báo SharedViewModel
+    private CartSharedViewModel sharedViewModel;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
+
+        // SỬA 4: Khởi tạo SharedViewModel với scope của Activity
+        // Điều này đảm bảo nó dùng chung ViewModel với các Fragment/Activity khác
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(CartSharedViewModel.class);
     }
 
     @Nullable
@@ -57,14 +67,11 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemInte
         super.onViewCreated(view, savedInstanceState);
         setupRecyclerView();
         setupClickListeners();
-        // Không cần gọi fetchCartItems() ở đây nữa vì onResume() sẽ xử lý
     }
 
-    // Luôn làm mới giỏ hàng khi người dùng quay lại Fragment này
     @Override
     public void onResume() {
         super.onResume();
-        // Đây là nơi tốt nhất để tải lại dữ liệu vì nó được gọi mỗi khi fragment hiển thị cho người dùng
         fetchCartItems();
     }
 
@@ -75,28 +82,32 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemInte
     }
 
     private void setupClickListeners() {
+        // Logic nút back của bạn không sai, nhưng trong kiến trúc Fragment,
+        // người dùng thường dùng nút back của hệ thống.
+        // Tôi giữ nguyên logic này của bạn.
+        binding.toolbarCart.setNavigationOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().onBackPressed(); // Cách xử lý back chuẩn hơn
+            }
+        });
+
         binding.buttonCheckout.setOnClickListener(v -> {
             if (cartItems.isEmpty()) {
                 Toast.makeText(getContext(), "Giỏ hàng của bạn đang trống!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getContext(), "Chuyển đến màn hình thanh toán...", Toast.LENGTH_SHORT).show();
-                // TODO: Triển khai logic chuyển sang Activity/Fragment thanh toán
             }
         });
     }
 
-    // Hàm gọi API để lấy giỏ hàng từ server
     private void fetchCartItems() {
-        showLoading(true); // Hiển thị loading
-
-        // SỬA 2: Sử dụng SharedPrefManager để lấy token
+        showLoading(true);
         String token = SharedPrefManager.getInstance(getContext()).getAuthToken();
         if (token == null) {
             Toast.makeText(getContext(), "Bạn cần đăng nhập để xem giỏ hàng", Toast.LENGTH_SHORT).show();
             showLoading(false);
-            // Khi giỏ hàng trống, ta vẫn cần cập nhật UI để hiển thị màn hình "giỏ hàng trống"
             this.cartItems.clear();
-            updateUI();
+            updateUI(null); // Truyền null để báo là giỏ hàng trống
             return;
         }
 
@@ -105,8 +116,7 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemInte
             public void onResponse(@NonNull Call<CartResponse> call, @NonNull Response<CartResponse> response) {
                 showLoading(false);
                 if (response.isSuccessful() && response.body() != null) {
-                    cartItems = response.body().getItems();
-                    updateUI();
+                    updateUI(response.body()); // SỬA 5: Gọi hàm updateUI với dữ liệu mới
                 } else {
                     Toast.makeText(getContext(), "Lỗi khi tải giỏ hàng: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
@@ -116,38 +126,13 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemInte
             public void onFailure(@NonNull Call<CartResponse> call, @NonNull Throwable t) {
                 showLoading(false);
                 Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "API Failure: ", t);
             }
         });
     }
 
-    // Hàm cập nhật giao diện dựa trên dữ liệu mới
-    private void updateUI() {
-        boolean isCartEmpty = cartItems == null || cartItems.isEmpty();
-
-        // Ẩn/hiện layout giỏ hàng trống và layout nội dung
-        binding.layoutEmptyCart.setVisibility(isCartEmpty ? View.VISIBLE : View.GONE);
-        binding.cartContentLayout.setVisibility(isCartEmpty ? View.GONE : View.VISIBLE);
-
-        if (!isCartEmpty) {
-            cartAdapter.updateItems(cartItems);
-            calculateAndDisplayTotal();
-        }
-    }
-
-    // Hàm tính và hiển thị tổng tiền
-    private void calculateAndDisplayTotal() {
-        double total = 0;
-        for (CartItem item : cartItems) {
-            if (item.getProduct() != null) {
-                total += item.getProduct().getPrice() * item.getQuantity();
-            }
-        }
-        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        binding.textTotalPrice.setText(currencyFormat.format(total));
-    }
-
-    // --- Các hàm tương tác giỏ hàng gọi API ---
+    /**
+     * SỬA LẠI TOÀN BỘ CÁC HÀM GỌI API ĐỂ CẬP NHẬT VIEWMODEL
+     */
 
     @Override
     public void onIncreaseQuantity(CartItem item) {
@@ -172,66 +157,99 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemInte
         apiService.removeFromCart("Bearer " + token, item.get_id()).enqueue(new Callback<CartResponse>() {
             @Override
             public void onResponse(@NonNull Call<CartResponse> call, @NonNull Response<CartResponse> response) {
-                showLoading(false);
-                if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(getContext(), "Đã xóa sản phẩm", Toast.LENGTH_SHORT).show();
-                    cartItems = response.body().getItems();
-                    updateUI();
-                } else {
-                    Toast.makeText(getContext(), "Xóa thất bại", Toast.LENGTH_SHORT).show();
-                }
+                handleApiResponse(response); // Gọi hàm xử lý chung
             }
             @Override
             public void onFailure(@NonNull Call<CartResponse> call, @NonNull Throwable t) {
-                showLoading(false);
-                Toast.makeText(getContext(), "Lỗi mạng", Toast.LENGTH_SHORT).show();
+                handleApiFailure(t); // Gọi hàm xử lý chung
             }
         });
     }
 
-    // Hàm chung để gọi API cập nhật số lượng
     private void updateItemQuantity(CartItem item, int newQuantity) {
         showLoading(true);
         String token = SharedPrefManager.getInstance(getContext()).getAuthToken();
         if (token == null) return;
 
         UpdateCartRequest request = new UpdateCartRequest(newQuantity);
-
         apiService.updateCartItem("Bearer " + token, item.get_id(), request).enqueue(new Callback<CartResponse>() {
             @Override
             public void onResponse(@NonNull Call<CartResponse> call, @NonNull Response<CartResponse> response) {
-                showLoading(false);
-                if (response.isSuccessful() && response.body() != null) {
-                    cartItems = response.body().getItems();
-                    updateUI();
-                } else {
-                    Toast.makeText(getContext(), "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
-                }
+                handleApiResponse(response); // Gọi hàm xử lý chung
             }
             @Override
             public void onFailure(@NonNull Call<CartResponse> call, @NonNull Throwable t) {
-                showLoading(false);
-                Toast.makeText(getContext(), "Lỗi mạng", Toast.LENGTH_SHORT).show();
+                handleApiFailure(t); // Gọi hàm xử lý chung
             }
         });
     }
 
-    // Hàm tiện ích để hiển thị/ẩn ProgressBar
-    private void showLoading(boolean isLoading) {
-        if (isLoading) {
-            binding.progressBar.setVisibility(View.VISIBLE);
-            // Vô hiệu hóa các nút để người dùng không nhấn nhiều lần
-            binding.buttonCheckout.setEnabled(false);
+    /**
+     * SỬA 6: Tạo các hàm xử lý API chung để tránh lặp code và tích hợp ViewModel
+     */
+    private void handleApiResponse(Response<CartResponse> response) {
+        showLoading(false);
+        if (response.isSuccessful() && response.body() != null) {
+            Toast.makeText(getContext(), "Cập nhật giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+            updateUI(response.body()); // Cập nhật giao diện và ViewModel
         } else {
-            binding.progressBar.setVisibility(View.GONE);
-            binding.buttonCheckout.setEnabled(true);
+            Toast.makeText(getContext(), "Thao tác thất bại: " + response.code(), Toast.LENGTH_SHORT).show();
         }
     }
 
+    private void handleApiFailure(Throwable t) {
+        showLoading(false);
+        Toast.makeText(getContext(), "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * SỬA 7: Hàm updateUI giờ sẽ nhận dữ liệu và cập nhật cả ViewModel
+     */
+    private void updateUI(CartResponse cartResponse) {
+        int totalCount = 0;
+        // Cập nhật lại danh sách local
+        if (cartResponse != null && cartResponse.getItems() != null) {
+            this.cartItems = cartResponse.getItems();
+            // Tính tổng số lượng
+            for (CartItem item : this.cartItems) {
+                totalCount += item.getQuantity();
+            }
+        } else {
+            this.cartItems.clear(); // Nếu cartResponse null thì giỏ hàng rỗng
+        }
+
+        // THÔNG BÁO CHO CÁC FRAGMENT/ACTIVITY KHÁC BIẾT SỐ LƯỢNG MỚI
+        sharedViewModel.setCartItemCount(totalCount);
+
+        // Cập nhật giao diện của chính CartFragment
+        boolean isCartEmpty = cartItems.isEmpty();
+        binding.layoutEmptyCart.setVisibility(isCartEmpty ? View.VISIBLE : View.GONE);
+        binding.cartContentLayout.setVisibility(isCartEmpty ? View.GONE : View.VISIBLE);
+        if (!isCartEmpty) {
+            cartAdapter.updateItems(cartItems);
+            calculateAndDisplayTotal();
+        }
+    }
+
+    private void calculateAndDisplayTotal() {
+        double total = 0;
+        for (CartItem item : cartItems) {
+            if (item.getProduct() != null) {
+                total += item.getProduct().getPrice() * item.getQuantity();
+            }
+        }
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        binding.textTotalPrice.setText(currencyFormat.format(total));
+    }
+
+    private void showLoading(boolean isLoading) {
+        binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        binding.buttonCheckout.setEnabled(!isLoading);
+    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null; // Quan trọng để tránh rò rỉ bộ nhớ
+        binding = null;
     }
 }
