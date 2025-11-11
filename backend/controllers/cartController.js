@@ -8,13 +8,18 @@ const addToCart = async (req, res) => {
     try {
         const { productId, quantity } = req.body;
 
+        const requestedQuantity = Number(quantity) || 0;
+        if (requestedQuantity <= 0) {
+            return res.status(400).json({ message: 'Số lượng phải lớn hơn 0' });
+        }
+
         // Validate product exists and has enough stock
         const product = await Product.findById(productId);
         if (!product) {
             return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
         }
-        if (product.quantity < quantity) {
-            return res.status(400).json({ message: 'Số lượng sản phẩm trong kho không đủ' });
+        if (!product.isActive) {
+            return res.status(400).json({ message: 'Sản phẩm tạm ngưng kinh doanh' });
         }
 
         // Find or create cart for user
@@ -25,10 +30,17 @@ const addToCart = async (req, res) => {
 
         // Check if product already in cart
         const itemIndex = cart.items.findIndex(item => item.product.toString() === productId);
+        const existingQuantity = itemIndex > -1 ? cart.items[itemIndex].quantity : 0;
+        const newQuantity = existingQuantity + requestedQuantity;
+
+        if (newQuantity > product.quantity) {
+            return res.status(400).json({ message: 'Số lượng sản phẩm trong kho không đủ' });
+        }
+
         if (itemIndex > -1) {
-            cart.items[itemIndex].quantity = quantity;
+            cart.items[itemIndex].quantity = newQuantity;
         } else {
-            cart.items.push({ product: productId, quantity });
+            cart.items.push({ product: productId, quantity: requestedQuantity });
         }
 
         await cart.save();
