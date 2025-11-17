@@ -1,5 +1,5 @@
 // File: CategoryAdapter.java (Phiên bản cuối cùng)
-package com.example.frontend2.ui.main;
+package com.example.frontend2.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

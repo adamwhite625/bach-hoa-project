@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.frontend2.adapter.CartAdapter;
 import com.example.frontend2.data.model.CartItem;
 import com.example.frontend2.data.model.CartResponse;
 import com.example.frontend2.data.model.UpdateCartRequest;

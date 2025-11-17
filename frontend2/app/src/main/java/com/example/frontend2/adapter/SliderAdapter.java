@@ -1,4 +1,4 @@
-package com.example.frontend2.ui.main;
+package com.example.frontend2.adapter;
 
 import android.view.LayoutInflater;import android.view.View;
 import android.view.ViewGroup;

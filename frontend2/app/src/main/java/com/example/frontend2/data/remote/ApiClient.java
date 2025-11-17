@@ -5,8 +5,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
     // URL mới của backend
-    private static final String BASE_URL = "http://10.0.2.2:5000/";
-    //thienmocay1235@gmail.comprivate static final String BASE_URL = "http://192.168.1.12:5000";
+//    private static final String BASE_URL = "http://10.0.2.2:5000/";
+    static final String BASE_URL = "http://192.168.1.9:5000/";
     //private static final String BASE_URL = "https://philips-solving-dsc-billing.trycloudflare.com";
 
 

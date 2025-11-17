@@ -20,9 +20,11 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 
 import com.example.frontend2.R;
+import com.example.frontend2.adapter.CategoryAdapter;
+import com.example.frontend2.adapter.ProductAdapter;
+import com.example.frontend2.adapter.SliderAdapter;
 import com.example.frontend2.data.model.Category;
 import com.example.frontend2.data.model.ProductInList;
-import com.example.frontend2.ui.main.SearchFragment;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.FragmentHomeBinding;

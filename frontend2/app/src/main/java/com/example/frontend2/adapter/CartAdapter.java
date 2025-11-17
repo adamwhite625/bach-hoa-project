@@ -1,12 +1,8 @@
 // File: com/example/frontend2/ui/main/CartAdapter.java
-package com.example.frontend2.ui.main;
+package com.example.frontend2.adapter;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;

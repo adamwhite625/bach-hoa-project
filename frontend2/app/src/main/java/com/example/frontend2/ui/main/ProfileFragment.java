@@ -107,6 +107,11 @@ public class ProfileFragment extends Fragment {
     }
 
     private void updateUI(User user) {
+        if (binding == null) {
+            // Nếu binding là null (do View đã bị hủy), không làm gì cả
+            return;
+        }
+
         binding.userName.setText(user.getFullName());
         // Thêm dòng này để hiển thị email
         binding.userEmail.setText(user.getEmail()); 
