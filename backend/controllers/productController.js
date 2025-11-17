@@ -36,8 +36,7 @@ const searchProducts = async (req, res) => {
         // Search by keyword in name or description
         if (keyword) {
             query.$or = [
-                { name: { $regex: keyword, $options: 'i' } },
-                { description: { $regex: keyword, $options: 'i' } }
+                { name: { $regex: keyword, $options: 'i' } }
             ];
         }
 
