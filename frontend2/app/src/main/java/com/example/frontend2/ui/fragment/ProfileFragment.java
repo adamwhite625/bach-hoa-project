@@ -1,4 +1,4 @@
-package com.example.frontend2.ui.main;
+package com.example.frontend2.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +18,8 @@ import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.FragmentProfileBinding;
 import com.example.frontend2.ui.auth.LoginActivity;
+import com.example.frontend2.ui.main.EditProfileActivity;
+import com.example.frontend2.ui.main.ShippingAddressActivity;
 import com.example.frontend2.utils.SharedPrefManager;
 
 import java.io.Serializable;
@@ -107,6 +109,11 @@ public class ProfileFragment extends Fragment {
     }
 
     private void updateUI(User user) {
+        if (binding == null) {
+            // Nếu binding là null (do View đã bị hủy), không làm gì cả
+            return;
+        }
+
         binding.userName.setText(user.getFullName());
         // Thêm dòng này để hiển thị email
         binding.userEmail.setText(user.getEmail()); 

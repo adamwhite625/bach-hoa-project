@@ -28,8 +28,9 @@ import com.example.frontend2.data.model.ProductDetail;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.ActivityProductDetailBinding;
+import com.example.frontend2.ui.adapter.ImageUrlSliderAdapter;
+import com.example.frontend2.ui.fragment.AddToCartBottomSheetFragment;
 import com.example.frontend2.utils.SharedPrefManager;
-import com.example.frontend2.ui.main.CartSharedViewModel; // SỬA 2: Import SharedViewModel
 
 import java.text.NumberFormat;
 import java.util.ArrayList;

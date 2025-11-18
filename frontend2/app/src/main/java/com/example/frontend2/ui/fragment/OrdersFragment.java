@@ -1,4 +1,4 @@
-package com.example.frontend2.ui.main;
+package com.example.frontend2.ui.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.frontend2.adapter.OrderAdapter;
+import com.example.frontend2.ui.adapter.OrderAdapter;
 import com.example.frontend2.data.model.Order;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;

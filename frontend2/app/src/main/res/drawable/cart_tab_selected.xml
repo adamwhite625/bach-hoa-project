@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Màu nền của tab khi được chọn -->
+    <!-- Thường là màu trắng để nổi bật chữ bên trong -->
+    <solid android:color="@android:color/white" />
+
+    <!--
+        Bo tròn các góc.
+        Bạn có thể thay đổi giá trị "6dp" để phù hợp với thiết kế của bạn.
+    -->
+    <corners android:radius="6dp" />
+
+    <!--
+        Đường viền xung quanh.
+        Đây là điểm nhấn quan trọng để cho biết tab đang được chọn.
+    -->
+    <stroke
+        android:width="1.5dp"
+        android:color="@color/primary" />
+
+</shape>

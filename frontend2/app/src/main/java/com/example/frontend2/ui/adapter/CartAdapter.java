@@ -1,5 +1,5 @@
 // File: com/example/frontend2/ui/main/CartAdapter.java
-package com.example.frontend2.ui.main;
+package com.example.frontend2.ui.adapter;
 
 import android.util.Log;
 import android.view.LayoutInflater;

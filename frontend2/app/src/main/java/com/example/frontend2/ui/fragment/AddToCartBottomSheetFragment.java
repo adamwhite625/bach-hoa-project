@@ -1,8 +1,7 @@
-package com.example.frontend2.ui.main;
+package com.example.frontend2.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

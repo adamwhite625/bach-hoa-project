@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.media.session.MediaButtonReceiver;
 
 import com.example.frontend2.R;
+import com.example.frontend2.ui.fragment.CartFragment;
+import com.example.frontend2.ui.fragment.HomeFragment;
+import com.example.frontend2.ui.fragment.OrdersFragment;
+import com.example.frontend2.ui.fragment.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {

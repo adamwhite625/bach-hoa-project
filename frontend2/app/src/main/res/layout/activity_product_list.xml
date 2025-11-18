@@ -33,7 +33,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="32dp"
         android:visibility="gone" /> <!-- Mặc định sẽ ẩn đi -->
-
+    
     <!-- RecyclerView để hiển thị danh sách sản phẩm -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_products"
