@@ -1,4 +1,4 @@
-package com.example.frontend2.adapter;
+package com.example.frontend2.ui.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

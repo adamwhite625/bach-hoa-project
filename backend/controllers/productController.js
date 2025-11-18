@@ -17,10 +17,12 @@ const normalizeImagePayload = (list = []) => {
 // @desc    Search products with filters and sorting
 // @route   GET /api/products/search
 // @access  Public
+const escapeRegex = (str = '') => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 const searchProducts = async (req, res) => {
     try {
-        const { 
-            keyword,
+        const {
+            keyword = '',
             category,
             minPrice,
             maxPrice,
@@ -30,50 +32,50 @@ const searchProducts = async (req, res) => {
             limit = 10
         } = req.query;
 
-        // Build query
+        const pageNum = Math.max(1, parseInt(page, 10) || 1);
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 10));
+
+        const allowedSort = ['createdAt', 'price', 'rating', 'name'];
+        const finalSortBy = allowedSort.includes(sortBy) ? sortBy : 'createdAt';
+        const finalSortOrder = sortOrder === 'asc' ? 1 : -1;
+
         const query = { isActive: true };
 
-        // Search by keyword in name or description
-        if (keyword) {
-            query.$or = [
-                { name: { $regex: keyword, $options: 'i' } }
-            ];
+        if (keyword.trim()) {
+            const safe = escapeRegex(keyword.trim());
+            query.name = { $regex: safe, $options: 'i' };
         }
 
-        // Filter by category
         if (category) {
             query.category = category;
         }
 
-        // Filter by price range
         if (minPrice !== undefined || maxPrice !== undefined) {
             query.price = {};
             if (minPrice !== undefined) query.price.$gte = Number(minPrice);
             if (maxPrice !== undefined) query.price.$lte = Number(maxPrice);
         }
 
-        // Calculate skip for pagination
-        const skip = (page - 1) * limit;
+        const skip = (pageNum - 1) * limitNum;
+        const sort = { [finalSortBy]: finalSortOrder };
 
-        // Build sort object
-        const sort = {};
-        sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
-
-        // Execute query with pagination
-        const products = await Product.find(query)
-            .populate('category', 'name')
-            .sort(sort)
-            .skip(skip)
-            .limit(Number(limit));
-
-        // Get total count for pagination
-        const total = await Product.countDocuments(query);
+        const [products, total] = await Promise.all([
+            Product.find(query)
+                .populate('category', 'name')
+                .sort(sort)
+                .skip(skip)
+                .limit(limitNum),
+            Product.countDocuments(query)
+        ]);
 
         res.json({
             products,
-            page: Number(page),
-            pages: Math.ceil(total / limit),
-            total
+            page: pageNum,
+            pages: Math.ceil(total / limitNum),
+            total,
+            limit: limitNum,
+            sortBy: finalSortBy,
+            sortOrder: finalSortOrder === 1 ? 'asc' : 'desc'
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

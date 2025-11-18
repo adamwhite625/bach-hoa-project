@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 
-import com.example.frontend2.adapter.ProductAdapter;
+import com.example.frontend2.ui.adapter.ProductAdapter;
 import com.example.frontend2.data.model.ProductInList;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;

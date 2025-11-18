@@ -1,9 +1,7 @@
 // File: com/example/frontend2/ui/main/CartFragment.java
-package com.example.frontend2.ui.main;
+package com.example.frontend2.ui.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +13,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider; // SỬA 1: Import ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.frontend2.adapter.CartAdapter;
+import com.example.frontend2.ui.adapter.CartAdapter;
 import com.example.frontend2.data.model.CartItem;
 import com.example.frontend2.data.model.CartResponse;
 import com.example.frontend2.data.model.UpdateCartRequest;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.FragmentCartBinding;
+import com.example.frontend2.ui.main.CartSharedViewModel;
 import com.example.frontend2.utils.SharedPrefManager;
-import com.example.frontend2.ui.main.CartSharedViewModel; // SỬA 2: Import SharedViewModel
 
 import java.text.NumberFormat;
 import java.util.ArrayList;

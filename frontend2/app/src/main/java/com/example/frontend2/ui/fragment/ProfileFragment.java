@@ -1,4 +1,4 @@
-package com.example.frontend2.ui.main;
+package com.example.frontend2.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +18,8 @@ import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.FragmentProfileBinding;
 import com.example.frontend2.ui.auth.LoginActivity;
+import com.example.frontend2.ui.main.EditProfileActivity;
+import com.example.frontend2.ui.main.ShippingAddressActivity;
 import com.example.frontend2.utils.SharedPrefManager;
 
 import java.io.Serializable;
