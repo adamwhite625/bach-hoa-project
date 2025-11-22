@@ -6,153 +6,142 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    android:fitsSystemWindows="false"
-    tools:context=".ui.main.ProductDetailActivity">
+    android:fitsSystemWindows="true" tools:context=".ui.main.ProductDetailActivity">
 
-    <!-- ============ APPBAR (ĐÃ ĐƯỢC CẤU TRÚC LẠI BẰNG CONSTRAINTLAYOUT) ============ -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="4dp"
-        app:liftOnScroll="false">
+        app:elevation="0dp" app:liftOnScroll="true" android:background="@android:color/transparent"> <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <!-- Sử dụng ConstraintLayout để kiểm soát vị trí chính xác của mọi thành phần -->
+        <View
+            android:id="@+id/primary_background"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/primary"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/fixed_product_header"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <View
+            android:id="@+id/white_background"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#FFFFFF"
+            android:elevation="4dp"
+            app:layout_constraintTop_toTopOf="@id/fixed_product_header"
+            app:layout_constraintBottom_toBottomOf="@id/fixed_product_header"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:id="@+id/search_bar_layout"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/search_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/cart_layout">
 
-            <!-- LỚP NỀN MÀU PRIMARY CHO PHẦN TRÊN -->
-            <View
-                android:id="@+id/primary_background"
+            <TextView
+                android:id="@+id/fake_search_box"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="@color/primary"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/fixed_product_header"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <!-- LỚP NỀN MÀU TRẮNG CHO THANH TIÊU ĐỀ -->
-            <View
-                android:id="@+id/white_background"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="#FFFFFF"
-                android:elevation="2dp"
-                app:layout_constraintTop_toTopOf="@id/fixed_product_header"
-                app:layout_constraintBottom_toBottomOf="@id/fixed_product_header"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <!-- Thanh tìm kiếm -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/search_bar_layout"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:background="@drawable/search_bg"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                app:layout_constraintTop_toTopOf="parent"
+                android:drawableStart="@drawable/ic_search"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:text="Bạn muốn mua gì?"
+                android:textColor="#555555"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/cart_layout">
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
-                    android:id="@+id/fake_search_box"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:drawableStart="@drawable/ic_search"
-                    android:drawablePadding="8dp"
-                    android:gravity="center_vertical"
-                    android:text="Bạn muốn mua gì?"
-                    android:textColor="#555555"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+        <FrameLayout
+            android:id="@+id/cart_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintTop_toTopOf="@id/search_bar_layout"
+            app:layout_constraintBottom_toBottomOf="@id/search_bar_layout"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- Layout Giỏ hàng (Nằm trên cùng) -->
-            <FrameLayout
-                android:id="@+id/cart_layout"
+            <ImageView
+                android:id="@+id/cart_icon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_cart"
+                app:tint="@android:color/white" />
+
+            <TextView
+                android:id="@+id/cart_badge"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="top|end"
+                android:background="@drawable/badge_background"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="10"
+                tools:visibility="visible" />
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/fixed_product_header"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:paddingHorizontal="12dp"
+            android:elevation="5dp" app:layout_constraintTop_toBottomOf="@id/search_bar_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageButton
+                android:id="@+id/btn_back_small"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="Quay lại" />
+
+            <TextView
+                android:id="@+id/tv_product_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                app:layout_constraintTop_toTopOf="@id/search_bar_layout"
-                app:layout_constraintBottom_toBottomOf="@id/search_bar_layout"
-                app:layout_constraintEnd_toEndOf="parent">
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
-                <ImageView
-                    android:id="@+id/cart_icon"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:src="@drawable/ic_cart"
-                    app:tint="@android:color/white" />
-
-                <TextView
-                    android:id="@+id/cart_badge"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_gravity="top|end"
-                    android:background="@drawable/badge_background"
-                    android:gravity="center"
-                    android:textColor="@android:color/white"
-                    android:textSize="10sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    tools:text="10"
-                    tools:visibility="visible" />
-            </FrameLayout>
-
-            <!-- Thanh tiêu đề sản phẩm (Nằm trên lớp nền trắng) -->
-            <RelativeLayout
-                android:id="@+id/fixed_product_header"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="16dp"
-                android:paddingHorizontal="12dp"
-                app:layout_constraintTop_toBottomOf="@id/search_bar_layout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent">
-                <!-- Nội dung của RelativeLayout (ImageButton, TextView) giữ nguyên như cũ -->
-                <ImageButton
-                    android:id="@+id/btn_back_small"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_arrow_back" />
-
-                <TextView
-                    android:id="@+id/tv_product_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:text="Rau cải"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    ---
 
-    <!-- ============ NỘI DUNG CHÍNH (GIỮ NGUYÊN) ============ -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll"
         android:layout_width="match_parent"
@@ -167,20 +156,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- SLIDER -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
-                app:cardElevation="4dp">
-
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/slider_product"
-                    android:layout_width="match_parent"
-                    android:layout_height="240dp" />
+                app:cardElevation="0dp"> <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/slider_product"
+                android:layout_width="match_parent"
+                android:layout_height="240dp" />
             </androidx.cardview.widget.CardView>
 
-            <!-- Tên sản phẩm -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -209,7 +194,6 @@
                     android:layout_marginStart="8dp"/>
             </LinearLayout>
 
-            <!-- Giá -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -229,7 +213,6 @@
                     android:textColor="#FF0000"/>
             </LinearLayout>
 
-            <!-- Mô tả -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
@@ -266,8 +249,8 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    ---
 
-    <!-- ============ NÚT THÊM VÀO GIỎ HÀNG (GIỮ NGUYÊN) ============ -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_to_cart"
         android:layout_width="match_parent"
@@ -277,8 +260,10 @@
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:backgroundTint="@color/primary"
         app:cornerRadius="0dp"
-        android:elevation="6dp"/>
+        android:elevation="6dp"
+        android:background="@drawable/button_state_selector"
+        app:backgroundTint="@null" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

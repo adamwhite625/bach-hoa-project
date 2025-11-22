@@ -13,6 +13,10 @@ import com.example.frontend2.data.model.ResetPasswordRequest;
 import com.example.frontend2.data.model.ShippingAddress;
 import com.example.frontend2.data.model.ShippingAddressResponse;
 import com.example.frontend2.data.model.User;
+import com.example.frontend2.data.model.CartResponse;
+import com.example.frontend2.data.model.UpdateCartRequest;
+import com.example.frontend2.data.model.AddToCartRequest;
+
 
 import com.google.gson.JsonElement;
 
@@ -32,6 +36,7 @@ import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.DELETE;
 
 public interface ApiService {
 
@@ -93,4 +98,25 @@ public interface ApiService {
     // --- Orders ---
     @GET("api/orders/myorders")
     Call<List<Order>> getMyOrders(@Header("Authorization") String token);
+
+    // --- Cart ---
+
+    @GET("api/carts")
+    Call<CartResponse> getCart(@Header("Authorization") String token);
+
+    @POST("api/carts")
+    Call<CartResponse> addToCart(@Header("Authorization") String token, @Body AddToCartRequest request);
+
+    @PUT("api/carts/{itemId}")
+    Call<CartResponse> updateCartItem(
+            @Header("Authorization") String token,
+            @Path("itemId") String itemId,
+            @Body UpdateCartRequest request
+    );
+
+    @DELETE("api/carts/{itemId}")
+    Call<CartResponse> removeFromCart(
+            @Header("Authorization") String token,
+            @Path("itemId") String itemId
+    );
 }

@@ -17,7 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/primary"
-            app:titleTextColor="@color/black"
+            android:textStyle="bold"
+            app:tint="@color/white"
+            app:titleTextColor="@color/white"
             app:navigationIcon="@drawable/ic_arrow_back" /> <!-- Optional: thêm icon quay lại -->
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -31,7 +33,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="32dp"
         android:visibility="gone" /> <!-- Mặc định sẽ ẩn đi -->
-
+    
     <!-- RecyclerView để hiển thị danh sách sản phẩm -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_products"

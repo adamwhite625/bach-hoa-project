@@ -1,4 +1,4 @@
-package com.example.frontend2.ui.main;
+package com.example.frontend2.ui.fragment;
 
 // === CÁC IMPORT ĐÃ ĐƯỢC CẬP NHẬT ===
 import android.content.Context;
@@ -18,10 +18,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+
+import com.example.frontend2.ui.adapter.ProductAdapter;
 import com.example.frontend2.data.model.ProductInList;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.FragmentSearchBinding;
+import com.example.frontend2.ui.main.ProductDetailActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement; // <-- Import cho việc phân tích JSON thủ công
 import com.google.gson.reflect.TypeToken; // <-- Import cho việc phân tích JSON thủ công
