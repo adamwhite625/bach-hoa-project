@@ -17,6 +17,7 @@ const normalizeProduct = (p) => {
   const gallery = toImageArray(p.images);
   const detailGallery = toImageArray(p.detailImages);
   const primaryImage = p.image || p.thumbnail || gallery[0] || '';
+  const sale = p.sale || {};
 
   return {
     _id: p._id || p.id,
@@ -24,6 +25,7 @@ const normalizeProduct = (p) => {
     sku: p.sku || p.SKU || '',
     brand: p.brand || '',
     price: Number(p.price) || 0,
+    effectivePrice: Number(p.effectivePrice ?? p.price) || 0,
     description: p.description || '',
     image: primaryImage,
     images: gallery.length ? gallery : (primaryImage ? [primaryImage] : []),
@@ -37,6 +39,13 @@ const normalizeProduct = (p) => {
     isBestSeller: p.isBestSeller || false,
     isActive: typeof p.isActive === 'boolean' ? p.isActive : true,
     status: p.status || (typeof p.isActive === 'boolean' ? (p.isActive ? 'active' : 'inactive') : undefined),
+    sale: {
+      active: !!sale.active,
+      type: sale.type || 'percent',
+      value: Number(sale.value) || 0,
+      startAt: sale.startAt || sale.start_at || null,
+      endAt: sale.endAt || sale.end_at || null,
+    },
   };
 };
 

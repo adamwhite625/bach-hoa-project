@@ -5,14 +5,19 @@ const normalize = (item = {}) => ({
   _id: item._id || item.id,
   code: item.code || '',
   description: item.description || '',
-  type: item.type || 'percentage',
+  type: item.type || 'percent',
   value: Number(item.value) || 0,
-  minOrderValue: Number.isFinite(item.minOrderValue) ? Number(item.minOrderValue) : null,
-  maxDiscountAmount: Number.isFinite(item.maxDiscountAmount) ? Number(item.maxDiscountAmount) : null,
+  // support both old and new backend field names
+  minOrder: Number.isFinite(item.minOrder)
+    ? Number(item.minOrder)
+    : (Number.isFinite(item.minOrderValue) ? Number(item.minOrderValue) : null),
+  maxDiscount: Number.isFinite(item.maxDiscount)
+    ? Number(item.maxDiscount)
+    : (Number.isFinite(item.maxDiscountAmount) ? Number(item.maxDiscountAmount) : null),
   usageLimit: Number.isFinite(item.usageLimit) ? Number(item.usageLimit) : null,
   usedCount: Number(item.usedCount) || 0,
-  startDate: item.startDate || item.start_date || null,
-  endDate: item.endDate || item.end_date || null,
+  startAt: item.startAt || item.start_date || item.startDate || null,
+  endAt: item.endAt || item.end_date || item.endDate || null,
   isActive: typeof item.isActive === 'boolean' ? item.isActive : true,
   createdAt: item.createdAt || item.created_at || null,
   updatedAt: item.updatedAt || item.updated_at || null
@@ -66,6 +71,14 @@ export const DiscountService = {
       return { EC: 0, DT: null, EM: 'Xóa mã giảm giá thành công' };
     } catch (error) {
       return { EC: error?.response?.status || -1, DT: null, EM: error?.response?.data?.message || 'Xóa mã thất bại' };
+    }
+  },
+  preview: async ({ code, items = [], subtotal = 0, userId } = {}) => {
+    try {
+      const res = await axios.post(API_ENDPOINTS.DISCOUNTS.PREVIEW, { code, items, subtotal, userId });
+      return { EC: 0, DT: res, EM: 'Success' };
+    } catch (error) {
+      return { EC: error?.response?.status || -1, DT: null, EM: error?.response?.data?.message || 'Không thể áp mã' };
     }
   }
 };

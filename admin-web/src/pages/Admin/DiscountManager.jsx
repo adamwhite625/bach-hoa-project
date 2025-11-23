@@ -17,6 +17,7 @@ import {
   Tooltip,
   Popconfirm
 } from 'antd';
+import { Segmented } from 'antd';
 import {
   GiftOutlined,
   PlusOutlined,
@@ -34,19 +35,19 @@ const { Option } = Select;
 const friendlyDate = (value) => {
   if (!value) return 'Không xác định';
   const d = dayjs(value);
-  return d.isValid() ? d.format('DD/MM/YYYY') : 'Không xác định';
+  return d.isValid() ? d.format('DD/MM/YYYY HH:mm') : 'Không xác định';
 };
 
 const discountTypeLabel = {
-  percentage: 'Theo phần trăm',
+  percent: 'Theo phần trăm',
   fixed: 'Theo số tiền'
 };
 
 const determineStatus = (discount) => {
   if (!discount.isActive) return 'inactive';
   const now = dayjs();
-  if (discount.startDate && dayjs(discount.startDate).isAfter(now)) return 'upcoming';
-  if (discount.endDate && dayjs(discount.endDate).endOf('day').isBefore(now)) return 'expired';
+  if (discount.startAt && dayjs(discount.startAt).isAfter(now)) return 'upcoming';
+  if (discount.endAt && dayjs(discount.endAt).isBefore(now)) return 'expired';
   return 'active';
 };
 
@@ -66,6 +67,7 @@ const DiscountManager = () => {
   const [submitting, setSubmitting] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const typeWatch = Form.useWatch('type', form);
 
   const fetchDiscounts = async (showToast = false) => {
     setLoading(true);
@@ -117,11 +119,11 @@ const DiscountManager = () => {
       description: record.description,
       type: record.type,
       value: record.value,
-      minOrderValue: record.minOrderValue,
-      maxDiscountAmount: record.maxDiscountAmount,
+      minOrder: record.minOrder,
+      maxDiscount: record.maxDiscount,
       usageLimit: record.usageLimit,
       isActive: record.isActive,
-      validRange: [record.startDate ? dayjs(record.startDate) : null, record.endDate ? dayjs(record.endDate) : null]
+      validRange: [record.startAt ? dayjs(record.startAt) : null, record.endAt ? dayjs(record.endAt) : null]
     });
     setModalOpen(true);
   };
@@ -147,12 +149,12 @@ const DiscountManager = () => {
       description: values.description?.trim(),
       type: values.type,
       value: Number(values.value) || 0,
-      minOrderValue: values.minOrderValue != null ? Number(values.minOrderValue) : undefined,
-      maxDiscountAmount: values.maxDiscountAmount != null ? Number(values.maxDiscountAmount) : undefined,
+      minOrder: values.minOrder != null ? Number(values.minOrder) : undefined,
+      maxDiscount: values.maxDiscount != null ? Number(values.maxDiscount) : undefined,
       usageLimit: values.usageLimit != null ? Number(values.usageLimit) : undefined,
       isActive: values.isActive,
-      startDate: values.validRange?.[0] ? values.validRange[0].startOf('day').toISOString() : undefined,
-      endDate: values.validRange?.[1] ? values.validRange[1].endOf('day').toISOString() : undefined
+      startAt: values.validRange?.[0] ? values.validRange[0].toISOString() : undefined,
+      endAt: values.validRange?.[1] ? values.validRange[1].toISOString() : undefined
     };
 
     setSubmitting(true);
@@ -197,7 +199,7 @@ const DiscountManager = () => {
       dataIndex: 'value',
       key: 'value',
       render: (value, record) => (
-        record.type === 'percentage'
+        record.type === 'percent'
           ? `${value}%`
           : `${Number(value).toLocaleString('vi-VN')}₫`
       )
@@ -214,11 +216,11 @@ const DiscountManager = () => {
       title: 'Thời gian hiệu lực',
       key: 'valid',
       render: (_, record) => {
-        if (!record.startDate && !record.endDate) return <Text type="secondary">Không giới hạn</Text>;
+        if (!record.startAt && !record.endAt) return <Text type="secondary">Không giới hạn</Text>;
         return (
           <Space direction="vertical" size={0}>
-            {record.startDate ? <span>Từ: {friendlyDate(record.startDate)}</span> : null}
-            {record.endDate ? <span>Đến: {friendlyDate(record.endDate)}</span> : null}
+            {record.startAt ? <span>Từ: {friendlyDate(record.startAt)}</span> : null}
+            {record.endAt ? <span>Đến: {friendlyDate(record.endAt)}</span> : null}
           </Space>
         );
       }
@@ -311,17 +313,17 @@ const DiscountManager = () => {
                 onChange={(event) => setSearch(event.target.value)}
                 style={{ width: 240 }}
               />
-              <Select
-                style={{ width: 200 }}
+              <Segmented
+                options={[
+                  { label: 'Tất cả', value: 'all' },
+                  { label: 'Đang áp dụng', value: 'active' },
+                  { label: 'Sắp diễn ra', value: 'upcoming' },
+                  { label: 'Đã hết hạn', value: 'expired' },
+                  { label: 'Tạm tắt', value: 'inactive' }
+                ]}
                 value={statusFilter}
                 onChange={setStatusFilter}
-              >
-                <Option value="all">Tất cả trạng thái</Option>
-                <Option value="active">Đang áp dụng</Option>
-                <Option value="upcoming">Sắp diễn ra</Option>
-                <Option value="expired">Đã hết hạn</Option>
-                <Option value="inactive">Tạm tắt</Option>
-              </Select>
+              />
               <Tooltip title="Tải lại danh sách">
                 <Button icon={<ReloadOutlined />} onClick={() => fetchDiscounts(true)} loading={loading}>
                   Tải lại
@@ -358,7 +360,7 @@ const DiscountManager = () => {
         destroyOnClose
         centered
       >
-        <Form layout="vertical" form={form} onFinish={handleSubmit} initialValues={{ type: 'percentage', isActive: true }}>
+        <Form layout="vertical" form={form} onFinish={handleSubmit} initialValues={{ type: 'percent', isActive: true }}>
           <Form.Item
             name="code"
             label="Mã giảm giá"
@@ -370,10 +372,13 @@ const DiscountManager = () => {
             <Input.TextArea rows={3} placeholder="Thông tin mô tả chương trình" />
           </Form.Item>
           <Form.Item name="type" label="Loại giảm giá" rules={[{ required: true }]}>
-            <Select>
-              <Option value="percentage">Theo phần trăm</Option>
-              <Option value="fixed">Theo số tiền</Option>
-            </Select>
+            <Segmented
+              block
+              options={[
+                { label: 'Theo %', value: 'percent' },
+                { label: 'Số tiền', value: 'fixed' }
+              ]}
+            />
           </Form.Item>
           <Form.Item
             name="value"
@@ -383,21 +388,40 @@ const DiscountManager = () => {
             <InputNumber
               style={{ width: '100%' }}
               min={0}
-              formatter={(val) => (val ? `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '')}
-              parser={(val) => val.replace(/,/g, '')}
+              formatter={(val) => {
+                if (!val && val !== 0) return '';
+                const base = `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                return typeWatch === 'percent' ? `${base}%` : `${base} ₫`;
+              }}
+              parser={(val) => (val || '').replace(/[^0-9.-]/g, '')}
             />
           </Form.Item>
-          <Form.Item name="minOrderValue" label="Giá trị đơn tối thiểu">
-            <InputNumber style={{ width: '100%' }} min={0} formatter={(val) => (val ? `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '')} parser={(val) => val.replace(/,/g, '')} />
+          <Form.Item name="minOrder" label="Giá trị đơn tối thiểu">
+            <InputNumber style={{ width: '100%' }} min={0}
+              formatter={(val) => (val || val === 0) ? `${(`${val}`).replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ₫` : ''}
+              parser={(val) => (val || '').replace(/[^0-9.-]/g, '')}
+            />
           </Form.Item>
-          <Form.Item name="maxDiscountAmount" label="Giảm tối đa">
-            <InputNumber style={{ width: '100%' }} min={0} formatter={(val) => (val ? `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '')} parser={(val) => val.replace(/,/g, '')} />
+          <Form.Item name="maxDiscount" label="Giảm tối đa">
+            <InputNumber style={{ width: '100%' }} min={0}
+              formatter={(val) => (val || val === 0) ? `${(`${val}`).replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ₫` : ''}
+              parser={(val) => (val || '').replace(/[^0-9.-]/g, '')}
+            />
           </Form.Item>
           <Form.Item name="usageLimit" label="Giới hạn sử dụng">
             <InputNumber style={{ width: '100%' }} min={0} />
           </Form.Item>
           <Form.Item name="validRange" label="Thời gian hiệu lực">
-            <RangePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
+            <RangePicker
+              style={{ width: '100%' }}
+              showTime
+              format="DD/MM/YYYY HH:mm"
+              presets={[
+                { label: 'Hôm nay', value: [dayjs().startOf('day'), dayjs().endOf('day')] },
+                { label: '7 ngày', value: [dayjs().startOf('day'), dayjs().add(7, 'day').endOf('day')] },
+                { label: '30 ngày', value: [dayjs().startOf('day'), dayjs().add(30, 'day').endOf('day')] },
+              ]}
+            />
           </Form.Item>
           <Form.Item name="isActive" label="Kích hoạt" valuePropName="checked">
             <Switch checkedChildren="Bật" unCheckedChildren="Tắt" />

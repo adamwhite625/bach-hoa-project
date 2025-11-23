@@ -12,12 +12,21 @@ const productImageSchema = new mongoose.Schema({
   url: { type: String, required: true }
 });
 
+const saleSchema = new mongoose.Schema({
+  active: { type: Boolean, default: false },
+  type: { type: String, enum: ['percent', 'fixed'], default: 'percent' },
+  value: { type: Number, default: 0 }, // percent: 0-100; fixed: VND
+  startAt: { type: Date },
+  endAt: { type: Date },
+}, { _id: false });
+
 const productSchema = mongoose.Schema({
     name: { type: String, required: true, trim: true },
     sku: { type: String, required: true, unique: true },
     description: { type: String, required: true },
     image: { type: String, required: true }, // Ảnh đại diện sản phẩm
     detailImages: [productImageSchema], // Ảnh mô tả chi tiết sản phẩm
+    sale: { type: saleSchema, default: () => ({}) },
     brand: { type: String },
     category: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Category' },
     price: { type: Number, required: true, default: 0 },
