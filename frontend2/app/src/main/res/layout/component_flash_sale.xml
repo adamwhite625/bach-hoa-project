@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_flash_sale_gradient"
+    android:paddingStart="16dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="12dp">
+
+    <TextView
+        android:id="@+id/tvFlashSaleTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="8dp"
+        android:text="FLASH SALE"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:drawableStartCompat="@drawable/ic_flash_sale"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/tvSaleEndTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Kết thúc sau 1 giờ 10 phút"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvFlashSaleTitle"
+        tools:ignore="HardcodedText" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/progressContainer"
+            android:layout_width="140dp"
+            android:layout_height="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvFlashSaleTitle"
+        app:layout_constraintBottom_toBottomOf="@id/tvFlashSaleTitle">
+
+        <!-- 1. PHẦN NỀN (BACKGROUND) CỦA THANH TIẾN TRÌNH -->
+        <!-- Luôn nằm ở dưới cùng -->
+        <View
+            android:id="@+id/progressBackground"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/shape_sale_progress_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 2. PHẦN ĐƯỢC TÔ MÀU (FILL), THỂ HIỆN SỐ LƯỢNG ĐÃ BÁN -->
+        <!-- Nằm trên phần nền. Chiều rộng sẽ được điều khiển bằng code Java -->
+        <View
+            android:id="@+id/progressFill"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/shape_sale_progress_fill"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.0"
+        tools:layout_constraintWidth_percent="0.25" />
+
+
+        <TextView
+            android:id="@+id/tvQuantityRemaining"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="Đã bán 0"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Đã bán 50" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

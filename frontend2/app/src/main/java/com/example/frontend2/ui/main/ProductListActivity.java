@@ -1,37 +1,43 @@
 package com.example.frontend2.ui.main;
 
-import android.content.Intent;import android.os.Bundle;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Pair;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.frontend2.R;
 import com.example.frontend2.ui.adapter.ProductAdapter;
 import com.example.frontend2.data.model.ProductInList;
-import com.example.frontend2.data.remote.ApiClient;
-import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.ActivityProductListBinding;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement; // <-- Import cần thiết cho giải pháp 2
-import com.google.gson.reflect.TypeToken; // <-- Import cần thiết cho giải pháp 2
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.stream.Collectors;
 
 public class ProductListActivity extends AppCompatActivity implements ProductAdapter.OnItemClickListener {
 
     private static final String TAG = "ProductListActivity";
     private ActivityProductListBinding binding;
-    private ApiService apiService;
-    private ProductAdapter productAdapter;
+    private ProductListViewModel viewModel;
+
+    private ProductAdapter allProductsAdapter;
+    private ProductAdapter saleProductsAdapter;
+    private boolean isCategoryView = false;
+
+    public static final String KEY_CATEGORY_ID = "CATEGORY_ID";
+    public static final String KEY_CATEGORY_NAME = "CATEGORY_NAME";
+    public static final String KEY_PRODUCT_TYPE = "PRODUCT_TYPE";
+    public static final String TYPE_SALE = "SALE";
+    public static final String TYPE_FEATURED = "FEATURED";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,92 +45,137 @@ public class ProductListActivity extends AppCompatActivity implements ProductAda
         binding = ActivityProductListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
+        viewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
 
-        String categoryId = getIntent().getStringExtra("CATEGORY_ID");
-        String categoryName = getIntent().getStringExtra("CATEGORY_NAME");
+        handleIntent();
+        setupRecyclerViews();
+        setupSortListeners();
+        setupObservers();
+        binding.btnBackSmall.setOnClickListener(v -> onBackPressed());
 
-        setSupportActionBar(binding.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(categoryName != null ? categoryName : "Sản phẩm");
+        if (viewModel.getSortedAllProducts().getValue() == null) {
+            if (isCategoryView) {
+                viewModel.fetchDataByCategoryId(getIntent().getStringExtra(KEY_CATEGORY_ID));
+            } else if (getIntent().hasExtra(KEY_PRODUCT_TYPE)) {
+                viewModel.fetchDataByType(getIntent().getStringExtra(KEY_PRODUCT_TYPE));
+            }
         }
+    }
 
-        setupRecyclerView();
-
-        if (categoryId != null) {
-            fetchProductsByCategoryId(categoryId);
+    private void handleIntent() {
+        Intent intent = getIntent();
+        if (intent.hasExtra(KEY_CATEGORY_ID)) {
+            isCategoryView = true;
+            String categoryName = intent.getStringExtra(KEY_CATEGORY_NAME);
+            String title = (categoryName != null && !categoryName.isEmpty()) ? categoryName : "Sản phẩm";
+            binding.tvProductTitle.setText(title);
+        } else if (intent.hasExtra(KEY_PRODUCT_TYPE)) {
+            isCategoryView = false;
+            String productType = intent.getStringExtra(KEY_PRODUCT_TYPE);
+            String title = TYPE_SALE.equals(productType) ? "Khuyến mãi sốc" : "Sản phẩm nổi bật";
+            binding.tvProductTitle.setText(title);
         } else {
-            Toast.makeText(this, "ID danh mục không hợp lệ", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "CATEGORY_ID không hợp lệ.");
+            Toast.makeText(this, "Dữ liệu không hợp lệ", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Không có CATEGORY_ID hoặc PRODUCT_TYPE hợp lệ.");
             finish();
         }
     }
 
-    private void setupRecyclerView() {
+    private void setupRecyclerViews() {
         binding.recyclerProducts.setLayoutManager(new GridLayoutManager(this, 2));
-        productAdapter = new ProductAdapter(this, new ArrayList<>(), this);
-        binding.recyclerProducts.setAdapter(productAdapter);
+        binding.recyclerProducts.setNestedScrollingEnabled(false);
+        allProductsAdapter = new ProductAdapter(this, new ArrayList<>(), this);
+        binding.recyclerProducts.setAdapter(allProductsAdapter);
+
+        if (isCategoryView) {
+            binding.recyclerSaleProducts.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            saleProductsAdapter = new ProductAdapter(this, new ArrayList<>(), this);
+            binding.recyclerSaleProducts.setAdapter(saleProductsAdapter);
+        } else {
+            binding.layoutSaleSection.setVisibility(View.GONE);
+            binding.dividerView.setVisibility(View.GONE);
+            binding.tvAllProductsHeader.setVisibility(View.GONE);
+        }
     }
 
-    private void fetchProductsByCategoryId(String categoryId) {
-        binding.progressBar.setVisibility(View.VISIBLE);
-        binding.recyclerProducts.setVisibility(View.GONE);
-//        if (binding.tvEmptyList != null) binding.tvEmptyList.setVisibility(View.GONE);
+    private void setupSortListeners() {
+        binding.chipGroupSort.setOnCheckedChangeListener((group, checkedId) -> {
+            if (viewModel.getSortedAllProducts().getValue() == null) return;
 
-
-        apiService.getProductsByCategoryId(categoryId).enqueue(new Callback<JsonElement>() { // <-- Sửa Callback để nhận JsonElement
-            @Override
-            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                binding.progressBar.setVisibility(View.GONE);
-
-                if (response.isSuccessful() && response.body() != null) {
-                    JsonElement responseBody = response.body();
-                    List<ProductInList> productList = new ArrayList<>();
-
-                    // === LOGIC TỰ PHÂN TÍCH JSON BẮT ĐẦU TỪ ĐÂY ===
-                    try {
-                        if (responseBody.isJsonObject()) {
-                            JsonElement productsElement = responseBody.getAsJsonObject().get("products");
-
-                            if (productsElement != null && productsElement.isJsonArray()) {
-                                Gson gson = new Gson();
-                                Type type = new TypeToken<ArrayList<ProductInList>>(){}.getType();
-                                productList = gson.fromJson(productsElement, type);
-                            }
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, "Lỗi tự phân tích JSON: ", e);
-                        productList.clear(); // Đảm bảo danh sách trống nếu có lỗi
-                    }
-                    // === KẾT THÚC LOGIC TỰ PHÂN TÍCH JSON ===
-
-
-                    if (productList != null && !productList.isEmpty()) {
-                        binding.recyclerProducts.setVisibility(View.VISIBLE);
-                        productAdapter.updateData(productList);
-                    } else {
-                        Toast.makeText(ProductListActivity.this, "Không có sản phẩm nào trong danh mục này", Toast.LENGTH_LONG).show();
-//                        if (binding.tvEmptyList != null) {
-//                            binding.tvEmptyList.setText("Không có sản phẩm nào");
-//                            binding.tvEmptyList.setVisibility(View.VISIBLE);
-//                        }
-                    }
-                } else {
-                    Toast.makeText(ProductListActivity.this, "Lỗi khi tải sản phẩm: " + response.code(), Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "API Error: " + response.code() + " - " + response.message());
-                }
+            if (checkedId == R.id.chip_sort_price_asc) {
+                viewModel.setSortType(SortType.PRICE_ASCENDING);
+            } else if (checkedId == R.id.chip_sort_price_desc) {
+                viewModel.setSortType(SortType.PRICE_DESCENDING);
+            } else {
+                viewModel.setSortType(SortType.DEFAULT);
             }
+        });
+    }
 
-            @Override
-            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                binding.progressBar.setVisibility(View.GONE);
-                Toast.makeText(ProductListActivity.this, "Lỗi kết nối mạng", Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "API Failure: ", t);
-//                if (binding.tvEmptyList != null) {
-//                    binding.tvEmptyList.setText("Lỗi kết nối. Vui lòng thử lại.");
-//                    binding.tvEmptyList.setVisibility(View.VISIBLE);
-//                }
+    private void setupObservers() {
+        if (isCategoryView) {
+            MediatorLiveData<Pair<List<ProductInList>, List<ProductInList>>> mediator = new MediatorLiveData<>();
+
+            LiveData<List<ProductInList>> allProductsLiveData = viewModel.getSortedAllProducts();
+            LiveData<List<ProductInList>> saleProductsLiveData = viewModel.getSortedSaleProducts();
+
+            mediator.addSource(allProductsLiveData, allProducts -> {
+                List<ProductInList> saleProducts = saleProductsLiveData.getValue();
+                mediator.setValue(new Pair<>(allProducts, saleProducts));
+            });
+
+            mediator.addSource(saleProductsLiveData, saleProducts -> {
+                List<ProductInList> allProducts = allProductsLiveData.getValue();
+                mediator.setValue(new Pair<>(allProducts, saleProducts));
+            });
+
+            mediator.observe(this, pair -> {
+                List<ProductInList> allProducts = pair.first;
+                List<ProductInList> saleProducts = pair.second;
+
+                if (allProducts == null || saleProducts == null) {
+                    return;
+                }
+
+                List<ProductInList> nonSaleProducts = allProducts.stream()
+                        .filter(p -> (p.getSale() == null || !p.getSale().isActive()))
+                        .collect(Collectors.toList());
+
+                if (!saleProducts.isEmpty()) {
+                    binding.layoutSaleSection.setVisibility(View.VISIBLE);
+                    binding.dividerView.setVisibility(View.VISIBLE);
+                    binding.tvAllProductsHeader.setVisibility(View.VISIBLE);
+                    saleProductsAdapter.updateData(saleProducts);
+                } else {
+                    binding.layoutSaleSection.setVisibility(View.GONE);
+                    binding.dividerView.setVisibility(View.GONE);
+                }
+
+                allProductsAdapter.updateData(nonSaleProducts);
+
+                if (allProducts.isEmpty()) {
+                    Toast.makeText(ProductListActivity.this, "Không có sản phẩm nào", Toast.LENGTH_LONG).show();
+                }
+            });
+
+        } else {
+            viewModel.getSortedAllProducts().observe(this, allProducts -> {
+                if (allProducts != null) {
+                    allProductsAdapter.updateData(allProducts);
+                    if (allProducts.isEmpty()) {
+                        Toast.makeText(ProductListActivity.this, "Không có sản phẩm nào", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
+
+        viewModel.getIsLoading().observe(this, isLoading -> {
+            binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        });
+
+        viewModel.getErrorMessage().observe(this, error -> {
+            if (error != null && !error.isEmpty()) {
+                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -134,11 +185,5 @@ public class ProductListActivity extends AppCompatActivity implements ProductAda
         Intent intent = new Intent(this, ProductDetailActivity.class);
         intent.putExtra("product_id", productInList.getId());
         startActivity(intent);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
     }
 }

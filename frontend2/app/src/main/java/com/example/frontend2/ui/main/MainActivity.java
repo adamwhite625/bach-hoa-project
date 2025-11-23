@@ -12,9 +12,12 @@ import com.example.frontend2.ui.fragment.CartFragment;
 import com.example.frontend2.ui.fragment.HomeFragment;
 import com.example.frontend2.ui.fragment.OrdersFragment;
 import com.example.frontend2.ui.fragment.ProfileFragment;
+import com.example.frontend2.ui.fragment.SearchFragment;
+import com.example.frontend2.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) { // Chỉ chạy khi Activity được tạo lần đầu, không phải khi xoay màn hình
             processIntentNavigation(getIntent(), bottomNav);
         }
+
+        handleIntent(getIntent());
     }
 
     @Override
@@ -38,6 +43,28 @@ public class MainActivity extends AppCompatActivity {
         // hàm này sẽ được gọi.
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         processIntentNavigation(intent, bottomNav);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (intent != null && intent.hasExtra("ACTION")) {
+            String action = intent.getStringExtra("ACTION");
+
+            // CHỈ thực hiện các hành động này nếu nhận được đúng tín hiệu
+            if ("OPEN_SEARCH_FRAGMENT".equals(action)) {
+                Log.d("MainActivity", "Nhận được yêu cầu mở SearchFragment.");
+
+                // 1. Thực hiện việc chuyển sang SearchFragment
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new SearchFragment())
+                        .addToBackStack(null) // Cho phép quay lại fragment trước đó
+                        .commit();
+
+                // 2. CẬP NHẬT GIAO DIỆN BottomNavigationView ĐỂ ĐỒNG BỘ
+                // Dòng này BẮT BUỘC phải nằm ở đây.
+//                binding.bottomNavigation.setSelectedItemId(R.id.fragment_search);
+            }
+        }
     }
 
 
