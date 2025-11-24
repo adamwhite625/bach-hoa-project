@@ -6,14 +6,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import java.util.stream.Collectors;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,11 +35,11 @@ import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.FragmentHomeBinding;
 import com.example.frontend2.ui.adapter.CategoryAdapter;
+import com.example.frontend2.ui.adapter.FlashSaleAdapter;
 import com.example.frontend2.ui.adapter.ProductAdapter;
 import com.example.frontend2.ui.adapter.SliderAdapter;
 import com.example.frontend2.ui.main.ProductDetailActivity;
 import com.example.frontend2.ui.main.ProductListActivity;
-import com.example.frontend2.ui.adapter.FlashSaleAdapter;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -50,6 +49,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -59,26 +59,23 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment implements ProductAdapter.OnItemClickListener, CategoryAdapter.OnCategoryClickListener {
 
     private static final String TAG = "HomeFragment";
+    private static final String CHATBOT_RESPONSE_TAG = "CHATBOT_RESPONSE";
     public static final String KEY_PRODUCT_TYPE = "PRODUCT_TYPE";
     public static final String TYPE_SALE = "SALE";
     public static final String TYPE_FEATURED = "FEATURED";
+    private static final int MAX_PRODUCTS_HOME = 10;
 
-    private static final String CHATBOT_RESPONSE_TAG = "CHATBOT_RESPONSE";
     private FragmentHomeBinding binding;
     private ApiService apiService; // Dành cho backend chính
     private ApiService chatbotApiService; // Dành cho backend chatbot
 
     private CategoryAdapter categoryAdapter;
     private ProductAdapter productAdapter;
-
     private FlashSaleAdapter flashSaleAdapter;
-
-    // --- Biến dành cho Banner Slider ---
     private SliderAdapter sliderAdapter;
     private final Handler sliderHandler = new Handler(Looper.getMainLooper());
     private Timer sliderTimer;
 
-    private static final int MAX_PRODUCTS_HOME = 10;
     // --- Biến cho Chatbot ---
     private ChatAdapter chatAdapter;
     private List<ChatMessage> messageList;
@@ -103,23 +100,20 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
 
         setupBannerSlider();
         setupRecyclerViews();
+        setupClickListeners();
         fetchCategories();
         fetchProducts();
 
         binding.fabChatbot.setOnClickListener(v -> showChatbotDialog());
 
-        if (binding != null) {
-            binding.searchBarLayout.setOnClickListener(v -> {
-                if (getActivity() != null) {
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, new SearchFragment())
-                            .addToBackStack(null)
-                            .commit();
-                }
-            });
-        }
-
-        setupClickListeners();
+        binding.searchBarLayout.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new SearchFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
     }
 
     private void showChatbotDialog() {
@@ -213,7 +207,157 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
         });
     }
 
-    // ... (Các phương thức còn lại của HomeFragment không thay đổi)
+    private void setupRecyclerViews() {
+        if (binding == null) return;
+        // === Category RecyclerView ===
+        binding.recyclerCategory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        categoryAdapter = new CategoryAdapter(getContext(), new ArrayList<>(), this);
+        binding.recyclerCategory.setAdapter(categoryAdapter);
+
+        // === Product RecyclerView (Sản phẩm thường) ===
+        binding.recyclerProduct.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        productAdapter = new ProductAdapter(getContext(), new ArrayList<>(), this);
+        binding.recyclerProduct.setAdapter(productAdapter);
+        binding.recyclerProduct.setNestedScrollingEnabled(false);
+
+        // === Flash Sale RecyclerView (Sản phẩm khuyến mãi) ===
+        binding.recyclerFlashSale.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        flashSaleAdapter = new FlashSaleAdapter(getContext(), new ArrayList<>(), this);
+        binding.recyclerFlashSale.setAdapter(flashSaleAdapter);
+    }
+
+    private void setupBannerSlider() {
+        if (binding == null) return;
+        List<Integer> imageList = Arrays.asList(R.drawable.slide1, R.drawable.slide2, R.drawable.slide3, R.drawable.slide4);
+        sliderAdapter = new SliderAdapter(imageList);
+        if (binding == null) return;
+        binding.viewPagerBanner.setAdapter(sliderAdapter);
+        binding.viewPagerBanner.setClipToPadding(false);
+        binding.viewPagerBanner.setClipChildren(false);
+        binding.viewPagerBanner.setOffscreenPageLimit(3);
+        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+        compositePageTransformer.addTransformer(new MarginPageTransformer(40));
+        binding.viewPagerBanner.setPageTransformer(compositePageTransformer);
+    }
+
+    private void fetchCategories() {
+        apiService.getCategories().enqueue(new Callback<List<Category>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Category>> call, @NonNull Response<List<Category>> response) {
+                if (isAdded() && response.isSuccessful() && response.body() != null && categoryAdapter != null) {
+                    categoryAdapter.updateData(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Category>> call, @NonNull Throwable t) {
+                if(isAdded()) Log.e(TAG, "API Failure: fetchCategories", t);
+            }
+        });
+    }
+
+    private void fetchProducts() {
+        if (apiService == null) {
+            Log.e(TAG, "Lỗi nghiêm trọng: ApiService chưa được khởi tạo.");
+            return;
+        }
+
+        apiService.getProducts().enqueue(new Callback<List<ProductInList>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<ProductInList>> call, @NonNull Response<List<ProductInList>> response) {
+                if (!isAdded() || binding == null) {
+                    Log.w(TAG, "onResponse được gọi nhưng Fragment/View không còn tồn tại. Bỏ qua cập nhật UI.");
+                    return;
+                }
+
+                if (response.isSuccessful() && response.body() != null) {
+                    List<ProductInList> allProducts = response.body();
+                    Log.d(TAG, "Tải thành công " + allProducts.size() + " sản phẩm từ API.");
+
+                    List<ProductInList> saleProducts = allProducts.stream()
+                            .filter(p -> p.getSale() != null && p.getSale().isActive())
+                            .collect(Collectors.toList());
+
+                    List<ProductInList> normalProducts = allProducts.stream()
+                            .filter(p -> p.getSale() == null || !p.getSale().isActive())
+                            .collect(Collectors.toList());
+
+                    Log.d(TAG, "Đã lọc ra: " + saleProducts.size() + " sản phẩm khuyến mãi và " + normalProducts.size() + " sản phẩm thường.");
+
+                    if (saleProducts.isEmpty()) {
+                        binding.flashSaleSectionContainer.setVisibility(View.GONE);
+                    } else {
+                        binding.flashSaleSectionContainer.setVisibility(View.VISIBLE);
+                    }
+
+                    if (flashSaleAdapter != null) {
+                        List<ProductInList> limitedSaleProducts = saleProducts.stream().limit(MAX_PRODUCTS_HOME).collect(Collectors.toList());
+                        flashSaleAdapter.updateData(limitedSaleProducts);
+                    }
+
+                    if (productAdapter != null) {
+                        List<ProductInList> limitedProducts = normalProducts.stream().limit(MAX_PRODUCTS_HOME).collect(Collectors.toList());
+                        productAdapter.updateData(limitedProducts);
+                    }
+
+                } else {
+                    Log.e(TAG, "Lỗi khi lấy sản phẩm, mã lỗi HTTP: " + response.code());
+                    Toast.makeText(getContext(), "Lỗi tải dữ liệu: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<ProductInList>> call, @NonNull Throwable t) {
+                if (!isAdded()) {
+                    Log.w(TAG, "onFailure được gọi nhưng Fragment không còn tồn tại.");
+                    return;
+                }
+                Log.e(TAG, "Lỗi kết nối mạng khi gọi API sản phẩm: ", t);
+                Toast.makeText(getContext(), "Không thể kết nối tới máy chủ, vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setupClickListeners() {
+        if (binding == null) return;
+        binding.btnViewAllSale.setOnClickListener(v -> {
+            Log.d(TAG, "Nút 'Xem tất cả Khuyến mãi' được nhấn.");
+            navigateToProductList(TYPE_SALE);
+        });
+
+        binding.btnViewAllFeatured.setOnClickListener(v -> {
+            Log.d(TAG, "Nút 'Xem tất cả Sản phẩm nổi bật' được nhấn.");
+            navigateToProductList(TYPE_FEATURED);
+        });
+    }
+
+    private void navigateToProductList(String productType) {
+        if (getActivity() == null) {
+            Log.e(TAG, "Không thể mở ProductListActivity vì getActivity() là null.");
+            return;
+        }
+        Intent intent = new Intent(getActivity(), ProductListActivity.class);
+        intent.putExtra(KEY_PRODUCT_TYPE, productType);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onItemClick(ProductInList productInList) {
+        if (getContext() == null) return;
+        Intent intent = new Intent(getContext(), ProductDetailActivity.class);
+        intent.putExtra("product_id", productInList.getId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onCategoryClick(Category category) {
+        if (getActivity() == null) return;
+        Intent intent = new Intent(getActivity(), ProductListActivity.class);
+        intent.putExtra("CATEGORY_ID", category.getId());
+        intent.putExtra("CATEGORY_NAME", category.getName());
+        startActivity(intent);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -233,211 +377,6 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
         binding = null;
     }
 
-    private void setupBannerSlider() {
-        List<Integer> imageList = Arrays.asList(R.drawable.slide1, R.drawable.slide2, R.drawable.slide3, R.drawable.slide4);
-        sliderAdapter = new SliderAdapter(imageList);
-        if (binding == null) return;
-        binding.viewPagerBanner.setAdapter(sliderAdapter);
-        binding.viewPagerBanner.setClipToPadding(false);
-        binding.viewPagerBanner.setClipChildren(false);
-        binding.viewPagerBanner.setOffscreenPageLimit(3);
-        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
-        compositePageTransformer.addTransformer(new MarginPageTransformer(40));
-        binding.viewPagerBanner.setPageTransformer(compositePageTransformer);
-    }
-
-    private void setupRecyclerViews() {
-        // === Category RecyclerView ===
-        binding.recyclerCategory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        categoryAdapter = new CategoryAdapter(getContext(), new ArrayList<>(), this);
-        binding.recyclerCategory.setAdapter(categoryAdapter);
-
-        // === Product RecyclerView (Sản phẩm thường) ===
-        if (binding == null) return;
-        binding.recyclerCategory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        categoryAdapter = new CategoryAdapter(getContext(), new ArrayList<>(), this);
-        binding.recyclerCategory.setAdapter(categoryAdapter);
-        binding.recyclerProduct.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        productAdapter = new ProductAdapter(getContext(), new ArrayList<>(), this);
-        binding.recyclerProduct.setAdapter(productAdapter);
-        binding.recyclerProduct.setNestedScrollingEnabled(false);
-
-        // =========================================================================
-        // *** BỔ SUNG PHẦN CÒN THIẾU TẠI ĐÂY ***
-
-        // === Flash Sale RecyclerView (Sản phẩm khuyến mãi) ===
-        // 1. Thiết lập LayoutManager cuộn ngang
-        LinearLayoutManager flashSaleLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        binding.recyclerFlashSale.setLayoutManager(flashSaleLayoutManager);
-
-        // 2. Khởi tạo FlashSaleAdapter
-        flashSaleAdapter = new FlashSaleAdapter(getContext(), new ArrayList<>(), this);
-
-        // 3. Gán Adapter cho RecyclerView
-        binding.recyclerFlashSale.setAdapter(flashSaleAdapter);
-
-        // =========================================================================
-    }
-
-    private void fetchCategories() {
-        apiService.getCategories().enqueue(new Callback<List<Category>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Category>> call, @NonNull Response<List<Category>> response) {
-                if (response.isSuccessful() && response.body() != null && categoryAdapter != null) {
-                    categoryAdapter.updateData(response.body());
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<List<Category>> call, @NonNull Throwable t) {
-                Log.e(TAG, "API Failure: fetchCategories", t);
-            }
-        });
-    }
-
-    private void fetchProducts() {        // 1. Kiểm tra để đảm bảo apiService đã được khởi tạo, tránh NullPointerException
-        if (apiService == null) {
-            Log.e(TAG, "Lỗi nghiêm trọng: ApiService chưa được khởi tạo.");
-            return;
-        }
-
-        // 2. Thực hiện cuộc gọi API bất đồng bộ
-        apiService.getProducts().enqueue(new Callback<List<ProductInList>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<ProductInList>> call, @NonNull Response<List<ProductInList>> response) {
-                // 3. KIỂM TRA AN TOÀN VÒNG ĐỜI: Đảm bảo Fragment còn "sống" trước khi làm bất cứ điều gì
-                if (!isAdded() || getContext() == null) {
-                    Log.w(TAG, "onResponse được gọi nhưng Fragment không còn tồn tại. Bỏ qua cập nhật UI.");
-                    return; // Thoát ngay để tránh crash
-                }
-
-                // 4. KIỂM TRA AN TOÀN VIEW: Đảm bảo binding (đại diện cho View) chưa bị hủy
-                if (binding == null) {
-                    Log.w(TAG, "onResponse được gọi nhưng View đã bị hủy. Bỏ qua cập nhật UI.");
-                    return; // Thoát ngay
-                }
-
-                // 5. Xử lý kết quả trả về từ API
-                if (response.isSuccessful() && response.body() != null) {
-                    List<ProductInList> allProducts = response.body();
-                    Log.d(TAG, "Tải thành công " + allProducts.size() + " sản phẩm từ API.");
-
-                    // --- PHẦN LOGIC LỌC SẢN PHẨM ---
-                    List<ProductInList> saleProducts = allProducts.stream()
-                            .filter(p -> p.getSale() != null && p.getSale().isActive())
-                            .collect(Collectors.toList());
-
-                    List<ProductInList> normalProducts = allProducts.stream()
-                            .filter(p -> p.getSale() == null || !p.getSale().isActive())
-                            .collect(Collectors.toList());
-
-                    Log.d(TAG, "Đã lọc ra: " + saleProducts.size() + " sản phẩm khuyến mãi và " + normalProducts.size() + " sản phẩm thường.");
-
-                    if (saleProducts.isEmpty()) {
-                        // Nếu không có sản phẩm sale nào, ẩn toàn bộ khu vực đi
-                        binding.flashSaleSectionContainer.setVisibility(View.GONE);
-                    } else {
-                        // Nếu có sản phẩm sale, đảm bảo khu vực được hiển thị
-                        binding.flashSaleSectionContainer.setVisibility(View.VISIBLE);
-                    }
-
-                    // --- CÁCH CẬP NHẬT DỮ LIỆU AN TOÀN VÀ HIỆU QUẢ NHẤT ---
-                    if (flashSaleAdapter != null) {
-                        List<ProductInList> limitedSaleProducts = saleProducts.stream()
-                                .limit(MAX_PRODUCTS_HOME)
-                                .collect(Collectors.toList());
-                        flashSaleAdapter.updateData(limitedSaleProducts);
-                    } else {
-                        Log.w(TAG, "flashSaleAdapter là null, không thể cập nhật.");
-                    }
-
-                    if (productAdapter != null) {
-                        List<ProductInList> limitedProducts = normalProducts.stream()
-                                .limit(MAX_PRODUCTS_HOME)
-                                .collect(Collectors.toList());
-                        productAdapter.updateData(limitedProducts);
-                    } else {
-                        Log.w(TAG, "productAdapter là null, không thể cập nhật.");
-                    }
-
-                } else {
-                    // Xử lý trường hợp API trả về lỗi (ví dụ: 404, 500)
-                    Log.e(TAG, "Lỗi khi lấy sản phẩm, mã lỗi HTTP: " + response.code());
-                    Toast.makeText(getContext(), "Lỗi tải dữ liệu: " + response.code(), Toast.LENGTH_SHORT).show();
-                if (response.isSuccessful() && response.body() != null && productAdapter != null) {
-                    productAdapter.updateData(response.body());
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<List<ProductInList>> call, @NonNull Throwable t) {
-                // 6. KIỂM TRA AN TOÀN VÒNG ĐỜI (cho trường hợp lỗi mạng)
-                if (!isAdded() || getContext() == null) {
-                    Log.w(TAG, "onFailure được gọi nhưng Fragment không còn tồn tại.");
-                    return;
-                }
-
-                // Xử lý trường hợp không thể kết nối tới server
-                Log.e(TAG, "Lỗi kết nối mạng khi gọi API sản phẩm: ", t);
-                Toast.makeText(getContext(), "Không thể kết nối tới máy chủ, vui lòng thử lại.", Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "API Failure: fetchProducts", t);
-            }
-        });
-    }
-
-    @Override
-    public void onItemClick(ProductInList productInList) {
-        Intent intent = new Intent(getContext(), ProductDetailActivity.class);
-        intent.putExtra("product_id", productInList.getId());
-        startActivity(intent);
-    }
-
-    @Override
-    public void onCategoryClick(Category category) {
-        Intent intent = new Intent(getActivity(), ProductListActivity.class);
-        intent.putExtra("CATEGORY_ID", category.getId());
-        intent.putExtra("CATEGORY_NAME", category.getName());
-        startActivity(intent);
-    }
-
-    private void setupClickListeners() {
-        // 1. Sự kiện click cho nút "Xem tất cả" của mục KHUYẾN MÃI
-        binding.btnViewAllSale.setOnClickListener(v -> {
-            Log.d(TAG, "Nút 'Xem tất cả Khuyến mãi' được nhấn.");
-            // Gọi hàm điều hướng và truyền vào loại "SALE"
-            navigateToProductList(TYPE_SALE);
-        });
-
-        // 2. Sự kiện click cho nút "Xem tất cả" của mục SẢN PHẨM NỔI BẬT
-        binding.btnViewAllFeatured.setOnClickListener(v -> {
-            Log.d(TAG, "Nút 'Xem tất cả Sản phẩm nổi bật' được nhấn.");
-            // Gọi hàm điều hướng và truyền vào loại "FEATURED"
-            navigateToProductList(TYPE_FEATURED);
-        });
-
-        // Bạn có thể thêm các sự kiện click khác ở đây (ví dụ: thanh tìm kiếm, chuông thông báo)
-        // binding.searchBarLayout.setOnClickListener(...);
-    }
-
-    private void navigateToProductList(String productType) {
-        // Kiểm tra để đảm bảo context (Activity) không bị null
-        if (getActivity() == null) {
-            Log.e(TAG, "Không thể mở ProductListActivity vì getActivity() là null.");
-            return;
-        }
-
-        // Tạo một Intent để mở ProductListActivity
-        Intent intent = new Intent(getActivity(), ProductListActivity.class);
-
-        // Đính kèm dữ liệu vào Intent để Activity mới biết phải làm gì
-        intent.putExtra(KEY_PRODUCT_TYPE, productType);
-
-        // Bắt đầu Activity mới
-        startActivity(intent);
-    }
-
-    // =================================================================
-    // LOGIC TỰ ĐỘNG CUỘN SLIDER
-    // =================================================================
-
     private void startAutoSlider() {
         if (sliderTimer != null) return;
         sliderTimer = new Timer();
@@ -445,8 +384,9 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
             @Override
             public void run() {
                 sliderHandler.post(() -> {
-                    if (binding == null || binding.viewPagerBanner.getAdapter() == null) return;
+                    if (binding == null || binding.viewPagerBanner == null || binding.viewPagerBanner.getAdapter() == null) return;
                     int count = binding.viewPagerBanner.getAdapter().getItemCount();
+                    if (count == 0) return;
                     int currentItem = binding.viewPagerBanner.getCurrentItem();
                     int nextItem = (currentItem + 1) % count;
                     binding.viewPagerBanner.setCurrentItem(nextItem, true);
