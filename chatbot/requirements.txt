@@ -1,0 +1,13 @@
+# Web Framework
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+python-dotenv>=1.0.0
+
+# LangChain & RAG
+langchain-core>=0.1.40
+langchain-community>=0.0.13
+langchain-chroma>=0.1.2
+langchain-openai>=0.0.6
+
+# Utilities
+chardet>=5.2.0

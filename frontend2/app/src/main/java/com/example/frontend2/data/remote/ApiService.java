@@ -16,6 +16,8 @@ import com.example.frontend2.data.model.User;
 import com.example.frontend2.data.model.CartResponse;
 import com.example.frontend2.data.model.UpdateCartRequest;
 import com.example.frontend2.data.model.AddToCartRequest;
+import com.example.frontend2.data.model.ChatMessageRequest;
+import com.example.frontend2.data.model.ChatMessageResponse;
 
 
 import com.google.gson.JsonElement;
@@ -25,6 +27,7 @@ import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -119,4 +122,8 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Path("itemId") String itemId
     );
+
+    // --- Chatbot (TẠM THỜI DÙNG ResponseBody ĐỂ DEBUG) ---
+    @POST("api/chat")
+    Call<ResponseBody> sendMessageToChatbot(@Body ChatMessageRequest request);
 }

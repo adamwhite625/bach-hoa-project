@@ -1,33 +1,52 @@
 package com.example.frontend2.data.remote;
 
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    // URL mới của backend
-    private static final String BASE_URL = "http://10.0.2.2:5000/";
+    // URL cho backend chính (sản phẩm, user, etc.)
+    private static final String MAIN_BASE_URL = "http://10.0.2.2:5000/";
+    // URL cho backend chatbot
+    private static final String CHATBOT_BASE_URL = "http://10.0.2.2:8001/";
 
-  //  static final String BASE_URL = "http://10.105.67.203:5000/";
-    //private static final String BASE_URL = "https://philips-solving-dsc-billing.trycloudflare.com";
+    private static Retrofit mainRetrofit = null;
+    private static Retrofit chatbotRetrofit = null;
 
-
-    // Đối tượng Retrofit duy nhất (Singleton)
-    private static Retrofit retrofit = null;
+    // Tạo một OkHttpClient với thời gian chờ tùy chỉnh
+    private static final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS) // Thời gian chờ kết nối
+            .readTimeout(60, TimeUnit.SECONDS)    // Thời gian chờ đọc dữ liệu
+            .writeTimeout(60, TimeUnit.SECONDS)   // Thời gian chờ ghi dữ liệu
+            .build();
 
     /**
-     * Phương thức này tạo và trả về một instance duy nhất của Retrofit.
-     * Nếu instance đã được tạo, nó sẽ trả về instance cũ.
-     *
-     * @return một instance của Retrofit.
+     * Lấy instance Retrofit cho backend CHÍNH.
      */
     public static Retrofit getRetrofitInstance() {
-        if (retrofit == null) {
-            // Nếu chưa có instance nào, tạo một instance mới
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL) // Thiết lập URL gốc cho mọi request
-                    .addConverterFactory(GsonConverterFactory.create()) // Thêm bộ chuyển đổi JSON (Gson)
+        if (mainRetrofit == null) {
+            mainRetrofit = new Retrofit.Builder()
+                    .baseUrl(MAIN_BASE_URL)
+                    .client(okHttpClient) // Sử dụng OkHttpClient tùy chỉnh
+                    .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
-        return retrofit;
+        return mainRetrofit;
+    }
+
+    /**
+     * Lấy instance Retrofit cho backend CHATBOT.
+     */
+    public static Retrofit getChatbotRetrofitInstance() {
+        if (chatbotRetrofit == null) {
+            chatbotRetrofit = new Retrofit.Builder()
+                    .baseUrl(CHATBOT_BASE_URL)
+                    .client(okHttpClient) // Sử dụng OkHttpClient tùy chỉnh
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        return chatbotRetrofit;
     }
 }
