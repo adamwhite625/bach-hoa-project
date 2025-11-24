@@ -62,7 +62,10 @@ const RAW_ENDPOINTS = Object.freeze({
     ...crud('categories'),
     LIST_Q: (params = {}) => buildUrl('/categories', params)
   }),
-  DISCOUNTS: Object.freeze(crud('discounts')),
+  DISCOUNTS: Object.freeze({
+    ...crud('discounts'),
+    PREVIEW: '/discounts/preview'
+  }),
   ORDERS: Object.freeze({
     LIST: '/orders',
     CREATE: '/orders',

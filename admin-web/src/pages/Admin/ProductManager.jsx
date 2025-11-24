@@ -18,7 +18,8 @@ import {
   Row,
   Col,
   Divider,
-  Tooltip
+  Tooltip,
+  DatePicker
 } from 'antd';
 import {
   PlusOutlined,
@@ -32,6 +33,7 @@ import {
   AlertOutlined
 } from '@ant-design/icons';
 import { ProductService } from '../../services/api/products';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -59,6 +61,7 @@ const ProductManager = () => {
   const [searchText, setSearchText] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [nowTick, setNowTick] = useState(Date.now());
 
   const [viewportWidth, setViewportWidth] = useState(
     typeof window !== 'undefined' ? window.innerWidth : 1200
@@ -86,6 +89,12 @@ const ProductManager = () => {
     fetchProducts();
   }, []);
 
+  // periodic tick to refresh time-based UI (e.g., sale start/end)
+  useEffect(() => {
+    const id = setInterval(() => setNowTick(Date.now()), 30000); // 30s
+    return () => clearInterval(id);
+  }, []);
+
   const parseImages = (text) => {
     if (!text) return [];
     return text
@@ -107,6 +116,7 @@ const ProductManager = () => {
     const detailGallery = normalizeArray(product.detailImages);
     const primaryImage = gallery.length ? gallery[0] : (product.image || '');
     const categoryName = categoryObj?.name || categories.find((c) => c._id === categoryId)?.name || '';
+    const sale = product.sale || {};
 
     return {
       ...product,
@@ -118,7 +128,15 @@ const ProductManager = () => {
       detailImages: detailGallery,
       categoryId,
       categoryName,
-      isActive: typeof product.isActive === 'boolean' ? product.isActive : true
+      isActive: typeof product.isActive === 'boolean' ? product.isActive : true,
+      sale: {
+        active: !!sale.active,
+        type: sale.type || 'percent',
+        value: Number(sale.value) || 0,
+        startAt: sale.startAt || null,
+        endAt: sale.endAt || null,
+      },
+      effectivePrice: Number(product.effectivePrice ?? product.price) || 0,
     };
   };
 
@@ -156,8 +174,21 @@ const ProductManager = () => {
           : (product.image ? product.image : ''),
         detailImagesText: Array.isArray(product.detailImages)
           ? product.detailImages.join('\n')
-          : ''
+          : '',
+        saleActive: !!product.sale?.active,
+        saleType: product.sale?.type || 'percent',
+        saleValue: product.sale?.value ?? 0,
+        saleRange: [
+          product.sale?.startAt ? dayjs(product.sale.startAt) : null,
+          product.sale?.endAt ? dayjs(product.sale.endAt) : null,
+        ],
       };
+      // Nếu đã hết giờ, hiển thị công tắc ở trạng thái Tắt để phản ánh trạng thái thực tế
+      const now = dayjs();
+      const endAt = initial.saleRange?.[1];
+      if (initial.saleActive && endAt && endAt.isBefore(now)) {
+        initial.saleActive = false;
+      }
       form.setFieldsValue(initial);
       setPreviewUrl(parseImages(initial.imagesText)[0] || '');
       setDetailPreviewUrls(parseImages(initial.detailImagesText));
@@ -200,6 +231,15 @@ const ProductManager = () => {
       if (images.length) {
         payload.image = images[0];
       }
+
+      // Sale payload
+      payload.sale = {
+        active: !!values.saleActive,
+        type: values.saleType || 'percent',
+        value: Number(values.saleValue) || 0,
+        startAt: values.saleRange?.[0] ? values.saleRange[0].toISOString() : undefined,
+        endAt: values.saleRange?.[1] ? values.saleRange[1].toISOString() : undefined,
+      };
 
       if (!payload.name || !payload.sku || !payload.description || !payload.category || !images.length) {
         message.error('Vui lòng nhập đầy đủ tên, SKU, mô tả, danh mục và ít nhất 1 ảnh');
@@ -262,6 +302,14 @@ const ProductManager = () => {
     }
     if (typeof all.detailImagesText === 'string') {
       setDetailPreviewUrls(parseImages(all.detailImagesText));
+    }
+    // Hint if picked an expired range while active (no auto-change)
+    if (Array.isArray(all.saleRange)) {
+      const [start, end] = all.saleRange;
+      const now = dayjs();
+      if (end && dayjs(end).isBefore(now) && all.saleActive) {
+        message.warning('Thời gian khuyến mãi đã hết hạn, hãy chọn lại mốc thời gian.');
+      }
     }
   };
 
@@ -328,6 +376,14 @@ const ProductManager = () => {
 
   const isMobile = viewportWidth < 768;
   const modalWidth = Math.min(viewportWidth - 32, 820);
+
+  const isSaleActive = (sale) => {
+    if (!sale?.active) return false;
+    const now = dayjs();
+    if (sale.startAt && dayjs(sale.startAt).isAfter(now)) return false;
+    if (sale.endAt && dayjs(sale.endAt).isBefore(now)) return false;
+    return true;
+  };
 
   const columns = useMemo(() => ([
     {
@@ -401,9 +457,21 @@ const ProductManager = () => {
       dataIndex: 'price',
       key: 'price',
       align: 'right',
-      width: 140,
-      sorter: (a, b) => (a.price ?? 0) - (b.price ?? 0),
-      render: (price) => currencyFormatter.format(price ?? 0)
+      width: 180,
+      sorter: (a, b) => (a.effectivePrice ?? a.price ?? 0) - (b.effectivePrice ?? b.price ?? 0),
+      render: (_, record) => {
+        const onSale = isSaleActive(record.sale);
+        const original = currencyFormatter.format(record.price ?? 0);
+        const effective = currencyFormatter.format(record.effectivePrice ?? record.price ?? 0);
+        return onSale ? (
+          <Space direction="vertical" size={0} style={{ alignItems: 'flex-end' }}>
+            <Text delete type="secondary">{original}</Text>
+            <Text strong style={{ color: '#cf1322' }}>{effective}</Text>
+          </Space>
+        ) : (
+          <Text>{original}</Text>
+        );
+      }
     },
     {
       title: 'Số lượng',
@@ -452,7 +520,7 @@ const ProductManager = () => {
         </Space>
       )
     }
-  ]), []);
+  ]), [nowTick]);
 
   return (
     <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -602,7 +670,7 @@ const ProductManager = () => {
           layout="vertical"
           onFinish={onFinish}
           onValuesChange={handleValuesChange}
-          initialValues={{ isActive: true }}
+          initialValues={{ isActive: true, saleActive: false, saleType: 'percent', saleValue: 0 }}
         >
           <Row gutter={16}>
             <Col xs={24} md={12}>
@@ -676,6 +744,71 @@ const ProductManager = () => {
               </Form.Item>
             </Col>
           </Row>
+
+          <Divider style={{ margin: '8px 0' }}>Khuyến mãi</Divider>
+          <Row gutter={16}>
+            <Col xs={24} md={8}>
+              <Form.Item name="saleActive" label="Kích hoạt khuyến mãi" valuePropName="checked">
+                <Switch checkedChildren="Bật" unCheckedChildren="Tắt" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={8}>
+              <Form.Item name="saleType" label="Loại khuyến mãi">
+                <Select>
+                  <Option value="percent">Theo phần trăm</Option>
+                  <Option value="fixed">Theo số tiền</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={8}>
+              <Form.Item name="saleValue" label="Giá trị khuyến mãi">
+                <InputNumber style={{ width: '100%' }} min={0} formatter={(v) => (v ? `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '')} parser={(v) => v.replace(/,/g, '')} />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Form.Item
+            name="saleRange"
+            label="Thời gian áp dụng (tùy chọn)"
+            dependencies={["saleActive"]}
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  const active = getFieldValue('saleActive');
+                  if (!active) return Promise.resolve();
+                  if (!Array.isArray(value) || !value[0] || !value[1]) {
+                    return Promise.reject(new Error('Hãy chọn khoảng thời gian áp dụng'));
+                  }
+                  const [start, end] = value;
+                  if (dayjs(end).isBefore(dayjs(start))) return Promise.reject(new Error('Kết thúc phải sau thời gian bắt đầu'));
+                  if (dayjs(end).isBefore(dayjs())) return Promise.reject(new Error('Khoảng thời gian đã hết hạn'));
+                  return Promise.resolve();
+                }
+              })
+            ]}
+          >
+            <DatePicker.RangePicker style={{ width: '100%' }} showTime format="DD/MM/YYYY HH:mm" />
+          </Form.Item>
+          <Form.Item shouldUpdate noStyle>
+            {({ getFieldValue }) => {
+              const active = getFieldValue('saleActive');
+              const range = getFieldValue('saleRange') || [];
+              const start = range?.[0];
+              const end = range?.[1];
+              const now = dayjs();
+              let color = 'default';
+              let text = active ? 'Đang áp dụng' : 'Đã tắt';
+              if (active) {
+                if (end && end.isBefore(now)) { color = 'volcano'; text = 'Hết hạn (đã tắt)'; }
+                else if (start && start.isAfter(now)) { color = 'blue'; text = 'Chưa đến giờ'; }
+                else { color = 'green'; text = 'Đang áp dụng'; }
+              }
+              return (
+                <div style={{ marginBottom: 12 }}>
+                  <Tag color={color}>{text}</Tag>
+                </div>
+              );
+            }}
+          </Form.Item>
 
           <Form.Item
             name="description"

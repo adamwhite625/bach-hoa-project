@@ -68,8 +68,14 @@ const searchProducts = async (req, res) => {
             Product.countDocuments(query)
         ]);
 
+        const stabilized = await Promise.all(products.map(p => ensureSaleState(p)));
+        const enriched = stabilized.map(p => ({
+            ...p.toObject(),
+            effectivePrice: getEffectivePrice(p),
+        }));
+
         res.json({
-            products,
+            products: enriched,
             page: pageNum,
             pages: Math.ceil(total / limitNum),
             total,
@@ -82,20 +88,47 @@ const searchProducts = async (req, res) => {
     }
 };
 
-const getProducts = async (req, res) => {
+// const getProducts = async (req, res) => {
+//     try {
+//         const products = await Product.find({ isActive: true }).populate('category', 'name');
+//         res.json(products);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
+// Ensure expired sales are turned off at the DB level
+const ensureSaleState = async (product, now = new Date()) => {
     try {
-        const products = await Product.find({ isActive: true }).populate('category', 'name');
-        res.json(products);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+        if (product?.sale?.active && product.sale.endAt && new Date(product.sale.endAt) < now) {
+            product.sale.active = false;
+            await product.save();
+        }
+    } catch (e) {
+        // soft fail: do not block responses due to background correction
     }
+    return product;
+};
+
+const getProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ isActive: true }).populate('category', 'name');
+        const stabilized = await Promise.all(products.map(p => ensureSaleState(p)));
+        const enriched = stabilized.map(p => ({
+      ...p.toObject(),
+      effectivePrice: getEffectivePrice(p),
+    }));
+    res.json(enriched);
+  } catch (e) { res.status(500).json({ message: e.message }); }
 };
 
 const getProductById = async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id);
+        let product = await Product.findById(req.params.id);
         if (product) {
-            res.json(product);
+            product = await ensureSaleState(product);
+            const payload = { ...product.toObject(), effectivePrice: getEffectivePrice(product) };
+            res.json(payload);
         } else {
             res.status(404).json({ message: 'Product not found' });
         }
@@ -106,7 +139,7 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
-        const { name, sku, description, images, detailImages, brand, category, price, quantity } = req.body;
+        const { name, sku, description, images, detailImages, brand, category, price, quantity, sale } = req.body;
         const product = new Product({
             name,
             sku,
@@ -120,6 +153,16 @@ const createProduct = async (req, res) => {
             quantity,
             user: req.user._id,
         });
+
+        if (sale && typeof sale === 'object') {
+            product.sale = {
+                active: !!sale.active,
+                type: ['percent','fixed'].includes(sale.type) ? sale.type : 'percent',
+                value: Number(sale.value) || 0,
+                startAt: sale.startAt ? new Date(sale.startAt) : undefined,
+                endAt: sale.endAt ? new Date(sale.endAt) : undefined,
+            };
+        }
 
         if (!product.image) {
             const fallbackImage = product.images?.[0]?.url || product.detailImages?.[0]?.url || '';
@@ -152,7 +195,8 @@ const createProduct = async (req, res) => {
             }
         }
         const createdProduct = await product.save();
-        res.status(201).json(createdProduct);
+        const payload = { ...createdProduct.toObject(), effectivePrice: getEffectivePrice(createdProduct) };
+        res.status(201).json(payload);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -188,7 +232,7 @@ const createProductReview = async (req, res) => {
 // @route   PUT /api/products/:id
 const updateProduct = async (req, res) => {
     try {
-        const { name, sku, description, images, detailImages, brand, category, price, quantity, isActive } = req.body;
+        const { name, sku, description, images, detailImages, brand, category, price, quantity, isActive, sale } = req.body;
         
         const product = await Product.findById(req.params.id);
 
@@ -232,6 +276,16 @@ const updateProduct = async (req, res) => {
             product.quantity = quantity !== undefined ? quantity : product.quantity;
             product.isActive = isActive !== undefined ? isActive : product.isActive;
 
+            if (sale && typeof sale === 'object') {
+                product.sale = {
+                    active: sale.active !== undefined ? !!sale.active : (product.sale?.active || false),
+                    type: ['percent','fixed'].includes(sale.type) ? sale.type : (product.sale?.type || 'percent'),
+                    value: sale.value !== undefined ? Number(sale.value) : (product.sale?.value || 0),
+                    startAt: sale.startAt ? new Date(sale.startAt) : (product.sale?.startAt || undefined),
+                    endAt: sale.endAt ? new Date(sale.endAt) : (product.sale?.endAt || undefined),
+                };
+            }
+
             if (product.images?.length) {
                 product.image = product.images[0].url;
             } else if (!product.image && product.detailImages?.length) {
@@ -239,7 +293,8 @@ const updateProduct = async (req, res) => {
             }
 
             const updatedProduct = await product.save();
-            res.json(updatedProduct);
+            const payload = { ...updatedProduct.toObject(), effectivePrice: getEffectivePrice(updatedProduct) };
+            res.json(payload);
         } else {
             res.status(404).json({ message: 'Product not found' });
         }
@@ -267,6 +322,22 @@ const deleteProduct = async (req, res) => {
     }
 };
 
+// sale product
+const isSaleActive = (sale, now = new Date()) => {
+  if (!sale?.active) return false;
+  if (sale.startAt && now < new Date(sale.startAt)) return false;
+  if (sale.endAt && now > new Date(sale.endAt)) return false;
+  return true;
+};
+
+const getEffectivePrice = (product, now = new Date()) => {
+  const price = Number(product.price || 0);
+  if (!isSaleActive(product.sale, now)) return price;
+  const { type, value } = product.sale;
+  if (type === 'percent') return Math.max(0, Math.round(price * (1 - value / 100)));
+  return Math.max(0, price - Number(value || 0));
+};
+
 module.exports = { 
     getProducts, 
     getProductById, 
@@ -274,5 +345,7 @@ module.exports = {
     createProductReview, 
     updateProduct, 
     deleteProduct,
-    searchProducts
+    searchProducts,
+    isSaleActive,
+    getEffectivePrice,
 };

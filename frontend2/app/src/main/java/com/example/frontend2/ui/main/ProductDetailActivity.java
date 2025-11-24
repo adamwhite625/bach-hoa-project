@@ -7,18 +7,21 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.graphics.Paint;
 
 import androidx.annotation.NonNull;
 // SỬA: XÓA import @Nullable vì không cần onActivityResult nữa
 // import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider; // SỬA 1: Import ViewModelProvider
 
 import com.example.frontend2.R;
@@ -26,16 +29,21 @@ import com.example.frontend2.data.model.CartResponse;
 import com.example.frontend2.data.model.ImageInfo;
 import com.example.frontend2.data.model.ProductDetail;
 import com.example.frontend2.data.remote.ApiClient;
+import com.example.frontend2.data.model.SaleInfo;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.ActivityProductDetailBinding;
 import com.example.frontend2.ui.adapter.ImageUrlSliderAdapter;
 import com.example.frontend2.ui.fragment.AddToCartBottomSheetFragment;
+import com.example.frontend2.ui.fragment.SearchFragment;
 import com.example.frontend2.utils.SharedPrefManager;
 
 import java.text.NumberFormat;
+import java.time.ZonedDateTime;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,9 +57,10 @@ public class ProductDetailActivity extends AppCompatActivity implements AddToCar
     private ApiService apiService;
     private ImageUrlSliderAdapter imageUrlSliderAdapter;
     private ProductDetail currentProduct;
-
     // SỬA 3: Khai báo SharedViewModel
     private CartSharedViewModel sharedViewModel;
+
+    private CountDownTimer saleCountDownTimer;
 
     // SỬA 4: XÓA BỎ MÃ REQUEST_CODE_CART
     // private static final int REQUEST_CODE_CART = 101;
@@ -83,6 +92,24 @@ public class ProductDetailActivity extends AppCompatActivity implements AddToCar
 
         // Lấy dữ liệu giỏ hàng lần đầu khi mở Activity
         loadInitialCartData();
+
+        binding.searchBarLayout.setOnClickListener(v -> {
+            Log.d(TAG, "Thanh tìm kiếm được nhấn! Yêu cầu MainActivity mở SearchFragment.");
+
+            // 1. Tạo một Intent để quay về MainActivity
+            Intent intent = new Intent(this, MainActivity.class);
+
+            // 2. Đính kèm một "extra" để làm tín hiệu.
+            // "OPEN_SEARCH_FRAGMENT" là một khóa (key) do chúng ta tự định nghĩa.
+            intent.putExtra("ACTION", "OPEN_SEARCH_FRAGMENT");
+
+            // 3. (QUAN TRỌNG) Thêm các cờ này để xóa các Activity trung gian (như ProductDetailActivity)
+            // và đưa MainActivity đã tồn tại ra phía trước, thay vì tạo mới.
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+            // 4. Bắt đầu Intent
+            startActivity(intent);
+        });
     }
 
     // SỬA 6: XÓA BỎ TOÀN BỘ HÀM onActivityResult
@@ -239,24 +266,133 @@ public class ProductDetailActivity extends AppCompatActivity implements AddToCar
         });
     }
 
+
     private void displayProductData(ProductDetail productDetail) {
         this.currentProduct = productDetail;
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+
+        // === BƯỚC 1: HIỂN THỊ DỮ LIỆU TĨNH CƠ BẢN (TÊN, MÔ TẢ) ===
         binding.tvProductName.setText(productDetail.getName());
         binding.tvProductTitle.setText(productDetail.getName());
-        binding.tvPrice.setText(currencyFormat.format(productDetail.getPrice()));
         binding.tvDescription.setText(Html.fromHtml(productDetail.getDescription(), Html.FROM_HTML_MODE_LEGACY));
 
+        // === BƯỚC 2: HIỂN THỊ SLIDER ẢNH (DI CHUYỂN LÊN TRÊN ĐỂ ƯU TIÊN) ===
+        // Luôn xử lý ảnh ngay lập tức, không phụ thuộc vào logic sale.
         List<String> listUrlImageInfo = new ArrayList<>();
-        if (productDetail.getDetailImages() != null) {
+        if (productDetail.getDetailImages() != null && !productDetail.getDetailImages().isEmpty()) {
             for (ImageInfo imageInfo : productDetail.getDetailImages()) {
-                if (imageInfo != null && imageInfo.getUrl() != null) {
+                // Kiểm tra an toàn 3 bước để đảm bảo URL hợp lệ
+                if (imageInfo != null && imageInfo.getUrl() != null && !imageInfo.getUrl().trim().isEmpty()) {
                     listUrlImageInfo.add(imageInfo.getUrl());
+                } else {
+                    Log.w(TAG, "Phát hiện URL hình ảnh không hợp lệ cho sản phẩm: " + productDetail.getName());
                 }
             }
         }
-        imageUrlSliderAdapter = new ImageUrlSliderAdapter(listUrlImageInfo);
-        binding.sliderProduct.setAdapter(imageUrlSliderAdapter);
+
+        if (!listUrlImageInfo.isEmpty()) {
+            imageUrlSliderAdapter = new ImageUrlSliderAdapter(listUrlImageInfo);
+            binding.sliderProduct.setAdapter(imageUrlSliderAdapter);
+            binding.sliderProduct.setVisibility(View.VISIBLE);
+        } else {
+            // Nếu không có ảnh, ẩn slider đi
+            Log.e(TAG, "Sản phẩm không có ảnh hợp lệ, ẩn slider.");
+            binding.sliderProduct.setVisibility(View.GONE);
+        }
+
+        // === BƯỚC 3: XỬ LÝ LOGIC SALE VÀ GIÁ (PHẦN CÓ THỂ GÂY TRỄ) ===
+        SaleInfo sale = productDetail.getSale();
+
+        if (sale != null && sale.isActive()) {
+            // --- TRƯỜNG HỢP CÓ KHUYẾN MÃI ---
+
+            // 3.1. Hiển thị component Flash Sale
+            binding.flashSaleComponent.getRoot().setVisibility(View.VISIBLE);
+
+            // **SỬA LỖI CRASH Ở ĐÂY:** Chuyển số lượng tồn kho sang String trước khi setText
+            binding.flashSaleComponent.tvQuantityRemaining.setText("Còn " + productDetail.getStock());
+
+            // 3.2. Khởi tạo và chạy đồng hồ đếm ngược
+            try {
+                ZonedDateTime now = ZonedDateTime.now();
+                ZonedDateTime endTime = ZonedDateTime.parse(sale.getEndAt());
+                long durationMillis = Duration.between(now, endTime).toMillis();
+
+                if (durationMillis > 0) {
+                    if (saleCountDownTimer != null) {
+                        saleCountDownTimer.cancel();
+                    }
+
+                    saleCountDownTimer = new CountDownTimer(durationMillis, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            // ======================= BẮT ĐẦU PHẦN SỬA ĐỔI =======================
+
+                            // 1. Tính toán tổng số ngày, giờ, phút, giây
+                            long days = TimeUnit.MILLISECONDS.toDays(millisUntilFinished);
+                            long hours = TimeUnit.MILLISECONDS.toHours(millisUntilFinished) % 24; // Lấy phần giờ lẻ trong ngày
+                            long minutes = TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) % 60;
+                            long seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) % 60;
+
+                            String timeLeftFormatted;
+
+                            // 2. Kiểm tra nếu còn ngày
+                            if (days > 0) {
+                                // CÒN NHIỀU HƠN 1 NGÀY: Hiển thị "X ngày HH:mm:ss"
+                                timeLeftFormatted = String.format(
+                                        Locale.getDefault(),
+                                        "%d ngày %02d:%02d:%02d",
+                                        days, hours, minutes, seconds
+                                );
+                            } else {
+                                // CÒN ÍT HƠN 1 NGÀY: Chỉ hiển thị "HH:mm:ss"
+                                timeLeftFormatted = String.format(
+                                        Locale.getDefault(),
+                                        "%02d:%02d:%02d",
+                                        hours, minutes, seconds
+                                );
+                            }
+
+                            // 3. Cập nhật TextView
+                            binding.flashSaleComponent.tvSaleEndTime.setText("Kết thúc trong " + timeLeftFormatted);
+
+                            // ======================= KẾT THÚC PHẦN SỬA ĐỔI =======================
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            binding.flashSaleComponent.tvSaleEndTime.setText("Đã kết thúc");
+                        }
+                    }.start();
+                } else {
+                    binding.flashSaleComponent.tvSaleEndTime.setText("Đã kết thúc");
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Lỗi khi xử lý thời gian sale", e);
+                binding.flashSaleComponent.tvSaleEndTime.setText("Lỗi thời gian");
+            }
+
+            // 3.3. Tính toán và hiển thị giá
+            double newPrice;
+            if ("percent".equals(sale.getType())) {
+                newPrice = productDetail.getPrice() * (100.0 - sale.getValue()) / 100.0;
+            } else {
+                newPrice = productDetail.getPrice() - sale.getValue();
+            }
+            binding.tvPrice.setText(currencyFormat.format(newPrice));
+            binding.tvPrice.setTextColor(getResources().getColor(R.color.red)); // Đảm bảo bạn có màu R.color.red
+
+            binding.tvOldPrice.setVisibility(View.VISIBLE);
+            binding.tvOldPrice.setText(currencyFormat.format(productDetail.getPrice()));
+            binding.tvOldPrice.setPaintFlags(binding.tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+        } else {
+            // --- TRƯỜNG HỢP KHÔNG CÓ KHUYẾN MÃI ---
+            binding.flashSaleComponent.getRoot().setVisibility(View.GONE);
+            binding.tvOldPrice.setVisibility(View.GONE);
+            binding.tvPrice.setText(currencyFormat.format(productDetail.getPrice()));
+            binding.tvPrice.setTextColor(getResources().getColor(R.color.black));
+        }
     }
 
     private void runFlyToCartAnimation(View viewToAnimate) {
