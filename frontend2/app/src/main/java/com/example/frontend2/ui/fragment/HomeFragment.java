@@ -1,6 +1,6 @@
 package com.example.frontend2.ui.fragment;
 
-// CÁC IMPORT ĐÃ ĐƯỢC DỌN DẸP
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.EditText;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,27 +19,36 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 
 import com.example.frontend2.R;
-import com.example.frontend2.ui.adapter.CategoryAdapter;
-import com.example.frontend2.ui.adapter.ProductAdapter;
-import com.example.frontend2.ui.adapter.SliderAdapter;
+import com.example.frontend2.adapter.ChatAdapter;
 import com.example.frontend2.data.model.Category;
+import com.example.frontend2.data.model.ChatMessage;
+import com.example.frontend2.data.model.ChatMessageRequest;
+import com.example.frontend2.data.model.ChatMessageResponse;
 import com.example.frontend2.data.model.ProductInList;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.FragmentHomeBinding;
+import com.example.frontend2.ui.adapter.CategoryAdapter;
+import com.example.frontend2.ui.adapter.ProductAdapter;
+import com.example.frontend2.ui.adapter.SliderAdapter;
 import com.example.frontend2.ui.main.ProductDetailActivity;
 import com.example.frontend2.ui.main.ProductListActivity;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,29 +56,32 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment implements ProductAdapter.OnItemClickListener, CategoryAdapter.OnCategoryClickListener {
 
     private static final String TAG = "HomeFragment";
+    private static final String CHATBOT_RESPONSE_TAG = "CHATBOT_RESPONSE";
     private FragmentHomeBinding binding;
-    private ApiService apiService;
+    private ApiService apiService; // Dành cho backend chính
+    private ApiService chatbotApiService; // Dành cho backend chatbot
 
-    // --- Adapters cho RecyclerViews ---
     private CategoryAdapter categoryAdapter;
     private ProductAdapter productAdapter;
 
-    // --- Biến dành cho Banner Slider ---
     private SliderAdapter sliderAdapter;
     private final Handler sliderHandler = new Handler(Looper.getMainLooper());
     private Timer sliderTimer;
+
+    // --- Biến cho Chatbot ---
+    private ChatAdapter chatAdapter;
+    private List<ChatMessage> messageList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
+        chatbotApiService = ApiClient.getChatbotRetrofitInstance().create(ApiService.class);
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -75,104 +90,159 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 1. Thiết lập các RecyclerViews và Slider
         setupBannerSlider();
         setupRecyclerViews();
-
-        // 2. Tải dữ liệu từ API
         fetchCategories();
         fetchProducts();
 
+        binding.fabChatbot.setOnClickListener(v -> showChatbotDialog());
+
         if (binding != null) {
             binding.searchBarLayout.setOnClickListener(v -> {
-                Log.d(TAG, "Thanh tìm kiếm được nhấn! Thực hiện FragmentTransaction.");
-
-                // 1. Tạo một instance của SearchFragment
-                SearchFragment searchFragment = new SearchFragment();
-
-                // 2. Lấy FragmentManager từ Activity cha (MainActivity)
                 if (getActivity() != null) {
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-
-                    // 3. Bắt đầu một giao dịch Fragment
-                    fragmentManager.beginTransaction()
-                            // Thay thế Fragment hiện tại trong container bằng SearchFragment
-                            // R.id.fragment_container là ID của FrameLayout trong activity_main.xml
-                            .replace(R.id.fragment_container, searchFragment)
-
-                            // (QUAN TRỌNG) Thêm giao dịch này vào Back Stack
-                            // Điều này cho phép người dùng nhấn nút Back để quay lại HomeFragment
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new SearchFragment())
                             .addToBackStack(null)
-
-                            // Thực thi giao dịch
                             .commit();
                 }
             });
         }
     }
 
-    // =================================================================
-    // VÒNG ĐỜI FRAGMENT & QUẢN LÝ SLIDER
-    // =================================================================
+    private void showChatbotDialog() {
+        final Dialog dialog = new Dialog(requireContext(), android.R.style.Theme_Holo_Light_NoActionBar_Fullscreen);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_chatbot);
 
+        ImageButton closeButton = dialog.findViewById(R.id.button_close);
+        RecyclerView chatRecyclerView = dialog.findViewById(R.id.recycler_view_chat);
+        EditText messageEditText = dialog.findViewById(R.id.edit_text_chatbox);
+        ImageButton sendButton = dialog.findViewById(R.id.button_chatbox_send);
+
+        closeButton.setOnClickListener(v -> dialog.dismiss());
+
+        messageList = new ArrayList<>();
+        chatAdapter = new ChatAdapter(messageList);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        chatRecyclerView.setLayoutManager(layoutManager);
+        chatRecyclerView.setAdapter(chatAdapter);
+
+        messageList.add(new ChatMessage("Xin chào! Tôi có thể giúp gì cho bạn?", false));
+        chatAdapter.notifyItemInserted(messageList.size() - 1);
+
+        sendButton.setOnClickListener(v -> {
+            String userMessage = messageEditText.getText().toString().trim();
+            if (!userMessage.isEmpty()) {
+                messageList.add(new ChatMessage(userMessage, true));
+                chatAdapter.notifyItemInserted(messageList.size() - 1);
+                chatRecyclerView.scrollToPosition(messageList.size() - 1);
+                messageEditText.setText("");
+                sendMessageToBot(userMessage, chatRecyclerView);
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void sendMessageToBot(String message, RecyclerView chatRecyclerView) {
+        final int typingMessagePosition = messageList.size();
+        messageList.add(new ChatMessage("Bot đang trả lời...", false));
+        chatAdapter.notifyItemInserted(typingMessagePosition);
+        chatRecyclerView.scrollToPosition(typingMessagePosition);
+
+        chatbotApiService.sendMessageToChatbot(new ChatMessageRequest(message)).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                messageList.remove(typingMessagePosition);
+                chatAdapter.notifyItemRemoved(typingMessagePosition);
+
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String rawJsonResponse = response.body().string();
+                        Log.d(CHATBOT_RESPONSE_TAG, "Raw JSON: " + rawJsonResponse);
+
+                        Gson gson = new Gson();
+                        ChatMessageResponse chatResponse = gson.fromJson(rawJsonResponse, ChatMessageResponse.class);
+
+                        if (chatResponse != null && chatResponse.getResponse() != null) {
+                            messageList.add(new ChatMessage(chatResponse.getResponse(), false));
+                        } else {
+                            Log.e(CHATBOT_RESPONSE_TAG, "Parsed response or its content is null.");
+                            messageList.add(new ChatMessage("Lỗi xử lý phản hồi từ bot.", false));
+                        }
+                    } catch (IOException | JsonSyntaxException e) {
+                        Log.e(CHATBOT_RESPONSE_TAG, "Error parsing JSON", e);
+                        messageList.add(new ChatMessage("Lỗi đọc phản hồi từ bot.", false));
+                    }
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                        Log.e(CHATBOT_RESPONSE_TAG, "API Error: " + response.code() + " - " + errorBody);
+                        messageList.add(new ChatMessage("Bot đang gặp sự cố. Vui lòng thử lại sau.", false));
+                    } catch (IOException e) {
+                        Log.e(CHATBOT_RESPONSE_TAG, "Error reading error body", e);
+                    }
+                }
+                chatAdapter.notifyItemInserted(messageList.size() - 1);
+                chatRecyclerView.scrollToPosition(messageList.size() - 1);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                Log.e(CHATBOT_RESPONSE_TAG, "API Call Failed", t);
+                messageList.remove(typingMessagePosition);
+                chatAdapter.notifyItemRemoved(typingMessagePosition);
+                messageList.add(new ChatMessage("Lỗi kết nối tới chatbot, vui lòng thử lại sau.", false));
+                chatAdapter.notifyItemInserted(messageList.size() - 1);
+                chatRecyclerView.scrollToPosition(messageList.size() - 1);
+            }
+        });
+    }
+
+    // ... (Các phương thức còn lại của HomeFragment không thay đổi)
     @Override
     public void onResume() {
         super.onResume();
-        // Bắt đầu lại slider khi người dùng quay lại màn hình
         startAutoSlider();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        // Tạm dừng slider khi người dùng rời khỏi màn hình để tiết kiệm pin
         stopAutoSlider();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Dừng hẳn và dọn dẹp slider để tránh rò rỉ bộ nhớ
         stopAutoSlider();
-        // Quan trọng: giải phóng tham chiếu đến binding
         binding = null;
     }
 
-    // =================================================================
-    // SETUP VIEWS
-    // =================================================================
-
     private void setupBannerSlider() {
-        List<Integer> imageList = Arrays.asList(
-                R.drawable.slide1, R.drawable.slide2, R.drawable.slide3, R.drawable.slide4
-        );
+        List<Integer> imageList = Arrays.asList(R.drawable.slide1, R.drawable.slide2, R.drawable.slide3, R.drawable.slide4);
         sliderAdapter = new SliderAdapter(imageList);
+        if (binding == null) return;
         binding.viewPagerBanner.setAdapter(sliderAdapter);
         binding.viewPagerBanner.setClipToPadding(false);
         binding.viewPagerBanner.setClipChildren(false);
         binding.viewPagerBanner.setOffscreenPageLimit(3);
-
         CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
         compositePageTransformer.addTransformer(new MarginPageTransformer(40));
         binding.viewPagerBanner.setPageTransformer(compositePageTransformer);
     }
 
     private void setupRecyclerViews() {
-        // Category RecyclerView
+        if (binding == null) return;
         binding.recyclerCategory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         categoryAdapter = new CategoryAdapter(getContext(), new ArrayList<>(), this);
         binding.recyclerCategory.setAdapter(categoryAdapter);
-
-        // Product RecyclerView
         binding.recyclerProduct.setLayoutManager(new GridLayoutManager(getContext(), 2));
         productAdapter = new ProductAdapter(getContext(), new ArrayList<>(), this);
         binding.recyclerProduct.setAdapter(productAdapter);
-        binding.recyclerProduct.setNestedScrollingEnabled(false); // Giúp cuộn mượt hơn trong NestedScrollView
+        binding.recyclerProduct.setNestedScrollingEnabled(false);
     }
-
-    // =================================================================
-    // LẤY DỮ LIỆU TỪ API
-    // =================================================================
 
     private void fetchCategories() {
         apiService.getCategories().enqueue(new Callback<List<Category>>() {
@@ -180,14 +250,11 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
             public void onResponse(@NonNull Call<List<Category>> call, @NonNull Response<List<Category>> response) {
                 if (response.isSuccessful() && response.body() != null && categoryAdapter != null) {
                     categoryAdapter.updateData(response.body());
-                } else {
-                    Log.e(TAG, "Lỗi khi lấy danh mục: " + response.code());
                 }
             }
-
             @Override
             public void onFailure(@NonNull Call<List<Category>> call, @NonNull Throwable t) {
-                Log.e(TAG, "Lỗi kết nối API danh mục: ", t);
+                Log.e(TAG, "API Failure: fetchCategories", t);
             }
         });
     }
@@ -198,21 +265,14 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
             public void onResponse(@NonNull Call<List<ProductInList>> call, @NonNull Response<List<ProductInList>> response) {
                 if (response.isSuccessful() && response.body() != null && productAdapter != null) {
                     productAdapter.updateData(response.body());
-                } else {
-                    Log.e(TAG, "Lỗi khi lấy sản phẩm: " + response.code());
                 }
             }
-
             @Override
             public void onFailure(@NonNull Call<List<ProductInList>> call, @NonNull Throwable t) {
-                Log.e(TAG, "Lỗi kết nối API sản phẩm: ", t);
+                Log.e(TAG, "API Failure: fetchProducts", t);
             }
         });
     }
-
-    // =================================================================
-    // XỬ LÝ SỰ KIỆN CLICK
-    // =================================================================
 
     @Override
     public void onItemClick(ProductInList productInList) {
@@ -229,15 +289,8 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
         startActivity(intent);
     }
 
-    // =================================================================
-    // LOGIC TỰ ĐỘNG CUỘN SLIDER
-    // =================================================================
-
     private void startAutoSlider() {
-        // Kiểm tra để đảm bảo slider không chạy 2 lần
-        if (sliderTimer != null) {
-            return;
-        }
+        if (sliderTimer != null) return;
         sliderTimer = new Timer();
         sliderTimer.schedule(new TimerTask() {
             @Override
@@ -250,7 +303,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
                     binding.viewPagerBanner.setCurrentItem(nextItem, true);
                 });
             }
-        }, 3000, 3000); // Bắt đầu sau 3s, lặp lại mỗi 3s
+        }, 3000, 3000);
     }
 
     private void stopAutoSlider() {
@@ -259,7 +312,4 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
             sliderTimer = null;
         }
     }
-
-    // === TOÀN BỘ LOGIC VỀ "observeCartChanges" ĐÃ ĐƯỢC XÓA VÌ NÓ KHÔNG THUỘC VỀ HOMEFRAGMENT ===
-
 }
