@@ -65,7 +65,47 @@
 
 
 const Discount = require('../models/discountModel');
+const DiscountUsage = require('../models/discountUsageModel');
 const Product = require('../models/productModel');
+const User = require('../models/userModel');
+
+// Helper: check if user is eligible for discount
+const isUserEligible = async (discount, userId) => {
+  if (!userId) return false;
+  
+  if (discount.userType === 'all') return true;
+  
+  if (discount.userType === 'specific') {
+    return discount.allowedUsers.some(id => String(id) === String(userId));
+  }
+  
+  if (discount.userType === 'new' || discount.userType === 'vip') {
+    const user = await User.findById(userId);
+    if (!user) return false;
+    // Check customerTier field for new/vip/regular
+    return user.customerTier === discount.userType;
+  }
+  
+  return false;
+};
+
+// Helper: calculate discount amount
+const calculateDiscountAmount = (discount, orderValue) => {
+  let amount = 0;
+  
+  if (discount.type === 'percent') {
+    amount = Math.round(orderValue * (discount.value / 100));
+  } else {
+    amount = discount.value;
+  }
+  
+  // Apply max discount cap if set
+  if (discount.maxDiscount && amount > discount.maxDiscount) {
+    amount = discount.maxDiscount;
+  }
+  
+  return amount;
+};
 
 const normalizeBody = (body = {}) => {
   const data = { ...body };
@@ -80,6 +120,7 @@ const normalizeBody = (body = {}) => {
   return data;
 };
 
+// Admin: Get all discounts
 const getDiscounts = async (req, res) => {
   try {
     const { code, active } = req.query;
@@ -93,6 +134,7 @@ const getDiscounts = async (req, res) => {
   }
 };
 
+// Admin: Create discount
 const createDiscount = async (req, res) => {
   try {
     const payload = normalizeBody(req.body);
@@ -113,6 +155,7 @@ const createDiscount = async (req, res) => {
   }
 };
 
+// Admin: Update discount
 const updateDiscount = async (req, res) => {
   try {
     const payload = normalizeBody(req.body);
@@ -138,6 +181,7 @@ const updateDiscount = async (req, res) => {
   }
 };
 
+// Admin: Delete discount
 const deleteDiscount = async (req, res) => {
   try {
     const discount = await Discount.findById(req.params.id);
@@ -151,19 +195,161 @@ const deleteDiscount = async (req, res) => {
   }
 };
 
-// preview discount application on cart
+// User: Get available discounts for current user
+const getAvailableDiscounts = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const now = new Date();
+    
+    // Get all active discounts
+    const allDiscounts = await Discount.find({
+      isActive: true,
+      $or: [
+        { startAt: { $exists: false } },
+        { startAt: null },
+        { startAt: { $lte: now } }
+      ],
+      $or: [
+        { endAt: { $exists: false } },
+        { endAt: null },
+        { endAt: { $gte: now } }
+      ]
+    });
+    
+    // Filter by user eligibility
+    const eligible = [];
+    for (const discount of allDiscounts) {
+      // Check global usage limit
+      if (discount.usageLimit && discount.usedCount >= discount.usageLimit) continue;
+      
+      // Check user eligibility
+      const isEligible = await isUserEligible(discount, userId);
+      if (!isEligible) continue;
+      
+      // Check per-user limit
+      if (discount.perUserLimit) {
+        const userUsageCount = await DiscountUsage.countDocuments({
+          discount: discount._id,
+          user: userId
+        });
+        if (userUsageCount >= discount.perUserLimit) continue;
+      }
+      
+      eligible.push(discount);
+    }
+    
+    res.json(eligible);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// User: Validate discount code
+const validateDiscount = async (req, res) => {
+  try {
+    const { code } = req.body;
+    const userId = req.user.id;
+    
+    const discount = await Discount.findOne({ 
+      code: String(code || '').toUpperCase(),
+      isActive: true 
+    });
+    
+    if (!discount) {
+      return res.status(404).json({ message: 'Mã không tồn tại hoặc không hoạt động' });
+    }
+    
+    const now = new Date();
+    
+    // Check time validity
+    if (discount.startAt && now < discount.startAt) {
+      return res.status(400).json({ message: 'Chưa đến thời gian áp dụng' });
+    }
+    if (discount.endAt && now > discount.endAt) {
+      return res.status(400).json({ message: 'Mã đã hết hạn' });
+    }
+    
+    // Check global usage limit
+    if (discount.usageLimit && discount.usedCount >= discount.usageLimit) {
+      return res.status(400).json({ message: 'Mã đã đạt giới hạn sử dụng' });
+    }
+    
+    // Check user eligibility
+    const isEligible = await isUserEligible(discount, userId);
+    if (!isEligible) {
+      return res.status(403).json({ message: 'Bạn không đủ điều kiện sử dụng mã này' });
+    }
+    
+    // Check per-user limit
+    if (discount.perUserLimit) {
+      const userUsageCount = await DiscountUsage.countDocuments({
+        discount: discount._id,
+        user: userId
+      });
+      if (userUsageCount >= discount.perUserLimit) {
+        return res.status(400).json({ message: 'Bạn đã sử dụng hết lượt cho mã này' });
+      }
+    }
+    
+    res.json({
+      valid: true,
+      discount: {
+        code: discount.code,
+        type: discount.type,
+        value: discount.value,
+        minOrder: discount.minOrder,
+        maxDiscount: discount.maxDiscount
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// User: Preview discount application on cart
 const previewDiscount = async (req, res) => {
   try {
-    const { code, items = [], subtotal = 0, userId } = req.body;
-    const coupon = await Discount.findOne({ code: String(code || '').toUpperCase(), isActive: true });
-    if (!coupon) return res.status(404).json({ message: 'Mã không tồn tại hoặc không hoạt động' });
+    const { code, items = [], subtotal = 0 } = req.body;
+    const userId = req.user?.id;
+    
+    const coupon = await Discount.findOne({ 
+      code: String(code || '').toUpperCase(), 
+      isActive: true 
+    });
+    
+    if (!coupon) {
+      return res.status(404).json({ message: 'Mã không tồn tại hoặc không hoạt động' });
+    }
 
     const now = new Date();
-    if (coupon.startAt && now < coupon.startAt) return res.status(400).json({ message: 'Chưa đến thời gian áp dụng' });
-    if (coupon.endAt && now > coupon.endAt) return res.status(400).json({ message: 'Mã đã hết hạn' });
+    if (coupon.startAt && now < coupon.startAt) {
+      return res.status(400).json({ message: 'Chưa đến thời gian áp dụng' });
+    }
+    if (coupon.endAt && now > coupon.endAt) {
+      return res.status(400).json({ message: 'Mã đã hết hạn' });
+    }
 
-    if (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit)
+    if (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit) {
       return res.status(400).json({ message: 'Mã đã đạt giới hạn sử dụng' });
+    }
+    
+    // Check user eligibility if userId provided
+    if (userId) {
+      const isEligible = await isUserEligible(coupon, userId);
+      if (!isEligible) {
+        return res.status(403).json({ message: 'Bạn không đủ điều kiện sử dụng mã này' });
+      }
+      
+      if (coupon.perUserLimit) {
+        const userUsageCount = await DiscountUsage.countDocuments({
+          discount: coupon._id,
+          user: userId
+        });
+        if (userUsageCount >= coupon.perUserLimit) {
+          return res.status(400).json({ message: 'Bạn đã sử dụng hết lượt cho mã này' });
+        }
+      }
+    }
 
     // scope validation
     const productIds = items.map(i => i.product).filter(Boolean);
@@ -179,18 +365,15 @@ const previewDiscount = async (req, res) => {
     const excludedCategories = coupon.excludeCategories?.length &&
       categoryIds.some(id => coupon.excludeCategories.map(x => String(x)).includes(String(id)));
 
-    if ((!inProducts && !inCategories) || excludedProducts || excludedCategories)
+    if ((!inProducts && !inCategories) || excludedProducts || excludedCategories) {
       return res.status(400).json({ message: 'Mã không áp dụng cho giỏ hàng này' });
+    }
 
-    if (coupon.minOrder && subtotal < coupon.minOrder)
-      return res.status(400).json({ message: 'Chưa đạt giá trị tối thiểu' });
+    if (coupon.minOrder && subtotal < coupon.minOrder) {
+      return res.status(400).json({ message: `Chưa đạt giá trị tối thiểu ${coupon.minOrder.toLocaleString()}₫` });
+    }
 
-    let discountValue = coupon.type === 'percent'
-      ? Math.round(subtotal * (coupon.value / 100))
-      : coupon.value;
-
-    if (coupon.maxDiscount && discountValue > coupon.maxDiscount)
-      discountValue = coupon.maxDiscount;
+    const discountValue = calculateDiscountAmount(coupon, subtotal);
 
     res.json({
       code: coupon.code,
@@ -208,5 +391,9 @@ module.exports = {
   createDiscount,
   updateDiscount,
   deleteDiscount,
+  getAvailableDiscounts,
+  validateDiscount,
   previewDiscount,
+  isUserEligible,
+  calculateDiscountAmount,
 };

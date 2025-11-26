@@ -70,7 +70,13 @@ const discountSchema = new mongoose.Schema({
   startAt: { type: Date },
   endAt: { type: Date },
   usageLimit: { type: Number, default: 0 }, // 0 = unlimited
-  perUserLimit: { type: Number, default: 0 }, // 0 = unlimited
+  perUserLimit: { type: Number, default: 0 }, // 0 = unlimited per user
+  userType: { 
+    type: String, 
+    enum: ['all', 'new', 'vip', 'specific'], 
+    default: 'all' 
+  },
+  allowedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   applicableProducts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
   applicableCategories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
   excludeProducts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
@@ -79,5 +85,19 @@ const discountSchema = new mongoose.Schema({
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   usedCount: { type: Number, default: 0 },
 }, { timestamps: true });
+
+// Validation
+discountSchema.pre('save', function(next) {
+  if (this.type === 'percent' && (this.value < 0 || this.value > 100)) {
+    return next(new Error('Percent discount must be between 0 and 100'));
+  }
+  if (this.startAt && this.endAt && this.startAt >= this.endAt) {
+    return next(new Error('Start date must be before end date'));
+  }
+  if (this.userType === 'specific' && (!this.allowedUsers || this.allowedUsers.length === 0)) {
+    return next(new Error('Specific user type requires at least one allowed user'));
+  }
+  next();
+});
 
 module.exports = mongoose.model('Discount', discountSchema);
