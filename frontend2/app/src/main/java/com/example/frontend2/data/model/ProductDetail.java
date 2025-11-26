@@ -54,6 +54,16 @@ public class ProductDetail implements Serializable {
     public SaleInfo getSale() {
         return sale;
     }
-    // --------------------------------------------------
+
+    public double getFinalPrice() {
+        if (sale != null && sale.isActive() && sale.getValue() > 0) {
+            double finalPrice = this.price - (this.price * sale.getValue() / 100.0);
+            if (finalPrice >= 0) {
+                return finalPrice;
+            }
+        }
+
+        return this.price;
+    }
 }
 

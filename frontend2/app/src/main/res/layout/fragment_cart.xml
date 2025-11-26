@@ -6,650 +6,386 @@
     android:id="@+id/root_cart_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
-    >
+    android:background="#F5F5F5">
 
-    <!-- Layout chính -->
     <LinearLayout
         android:id="@+id/cart_content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Thanh tiêu đề -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar_cart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/primary"
             android:elevation="4dp"
-            app:title="Giỏ hàng của bạn"
-            app:titleTextColor="@color/white"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:navigationIconTint="@color/white"
-            app:titleCentered="true" />
+            app:title="Giỏ hàng của bạn"
+            app:titleCentered="true"
+            app:titleTextColor="@color/white" />
 
-        <!-- Nội dung có thể cuộn (chiếm phần còn lại, trừ thanh đặt hàng) -->
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:fillViewport="true"
-            android:padding="10dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:fillViewport="true">
 
-            <!--       WRAP CONTENT     -->
             <LinearLayout
-                android:id="@+id/address_section_placeholder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:layout_marginHorizontal="5dp"
-                android:background="#EBEBEB">
+                android:padding="10dp">
 
-                <!-- Ô thông tin giao nhận hàng -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="185dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/bg_white_rounded"
+                    android:elevation="2dp"
                     android:orientation="vertical"
-                    android:layout_margin="1dp"
-                    android:elevation="2dp">
-                    <!-- Thanh chọn phương thức giao hàng -->
-                    <LinearLayout
-                        android:id="@+id/method_selector"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:background="#EBEBEB"
-                        android:orientation="horizontal"
-                        android:padding="4dp"
-                        android:gravity="center_vertical"
-                        android:layout_margin="15dp">
+                    android:padding="12dp">
 
-                        <!-- Nút: Giao hàng tận nơi (mặc định chọn) -->
-                        <TextView
-                            android:id="@+id/btn_delivery"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="Giao hàng tận nơi"
-                            android:textSize="16sp"
-                            android:textColor="@color/primary"
-                            android:textStyle="bold"
-                            android:background="@drawable/cart_tab_selected"
-                            android:layout_margin="5dp"/>
-
-                        <!-- Nút: Nhận tại cửa hàng -->
-                        <TextView
-                            android:id="@+id/btn_pickup"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="Nhận tại cửa hàng"
-                            android:textSize="16sp"
-                            android:textColor="@color/primary"
-                            android:textStyle="bold"
-                            android:background="@drawable/cart_tab_unselected"
-                            android:layout_margin="5dp"/>
-                    </LinearLayout>
-
-                    <!-- Phần địa chỉ -->
                     <LinearLayout
                         android:id="@+id/layout_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="5dp"
-                        android:gravity="center_vertical"
-                        android:background="@android:color/white"
                         android:clickable="true"
                         android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground">
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-
-                        <!-- Thông tin địa chỉ -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
-                            android:layout_marginStart="8dp">
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/tv_address_title"
+                                android:id="@+id/tv_user_info"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Địa chỉ:"
-                                android:textStyle="bold"
-                                android:textColor="#000"
+                                android:textColor="@color/black"
                                 android:textSize="16sp"
-                                />
+                                android:textStyle="bold"
+                                tools:text="Anh Chai C2 | 0123456789" />
 
                             <TextView
                                 android:id="@+id/tv_address_detail"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Khu phố 34, Phường Linh Trung, TP. Thủ Đức"
-                                android:textColor="#555555"
-                                android:textSize="16sp"
-                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="4dp"
                                 android:ellipsize="end"
-                                android:maxLines="1"/>
+                                android:maxLines="2"
+                                android:textColor="#555555"
+                                android:textSize="14sp"
+                                tools:text="Khu phố 34, Phường Linh Trung, TP. Thủ Đức" />
                         </LinearLayout>
 
-                        <!-- Icon mũi tên -->
                         <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="15dp"
-                            android:src="@drawable/ic_arrow_right"
-                            android:contentDescription="Arrow_Right"/>
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="8dp"
+                            android:contentDescription="Arrow_Right"
+                            android:src="@drawable/ic_arrow_right" />
                     </LinearLayout>
-
-                    <!-- Dòng tên người + số điện thoại -->
-                    <TextView
-                        android:id="@+id/tv_user_info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginTop="4dp"
-                        android:text="Anh Chai C2, 0123456789"
-                        android:textColor="#555555"
-                        android:textSize="16sp"
-                        android:fontFamily="sans-serif"
-                        />
-
-                    <!-- Đường kẻ phân cách -->
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="#676B70" />
-
-
-                    <!-- Dòng Giao từ -->
-                    <LinearLayout
-                        android:id="@+id/delivery_from_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="5dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground">
-
-
-                        <!-- Thông tin địa chỉ giao từ -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="horizontal"
-                            android:layout_marginStart="8dp">
-
-                            <TextView
-                                android:id="@+id/tv_delivery_from"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Giao từ:"
-                                android:textStyle="bold"
-                                android:textColor="#000"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/tv_store_address"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="120, Yên Lãng, Đống Đa, Hà Nội"
-                                android:textColor="#555555"
-                                android:textSize="16sp"
-                                android:layout_marginStart="5dp"
-                                android:ellipsize="end"
-                                android:maxLines="1"/>
-                        </LinearLayout>
-
-                        <!-- Icon arrow right -->
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="15dp"
-                            android:src="@drawable/ic_arrow_right"
-                            android:contentDescription="Arrow_Right"/>
-
-                    </LinearLayout>
-
                 </LinearLayout>
 
-                <!-- Ô chọn thời gian giao -->
-                <LinearLayout
-                    android:id="@+id/time_selection_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="15dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_white_rounded"
-                    android:elevation="2dp"
-                    android:padding="8dp">
-
-                    <!-- Text hiển thị chọn thời gian giao -->
-                    <LinearLayout
-                        android:id="@+id/tv_time_selection"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="5dp"
-                        >
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Chọn thời gian giao"
-                                android:textStyle="bold"
-                                android:textColor="#023E8A"
-                                android:textSize="16sp"
-                                android:fontFamily="sans-serif"
-                                />
-                        </LinearLayout>
-
-                        <!-- Icon arrow down -->
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_arrow_right"
-                            app:tint="@color/primary"
-                            android:rotation="90"
-                            android:contentDescription="Arrow_Down"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?attr/selectableItemBackground"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <!-- Ô hiển thị sản phẩm trong giỏ -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_cart_items"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:padding="8dp"
-                    android:background="@drawable/bg_white_rounded"/>
+                    android:layout_marginTop="15dp" />
 
-                <!--  Ô sử dụng phiếu mua hàng  -->
                 <LinearLayout
                     android:id="@+id/discount_selection_container"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:orientation="horizontal"
                     android:background="@drawable/bg_white_rounded"
+                    android:clickable="true"
                     android:elevation="2dp"
-                    android:padding="8dp">
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
-                    <!--  Icon phiếu mua hàng  -->
                     <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/ic_ticket"
-                        app:tint="@color/primary"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:contentDescription="Ticket"
-                        android:layout_gravity="center_vertical"/>
+                        android:src="@drawable/ic_ticket"
+                        app:tint="@color/primary" />
 
-                    <!--  Dòng hiển thị sử dụng phiếu mua hàng  -->
-                    <LinearLayout
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
                         android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:layout_gravity="center">
+                        android:fontFamily="sans-serif"
+                        android:text="Sử dụng phiếu mua hàng"
+                        android:textColor="#023E8A"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Sử dụng phiếu mua hàng"
-                            android:textStyle="bold"
-                            android:textColor="#023E8A"
-                            android:textSize="16sp"
-                            android:fontFamily="sans-serif"
-                            android:paddingStart="10dp"/>
-                    </LinearLayout>
-
-                    <!-- Icon arrow right -->
                     <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="Arrow_Right"
                         android:src="@drawable/ic_arrow_right"
-                        android:layout_gravity="center"
-                        app:tint="#023E8A"
-                        android:contentDescription="Arrow_Down"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground"/>
-
+                        app:tint="#023E8A" />
                 </LinearLayout>
 
-                <!--  Ô thông tin thanh toán  -->
                 <LinearLayout
                     android:id="@+id/payment_info_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:orientation="vertical"
                     android:background="@drawable/bg_white_rounded"
                     android:elevation="2dp"
-                    android:padding="8dp">
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
-                    <!--  Dòng tiêu đề  -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:text="Thông tin thanh toán"
                         android:textColor="#000"
                         android:textSize="18sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
-                    <!--  Dòng tiền hàng  -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="5dp"
-                        android:gravity="center_vertical">
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
 
-                        <!-- Tiền hàng -->
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Tiền hàng:"
-                            android:textStyle="bold"
                             android:textColor="#000"
-                            android:textSize="16sp"
-                            android:layout_marginStart="5dp" />
+                            android:textSize="16sp" />
 
-                        <!--  Số tiền  -->
                         <TextView
                             android:id="@+id/subtotal_price"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="100.000đ"
                             android:textColor="#555555"
                             android:textSize="16sp"
-                            android:layout_marginStart="5dp"
-                            android:ellipsize="end"
-                            android:maxLines="1"/>
-
+                            tools:text="100.000đ" />
                     </LinearLayout>
 
-                    <!--  Dòng phí giao hàng  -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="5dp"
-                        android:gravity="center_vertical">
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
 
-                        <!-- Phí giao hàng -->
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Phí giao hàng, phụ phí:"
-                            android:textStyle="bold"
                             android:textColor="#000"
-                            android:textSize="16sp"
-                            android:layout_marginStart="5dp" />
+                            android:textSize="16sp" />
 
-                        <!--  Số tiền  -->
                         <TextView
                             android:id="@+id/extra_fee"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0đ"
                             android:textColor="#555555"
                             android:textSize="16sp"
-                            android:layout_marginStart="5dp"
-                            android:ellipsize="end"
-                            android:maxLines="1"/>
-
+                            tools:text="0đ" />
                     </LinearLayout>
 
-                    <!--  Dòng tổng đơn hàng  -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="5dp"
-                        android:gravity="center_vertical">
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
 
-                        <!-- Tổng đơn hàng -->
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Tổng đơn hàng:"
-                            android:textStyle="bold"
                             android:textColor="#000"
                             android:textSize="16sp"
-                            android:layout_marginStart="5dp"/>
+                            android:textStyle="bold" />
 
-                        <!--  Số tiền  -->
                         <TextView
                             android:id="@+id/ok_price"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="100.000đ"
-                            android:textColor="#555555"
+                            android:textColor="#000"
                             android:textSize="18sp"
                             android:textStyle="bold"
-                            android:layout_marginStart="5dp"
-                            android:ellipsize="end"
-                            android:maxLines="1"/>
-
+                            tools:text="100.000đ" />
                     </LinearLayout>
-
                 </LinearLayout>
 
-                <!--  Ô chọn phương thức thanh toán  -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:orientation="vertical"
                     android:background="@drawable/bg_white_rounded"
                     android:elevation="2dp"
-                    android:padding="8dp">
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
-                    <!--  Dòng tiêu đề  -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:text="Phương thức thanh toán"
                         android:textColor="#000"
                         android:textSize="18sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
-                    <!--  Dòng chọn phương thức  -->
                     <LinearLayout
                         android:id="@+id/payment_method_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="5dp"
-                        android:layout_marginBottom="15dp"
-                        android:gravity="center_vertical"
+                        android:layout_marginTop="10dp"
                         android:background="#E1FEDC"
                         android:clickable="true"
                         android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground">
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="8dp">
 
-                        <!--  Icon cash  -->
                         <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/ic_cash"
-                            app:tint="#677C52"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:contentDescription="Cash"
-                            android:layout_gravity="center_vertical"/>
+                            android:src="@drawable/ic_cash"
+                            app:tint="#677C52" />
 
-                        <!-- Tiền mặt -->
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
                             android:layout_weight="1"
                             android:text="Tiền mặt"
-                            android:textStyle="bold"
                             android:textColor="#000"
                             android:textSize="16sp"
-                            android:layout_marginStart="5dp" />
+                            android:textStyle="bold" />
 
-                        <!--  Nút đổi  -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Đổi"
                             android:textColor="#000"
                             android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:ellipsize="end"
-                            android:maxLines="1"/>
+                            android:textStyle="bold" />
 
-                        <!--  Icon arrow right  -->
                         <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_arrow_right"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:layout_gravity="center"
+                            android:layout_marginStart="4dp"
                             android:contentDescription="Ticket"
-                            android:paddingStart="5dp" />
-
+                            android:src="@drawable/ic_arrow_right" />
                     </LinearLayout>
-
                 </LinearLayout>
 
-                <!--  Ô xóa tất cả  -->
                 <LinearLayout
                     android:id="@+id/btn_clear_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:orientation="horizontal"
-                    android:elevation="2dp"
-                    android:paddingTop="8dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
-                    android:paddingBottom="70dp">   <!-- tránh bị BottomNav che -->
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
 
-                    <!--  Icon Trashbin  -->
                     <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="Delete"
                         android:src="@drawable/ic_delete"
-                        app:tint="#666"
-                        android:layout_gravity="center"
-                        android:contentDescription="Delete" />
+                        app:tint="#666" />
 
-                    <!--  Dòng chữ  -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
+                        android:layout_marginStart="8dp"
                         android:text="Xóa tất cả"
                         android:textColor="#666"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_gravity="center"/>
-
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
-
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 
-        <!-- Thanh đặt hàng cố định ở cuối màn hình -->
         <LinearLayout
             android:id="@+id/button_checkout"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
             android:background="@color/white"
-            android:padding="10dp"
             android:elevation="8dp"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center"
+            android:padding="10dp">
 
-            <!-- Thanh nền xanh -->
             <LinearLayout
                 android:id="@+id/btn_order"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/primary"
-                android:padding="10dp"
-                android:orientation="horizontal"
-                android:gravity="center"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-                <!-- Icon giỏ hàng -->
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:contentDescription="Cart"
                     android:src="@drawable/ic_cart"
-                    app:tint="#fff"
-                    android:contentDescription="Cart"/>
+                    app:tint="#fff" />
 
-                <!-- Text -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
                     android:text="Đặt hàng"
                     android:textColor="#fff"
-                    android:textStyle="bold"
                     android:textSize="20sp"
-                    android:paddingStart="10dp"/>
+                    android:textStyle="bold" />
 
-                <!-- Giá -->
                 <TextView
                     android:id="@+id/text_total_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="100.000đ"
+                    android:paddingStart="5dp"
                     android:textColor="#fff"
-                    android:textStyle="bold"
                     android:textSize="20sp"
-                    android:paddingStart="5dp"/>
-
+                    android:textStyle="bold"
+                    tools:text="100.000đ" />
             </LinearLayout>
-
         </LinearLayout>
-
     </LinearLayout>
 
-    <!-- Layout giỏ hàng trống (hiển thị đè lên trên khi cần) -->
     <LinearLayout
         android:id="@+id/layout_empty_cart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#F5F5F5"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
-        android:background="#F5F5F5"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <ImageView
             android:layout_width="140dp"
@@ -675,7 +411,6 @@
             android:textColor="@color/black" />
     </LinearLayout>
 
-    <!-- Loading -->
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="60dp"
@@ -683,5 +418,6 @@
         android:layout_gravity="center"
         android:indeterminateTint="@color/primary"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
+
 </FrameLayout>

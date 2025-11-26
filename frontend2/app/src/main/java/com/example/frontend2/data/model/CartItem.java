@@ -1,43 +1,154 @@
-// File: com/example/frontend2/data/model/CartItem.java
 package com.example.frontend2.data.model;
 
+import com.google.gson.annotations.SerializedName;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CartItem {
-    // ID của item trong giỏ hàng (ví dụ: 60c72b...)
-    private String _id;
 
-    // Đối tượng Product được lồng vào
+    @SerializedName("_id")
+    private String id;
+
+    @SerializedName("product")
     private ProductInfo product;
 
-    // Số lượng
+    @SerializedName("quantity")
     private int quantity;
 
+    @SerializedName("itemTotal")
+    private double itemTotal;
 
-    // Getters and Setters
-    public String get_id() { return _id; }
-    public void set_id(String _id) { this._id = _id; }
-    public ProductInfo getProduct() { return product; }
-    public void setProduct(ProductInfo product) { this.product = product; }
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    // THÊM TRƯỜNG outOfStock VÀO
+    @SerializedName("outOfStock")
+    private boolean outOfStock;
 
+    // SỬA LẠI CONSTRUCTOR: Thêm outOfStock và tự tính itemTotal
+    public CartItem(String id, ProductInfo product, int quantity, boolean outOfStock) {
+        this.id = id;
+        this.product = product;
+        this.quantity = quantity;
+        this.outOfStock = outOfStock; // Gán giá trị outOfStock
+        if (this.product != null) {
+            this.itemTotal = this.product.getFinalPrice() * this.quantity;
+        } else {
+            this.itemTotal = 0;
+        }
+    }
 
-    // Lớp con để chứa thông tin Product lồng vào
+    public String getId() {
+        return id;
+    }
+
+    public String get_id() {
+        return id;
+    }
+
+    public ProductInfo getProduct() {
+        return product;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public double getItemTotal() {
+        return itemTotal;
+    }
+
+    // THÊM HÀM GET NÀY
+    public boolean isOutOfStock() {
+        return outOfStock;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+        if (this.product != null) {
+            this.itemTotal = this.product.getFinalPrice() * this.quantity;
+        }
+    }
+
+    // SỬA LẠI WITHNEWQUANTITY: Gọi constructor mới, tạm gán outOfStock là false
+    public CartItem withNewQuantity(int newQuantity) {
+        return new CartItem(this.id, this.product, newQuantity, false);
+    }
+
     public static class ProductInfo {
-        private String _id;
+
+        @SerializedName("_id")
+        private String id;
+
+        @SerializedName("name")
         private String name;
-        private double price;
+
+        @SerializedName("image")
+        private String image;
+
+        @SerializedName("images")
         private List<String> images;
 
-        // Getters and Setters
-        public String get_id() { return _id; }
-        public void set_id(String _id) { this._id = _id; }
-        public String getName() { return name; }
-        public void setName(String name) { this.name = name; }
-        public double getPrice() { return price; }
-        public void setPrice(double price) { this.price = price; }
-        public List<String> getImages() { return images; }
-        public void setImages(List<String> images) { this.images = images; }
+        @SerializedName("price")
+        private double price;
+
+        @SerializedName("effectivePrice")
+        private double effectivePrice;
+
+        // THÊM LẠI TRƯỜNG stock
+        @SerializedName("stock")
+        private int stock;
+
+        @SerializedName("sale")
+        private SaleInfo sale;
+
+        public String getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+
+        public double getEffectivePrice() {
+            return effectivePrice;
+        }
+
+        // THÊM LẠI HÀM GET NÀY
+        public int getStock() {
+            return stock;
+        }
+
+        public SaleInfo getSale() {
+            return sale;
+        }
+
+        public List<String> getImages() {
+            if (images == null || images.isEmpty()) {
+                if (image != null && !image.isEmpty()) {
+                    List<String> imageList = new ArrayList<>();
+                    imageList.add(image);
+                    return imageList;
+                }
+            }
+            return images;
+        }
+
+        public double getFinalPrice() {
+            if (sale != null && sale.isActive() && effectivePrice > 0 && effectivePrice < price) {
+                return effectivePrice;
+            }
+            return price;
+        }
+    }
+
+    public static class SaleInfo {
+        @SerializedName("active")
+        private boolean isActive;
+
+        public boolean isActive() {
+            return isActive;
+        }
     }
 }

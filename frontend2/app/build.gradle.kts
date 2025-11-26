@@ -62,6 +62,8 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0") //Dùng compiler của Glide để tạo code tự động
     implementation ("com.google.android.material:material:1.11.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.navigation:navigation-fragment:2.7.7")
+    implementation("androidx.navigation:navigation-ui:2.7.7")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

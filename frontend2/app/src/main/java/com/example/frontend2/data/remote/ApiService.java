@@ -123,6 +123,11 @@ public interface ApiService {
             @Path("itemId") String itemId
     );
 
+    // --- Discount ---
+
+    @GET("api/discounts/")
+
+
     // --- Chatbot (TẠM THỜI DÙNG ResponseBody ĐỂ DEBUG) ---
     @POST("api/chat")
     Call<ResponseBody> sendMessageToChatbot(@Body ChatMessageRequest request);
