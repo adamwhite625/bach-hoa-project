@@ -7,4 +7,5 @@
     <color name="primary">#1E90FF</color>
     <color name="gray_text">#6B7280</color>
     <color name="price">#E53935</color>
+    <color name="default_text_color">#333333</color>
 </resources>

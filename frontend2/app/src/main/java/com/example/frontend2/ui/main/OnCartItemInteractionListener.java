@@ -4,9 +4,6 @@ import com.example.frontend2.data.model.CartItem;
 
 public interface OnCartItemInteractionListener {
 
-    void onIncreaseQuantity(CartItem item);
-
-    void onDecreaseQuantity(CartItem item);
-
-    void onRemoveItem(CartItem item);
+    void onUpdateQuantity(String productId, int newQuantity);
+    void onRemoveItem(String productId);
 }
