@@ -1,3 +1,5 @@
+// XÓA HẾT CODE CŨ VÀ DÁN TOÀN BỘ CODE NÀY VÀO MainActivity.java
+
 package com.example.frontend2.ui.main;
 
 import android.content.Intent;
@@ -8,112 +10,81 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.frontend2.R;
+import com.example.frontend2.databinding.ActivityMainBinding;
 import com.example.frontend2.ui.fragment.CartFragment;
 import com.example.frontend2.ui.fragment.HomeFragment;
 import com.example.frontend2.ui.fragment.OrdersFragment;
 import com.example.frontend2.ui.fragment.ProfileFragment;
 import com.example.frontend2.ui.fragment.SearchFragment;
-import com.example.frontend2.databinding.ActivityMainBinding;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
+
     private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setOnItemSelectedListener(navListener);
+        binding.bottomNavigation.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            Fragment selectedFragment = null;
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+            if (itemId == R.id.nav_home) {
+                selectedFragment = new HomeFragment();
+            } else if (itemId == R.id.nav_orders) {
+                selectedFragment = new OrdersFragment();
+            } else if (itemId == R.id.nav_cart) {
+                selectedFragment = new CartFragment();
+            } else if (itemId == R.id.nav_profile) {
+                selectedFragment = new ProfileFragment();
+            }
 
-        if (savedInstanceState == null) { // Chỉ chạy khi Activity được tạo lần đầu, không phải khi xoay màn hình
-            processIntentNavigation(getIntent(), bottomNav);
+            if (selectedFragment != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, selectedFragment)
+                        .commit();
+                return true;
+            }
+            return false;
+        });
+
+        if (savedInstanceState == null) {
+            if (!handleIntent(getIntent())) {
+                binding.bottomNavigation.setSelectedItemId(R.id.nav_home);
+            }
         }
-
-        handleIntent(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        // Khi MainActivity đã chạy và nhận được một Intent mới (từ ProductDetailActivity)
-        // hàm này sẽ được gọi.
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        processIntentNavigation(intent, bottomNav);
         handleIntent(intent);
     }
 
-    private void handleIntent(Intent intent) {
-        if (intent != null && intent.hasExtra("ACTION")) {
-            String action = intent.getStringExtra("ACTION");
-
-            // CHỈ thực hiện các hành động này nếu nhận được đúng tín hiệu
-            if ("OPEN_SEARCH_FRAGMENT".equals(action)) {
-                Log.d("MainActivity", "Nhận được yêu cầu mở SearchFragment.");
-
-                // 1. Thực hiện việc chuyển sang SearchFragment
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new SearchFragment())
-                        .addToBackStack(null) // Cho phép quay lại fragment trước đó
-                        .commit();
-
-                // 2. CẬP NHẬT GIAO DIỆN BottomNavigationView ĐỂ ĐỒNG BỘ
-                // Dòng này BẮT BUỘC phải nằm ở đây.
-//                binding.bottomNavigation.setSelectedItemId(R.id.fragment_search);
-            }
+    private boolean handleIntent(Intent intent) {
+        if (intent == null) {
+            return false;
         }
-    }
 
-
-    private final BottomNavigationView.OnItemSelectedListener navListener =
-            item -> {
-                Fragment selectedFragment = null;
-                int id = item.getItemId();
-
-                if (id == R.id.nav_home) {
-                    selectedFragment = new HomeFragment();
-                } else if (id == R.id.nav_orders) {
-                    selectedFragment = new OrdersFragment();
-                } else if (id == R.id.nav_cart) {
-                    selectedFragment = new CartFragment();
-                } else if (id == R.id.nav_profile) {
-                    selectedFragment = new ProfileFragment();
-                }
-
-                if (selectedFragment != null) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, selectedFragment)
-                            .commit();
-                    return true;
-                }
-
-                return false;
-            };
-    private void processIntentNavigation(Intent intent, BottomNavigationView bottomNav) {
-        // Kiểm tra xem có tín hiệu điều hướng đến giỏ hàng không
-        if (intent != null && intent.getBooleanExtra("NAVIGATE_TO_CART", false)) {
-            Log.d("MainActivity", "Nhận được yêu cầu điều hướng đến CartFragment.");
-
-            // A. Chuyển sang CartFragment
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new CartFragment())
-                    .commit();
-
-            // B. Cập nhật trạng thái "selected" trên BottomNavigationView
-            //    Hãy chắc chắn ID của item giỏ hàng trong menu của bạn là 'nav_cart'
-            bottomNav.setSelectedItemId(R.id.nav_cart);
-
-            // C. Xóa tín hiệu đi để tránh các hành vi không mong muốn
-            intent.removeExtra("NAVIGATE_TO_CART");
-        } else {
-            // Nếu không có tín hiệu đặc biệt, mặc định mở HomeFragment
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new HomeFragment())
-                    .commit();
+        if ("CART_FRAGMENT".equals(intent.getStringExtra("NAVIGATE_TO"))) {
+            Log.d("MainActivity", "Nhận tín hiệu NAVIGATE_TO: CART_FRAGMENT");
+            binding.bottomNavigation.setSelectedItemId(R.id.nav_cart);
+            intent.removeExtra("NAVIGATE_TO");
+            return true;
         }
+
+        if ("OPEN_SEARCH_FRAGMENT".equals(intent.getStringExtra("ACTION"))) {
+            Log.d("MainActivity", "Nhận tín hiệu ACTION: OPEN_SEARCH_FRAGMENT");
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new SearchFragment())
+                    .addToBackStack(null) // Cho phép quay lại
+                    .commit();
+            intent.removeExtra("ACTION");
+            return true;
+        }
+
+        return false; // Không có tín hiệu nào khớp
     }
 }

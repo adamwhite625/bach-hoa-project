@@ -1,17 +1,22 @@
 package com.example.frontend2.data.model;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class CartResponse {
-    private List<CartItem> items;
-    // Thêm các trường khác nếu API trả về (ví dụ: totalPrice)
 
-    // Getters and Setters
+    @SerializedName("items")
+    private List<CartItem> items;
+
+    @SerializedName("totalPrice")
+    private double totalPrice;
+
     public List<CartItem> getItems() {
         return items;
     }
 
-    public void setItems(List<CartItem> items) {
-        this.items = items;
+    public double getTotalPrice() {
+        return totalPrice;
     }
 }
+

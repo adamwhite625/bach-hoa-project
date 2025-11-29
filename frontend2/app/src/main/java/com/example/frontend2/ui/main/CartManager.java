@@ -1,168 +1,145 @@
-// File: com/example/frontend2/ui/main/CartManager.java
 package com.example.frontend2.ui.main;
 
 import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.frontend2.data.model.AddToCartRequest;
 import com.example.frontend2.data.model.CartItem;
 import com.example.frontend2.data.model.CartResponse;
 import com.example.frontend2.data.model.ProductDetail;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
-import java.util.ArrayList;
+
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Lớp quản lý trạng thái giỏ hàng (Singleton).
- */
 public class CartManager {
 
-    private static CartManager instance;
-    private final List<CartItem> cartItems;
+    private static final String TAG = "CartManager";
+    private static volatile CartManager instance;
     private final ApiService apiService;
 
+    private final MutableLiveData<List<CartItem>> _cartItems = new MutableLiveData<>(Collections.emptyList());
+    public final LiveData<List<CartItem>> cartItems = _cartItems;
+
+    private final MutableLiveData<Integer> _cartItemCount = new MutableLiveData<>(0);
+    public final LiveData<Integer> cartItemCount = _cartItemCount;
+
+    private final MutableLiveData<String> _error = new MutableLiveData<>();
+    public final LiveData<String> error = _error;
+
     private CartManager() {
-        cartItems = new ArrayList<>();
         apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
     }
 
-    public static synchronized CartManager getInstance() {
+    public static CartManager getInstance() {
         if (instance == null) {
-            instance = new CartManager();
+            synchronized (CartManager.class) {
+                if (instance == null) {
+                    instance = new CartManager();
+                }
+            }
         }
         return instance;
     }
 
-    // === Định nghĩa các interface Callback ===
-
-    /**
-     * Interface để lắng nghe kết quả THÊM sản phẩm vào giỏ hàng.
-     */
-    public interface CartUpdateCallback {
-        void onSuccess(CartResponse updatedCart);
-        void onFailure(String error);
-    }
-
-    /**
-     * SỬA: THÊM MỚI INTERFACE NÀY
-     * Interface để lắng nghe kết quả LẤY giỏ hàng từ server.
-     */
-    public interface FetchCartCallback {
-        void onSuccess();
-        void onFailure(String error);
-    }
-
-
-    // === Các hàm tương tác với API ===
-
-    /**
-     * Thêm một sản phẩm vào giỏ hàng và đồng bộ với backend.
-     */
-    public void addProductToCart(String authToken, ProductDetail product, int quantityToAdd, @NonNull CartUpdateCallback callback) {
+    public void fetchCart(String authToken) {
         if (authToken == null || authToken.isEmpty()) {
-            Log.e("CartManager", "Token không hợp lệ!");
-            callback.onFailure("Token không hợp lệ!");
+            _cartItems.postValue(Collections.emptyList());
+            updateCartCount(0);
             return;
         }
 
-        Log.d("CartManager", "Yêu cầu thêm " + quantityToAdd + " sản phẩm '" + product.getName() + "'");
-        AddToCartRequest request = new AddToCartRequest(product.getId(), quantityToAdd);
-        Log.d("CartManager_API", "Đang gọi API: addToCart...");
-
-        apiService.addToCart(authToken, request).enqueue(new Callback<CartResponse>() {
+        apiService.getCart("Bearer " + authToken).enqueue(new Callback<CartResponse>() {
             @Override
             public void onResponse(@NonNull Call<CartResponse> call, @NonNull Response<CartResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.d("CartManager_API", "Thêm vào giỏ hàng THÀNH CÔNG!");
-                    CartResponse newCart = response.body();
-                    updateLocalCartData(newCart); // Cập nhật dữ liệu nội bộ
-                    callback.onSuccess(newCart); // Trả kết quả về
+                    updateLocalCart(response.body());
                 } else {
-                    String errorMsg = "Lỗi " + response.code() + ": " + response.message();
-                    Log.e("CartManager_API", "Thêm vào giỏ hàng thất bại. " + errorMsg);
-                    callback.onFailure(errorMsg);
+                    handleApiError(response);
+                    _cartItems.postValue(Collections.emptyList());
+                    updateCartCount(0);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<CartResponse> call, @NonNull Throwable t) {
-                String errorMsg = "Lỗi mạng hoặc kết nối: " + t.getMessage();
-                Log.e("CartManager_API", errorMsg);
-                callback.onFailure(errorMsg);
+                Log.e(TAG, "Fetch Cart Failure: " + t.getMessage());
+                _error.postValue("Lỗi mạng: " + t.getMessage());
+                _cartItems.postValue(Collections.emptyList());
+                updateCartCount(0);
             }
         });
     }
 
-    /**
-     * SỬA: THÊM MỚI TOÀN BỘ HÀM NÀY
-     * Gọi API để lấy thông tin giỏ hàng mới nhất từ server và đồng bộ.
-     * @param authToken Token xác thực của người dùng.
-     * @param callback Callback để nhận kết quả.
-     */
-    public void fetchCartFromServer(String authToken, @NonNull FetchCartCallback callback) {
+    public void addToCart(String authToken, ProductDetail product, int quantity) {
         if (authToken == null || authToken.isEmpty()) {
-            Log.w("CartManager", "Không có token, không thể lấy giỏ hàng từ server. Coi như giỏ hàng rỗng.");
-            this.cartItems.clear(); // Xóa sạch dữ liệu local cũ
-            callback.onSuccess(); // Báo thành công vì đã xử lý xong (giỏ hàng rỗng)
+            _error.postValue("Bạn cần đăng nhập để thêm sản phẩm");
             return;
         }
 
-        Log.d("CartManager_API", "Đang gọi API: getCart...");
-        apiService.getCart(authToken).enqueue(new Callback<CartResponse>() {
+        AddToCartRequest request = new AddToCartRequest(product.getId(), quantity);
+        apiService.addToCart("Bearer " + authToken, request).enqueue(new Callback<CartResponse>() {
             @Override
             public void onResponse(@NonNull Call<CartResponse> call, @NonNull Response<CartResponse> response) {
-                if (response.isSuccessful()) {
-                    Log.d("CartManager_API", "Lấy giỏ hàng từ server thành công!");
-                    updateLocalCartData(response.body());
-                    callback.onSuccess();
+                if (response.isSuccessful() && response.body() != null) {
+                    updateLocalCart(response.body());
                 } else {
-                    Log.e("CartManager_API", "Lỗi khi lấy giỏ hàng từ server: " + response.code());
-                    // Khi có lỗi (ví dụ token hết hạn), ta cũng xóa sạch giỏ hàng local
-                    cartItems.clear();
-                    callback.onFailure("Lỗi " + response.code());
+                    handleApiError(response);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<CartResponse> call, @NonNull Throwable t) {
-                Log.e("CartManager_API", "Lỗi mạng khi lấy giỏ hàng: " + t.getMessage());
-                // Lỗi mạng không thể kết nối, không nên xóa giỏ hàng local
-                callback.onFailure("Lỗi mạng");
+                Log.e(TAG, "Add To Cart Failure: " + t.getMessage());
+                _error.postValue("Lỗi mạng: " + t.getMessage());
             }
         });
     }
 
-    // === Các hàm tiện ích ===
+    private void updateLocalCart(CartResponse cartResponse) {
+        List<CartItem> items = (cartResponse != null && cartResponse.getItems() != null)
+                ? cartResponse.getItems()
+                : Collections.emptyList();
 
-    /**
-     * Cập nhật dữ liệu giỏ hàng nội bộ từ server.
-     */
-    public void updateLocalCartData(CartResponse cartResponse) {
-        this.cartItems.clear();
-        if (cartResponse != null && cartResponse.getItems() != null) {
-            this.cartItems.addAll(cartResponse.getItems());
-        }
-        Log.d("CartManager", "Dữ liệu giỏ hàng nội bộ đã được cập nhật. Tổng số lượng: " + getCartItemCount());
-    }
+        _cartItems.postValue(items);
 
-    /**
-     * Lấy tổng số lượng của TẤT CẢ các mặt hàng trong giỏ.
-     */
-    public int getCartItemCount() {
         int totalCount = 0;
-        for (CartItem item : cartItems) {
+        for (CartItem item : items) {
             totalCount += item.getQuantity();
         }
-        return totalCount;
+        updateCartCount(totalCount);
     }
 
-    /**
-     * Lấy danh sách các CartItem hiện có.
-     */
-    public List<CartItem> getCartItems() {
-        return new ArrayList<>(cartItems);
+    private void updateCartCount(int count) {
+        if (_cartItemCount.getValue() == null || _cartItemCount.getValue() != count) {
+            _cartItemCount.postValue(count);
+        }
+    }
+
+    private void handleApiError(Response<?> response) {
+        String errorMessage = "Lỗi không xác định";
+        if (response.errorBody() != null) {
+            try {
+                errorMessage = response.errorBody().string();
+            } catch (IOException e) {
+                errorMessage = "Lỗi khi đọc phản hồi từ server";
+            }
+        }
+        Log.e(TAG, "API Error: " + response.code() + " - " + errorMessage);
+        _error.postValue("Lỗi " + response.code() + ": " + errorMessage);
+    }
+
+    public void clearCart() {
+        _cartItems.postValue(Collections.emptyList());
+        _cartItemCount.postValue(0);
     }
 }

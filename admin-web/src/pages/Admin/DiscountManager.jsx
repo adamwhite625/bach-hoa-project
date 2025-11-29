@@ -68,6 +68,7 @@ const DiscountManager = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const typeWatch = Form.useWatch('type', form);
+  const userTypeWatch = Form.useWatch('userType', form);
 
   const fetchDiscounts = async (showToast = false) => {
     setLoading(true);
@@ -122,6 +123,9 @@ const DiscountManager = () => {
       minOrder: record.minOrder,
       maxDiscount: record.maxDiscount,
       usageLimit: record.usageLimit,
+      perUserLimit: record.perUserLimit,
+      userType: record.userType || 'all',
+      allowedUsers: record.allowedUsers || [],
       isActive: record.isActive,
       validRange: [record.startAt ? dayjs(record.startAt) : null, record.endAt ? dayjs(record.endAt) : null]
     });
@@ -152,6 +156,9 @@ const DiscountManager = () => {
       minOrder: values.minOrder != null ? Number(values.minOrder) : undefined,
       maxDiscount: values.maxDiscount != null ? Number(values.maxDiscount) : undefined,
       usageLimit: values.usageLimit != null ? Number(values.usageLimit) : undefined,
+      perUserLimit: values.perUserLimit != null ? Number(values.perUserLimit) : undefined,
+      userType: values.userType || 'all',
+      allowedUsers: values.allowedUsers || [],
       isActive: values.isActive,
       startAt: values.validRange?.[0] ? values.validRange[0].toISOString() : undefined,
       endAt: values.validRange?.[1] ? values.validRange[1].toISOString() : undefined
@@ -360,7 +367,7 @@ const DiscountManager = () => {
         destroyOnClose
         centered
       >
-        <Form layout="vertical" form={form} onFinish={handleSubmit} initialValues={{ type: 'percent', isActive: true }}>
+        <Form layout="vertical" form={form} onFinish={handleSubmit} initialValues={{ type: 'percent', userType: 'all', isActive: true }}>
           <Form.Item
             name="code"
             label="Mã giảm giá"
@@ -409,8 +416,40 @@ const DiscountManager = () => {
             />
           </Form.Item>
           <Form.Item name="usageLimit" label="Giới hạn sử dụng">
-            <InputNumber style={{ width: '100%' }} min={0} />
+            <InputNumber style={{ width: '100%' }} min={0} placeholder="0 = không giới hạn" />
           </Form.Item>
+          <Form.Item name="perUserLimit" label="Giới hạn mỗi người">
+            <InputNumber style={{ width: '100%' }} min={0} placeholder="0 = không giới hạn" />
+          </Form.Item>
+          <Form.Item name="userType" label="Đối tượng áp dụng" rules={[{ required: true }]}>
+            <Segmented
+              block
+              options={[
+                { label: 'Tất cả', value: 'all' },
+                { label: 'Khách mới', value: 'new' },
+                { label: 'VIP', value: 'vip' },
+                { label: 'Chọn người dùng', value: 'specific' }
+              ]}
+            />
+          </Form.Item>
+          {userTypeWatch === 'specific' && (
+            <Form.Item
+              name="allowedUsers"
+              label="Người dùng được áp dụng"
+              rules={[{ required: true, message: 'Chọn ít nhất 1 người dùng' }]}
+            >
+              <Select
+                mode="multiple"
+                placeholder="Chọn người dùng"
+                showSearch
+                filterOption={(input, option) =>
+                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                }
+              >
+                {/* TODO: Load users from API */}
+              </Select>
+            </Form.Item>
+          )}
           <Form.Item name="validRange" label="Thời gian hiệu lực">
             <RangePicker
               style={{ width: '100%' }}

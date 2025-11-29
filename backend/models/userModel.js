@@ -29,6 +29,11 @@ const userSchema = mongoose.Schema(
       enum: ["Customer", "Admin", "Sales", "Warehouse"],
       default: "Customer",
     },
+    customerTier: {
+      type: String,
+      enum: ["new", "regular", "vip"],
+      default: "new",
+    },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }

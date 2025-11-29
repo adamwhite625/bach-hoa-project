@@ -1,154 +1,139 @@
-// File: com/example/frontend2/ui/main/CartAdapter.java
 package com.example.frontend2.ui.adapter;
 
-import android.util.Log;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import android.view.View;
+import android.view.ViewGroup;import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.frontend2.R;
-// === GIỮ NGUYÊN CÁC IMPORT BẠN CẦN ===
 import com.example.frontend2.data.model.CartItem;
-import com.example.frontend2.data.model.ImageInfo;      // << THÊM IMPORT NÀY
-import com.example.frontend2.data.model.ProductDetail;    // Dùng cho kết quả API
-import com.example.frontend2.data.remote.ApiClient;
-import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.ItemCartBinding;
+import com.example.frontend2.ui.main.OnCartItemInteractionListener; // Đảm bảo import đúng interface
 
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+public class CartAdapter extends ListAdapter<CartItem, CartAdapter.CartViewHolder> {
 
-public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
+    private final OnCartItemInteractionListener mListener;
 
-    private final List<CartItem> cartItems;
-    private final OnCartItemInteractionListener listener;
+    private static final DiffUtil.ItemCallback<CartItem> DIFF_CALLBACK = new DiffUtil.ItemCallback<CartItem>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull CartItem oldItem, @NonNull CartItem newItem) {
+            if (oldItem == null || newItem == null || oldItem.get_id() == null || newItem.get_id() == null) {
+                return false;
+            }
+            return oldItem.get_id().equals(newItem.get_id());
+        }
 
-    public interface OnCartItemInteractionListener {
-        void onIncreaseQuantity(CartItem item);
-        void onDecreaseQuantity(CartItem item);
-        void onRemoveItem(CartItem item);
-    }
+        @Override
+        public boolean areContentsTheSame(@NonNull CartItem oldItem, @NonNull CartItem newItem) {
+            if (oldItem == null || newItem == null) return false;
+            if (oldItem.getProduct() == null || newItem.getProduct() == null) return false;
 
-    public CartAdapter(List<CartItem> cartItems, OnCartItemInteractionListener listener) {
-        this.cartItems = cartItems;
-        this.listener = listener;
+            return oldItem.getQuantity() == newItem.getQuantity()
+                    && oldItem.getProduct().getStock() == newItem.getProduct().getStock();
+        }
+    };
+
+    public CartAdapter(OnCartItemInteractionListener listener) {
+        super(DIFF_CALLBACK);
+        this.mListener = listener;
     }
 
     @NonNull
     @Override
     public CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        ItemCartBinding binding = ItemCartBinding.inflate(inflater, parent, false);
-        return new CartViewHolder(binding, listener);
+        ItemCartBinding binding = ItemCartBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new CartViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
-        holder.bind(cartItems.get(position));
+        CartItem item = getItem(position);
+        if (item == null) return;
+
+        holder.bind(item);
+
+        // Sự kiện nút Tăng (+)
+        holder.binding.btnPlus.setOnClickListener(v -> {
+            if (mListener != null) {
+                if (item.getProduct() != null && item.getQuantity() < item.getProduct().getStock()) {
+                    mListener.onUpdateQuantity(item.get_id(), item.getQuantity() + 1);
+                } else {
+                    Toast.makeText(holder.itemView.getContext(), "Đã đạt số lượng tồn kho tối đa", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        // Sự kiện nút Giảm (-)
+        holder.binding.btnMinus.setOnClickListener(v -> {
+            if (mListener != null) {
+                int newQuantity = item.getQuantity() - 1;
+                if (newQuantity < 1) {
+                    mListener.onRemoveItem(item.get_id());
+                } else {
+                    mListener.onUpdateQuantity(item.get_id(), newQuantity);
+                }
+            }
+        });
     }
 
-    @Override
-    public int getItemCount() {
-        return cartItems != null ? cartItems.size() : 0;
-    }
-
-    public void updateItems(List<CartItem> newItems) {
-        if (newItems == null) return;
-        this.cartItems.clear();
-        this.cartItems.addAll(newItems);
-        notifyDataSetChanged();
-    }
-
-    // =================================================================
-    // ===                 LỚP VIEW HOLDER ĐÃ SỬA LẠI              ===
-    // =================================================================
     public static class CartViewHolder extends RecyclerView.ViewHolder {
         private final ItemCartBinding binding;
-        private final ApiService apiService;
-        private final OnCartItemInteractionListener listener;
 
-        public CartViewHolder(@NonNull ItemCartBinding binding, OnCartItemInteractionListener listener) {
+        public CartViewHolder(@NonNull ItemCartBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            this.listener = listener;
-            this.apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
         }
 
         public void bind(final CartItem cartItem) {
-            binding.imgProduct.setImageResource(R.drawable.placeholder);
-
-            CartItem.ProductInfo productInfo = cartItem.getProduct();
-            if (productInfo == null) {
-                Log.e("BIND_ERROR", "ProductInfo trong CartItem bị null!");
+            if (cartItem == null || cartItem.getProduct() == null) {
                 return;
             }
 
-            binding.tvProductName.setText(productInfo.getName());
+            CartItem.ProductInfo product = cartItem.getProduct();
+            binding.tvProductName.setText(product.getName());
             binding.tvQuantity.setText(String.valueOf(cartItem.getQuantity()));
+
+            // Cập nhật trạng thái của nút tăng/giảm dựa trên tồn kho
+            boolean canIncrease = cartItem.getQuantity() < product.getStock();
+            binding.btnPlus.setEnabled(canIncrease);
+            binding.btnPlus.setAlpha(canIncrease ? 1.0f : 0.5f);
+
+            // Cập nhật giá sản phẩm
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-            binding.tvPrice.setText(currencyFormat.format(productInfo.getPrice()));
+            boolean hasSale = product.getSale() != null && product.getSale().isActive() && product.getFinalPrice() < product.getPrice();
 
-            // GIỮ NGUYÊN LOGIC BẤM NÚT CỦA BẠN
-            binding.btnPlus.setOnClickListener(v -> listener.onIncreaseQuantity(cartItem));
-            binding.btnMinus.setOnClickListener(v -> listener.onDecreaseQuantity(cartItem));
-            binding.tvRemove.setOnClickListener(v -> listener.onRemoveItem(cartItem));
-
-            String productId = productInfo.get_id();
-            if (productId == null || productId.isEmpty()) {
-                Log.w("API_CALL", "ProductId bị null hoặc rỗng, không thể gọi API.");
-                return;
+            if (hasSale) {
+                binding.tvFinalPrice.setText(currencyFormat.format(product.getFinalPrice()));
+                binding.tvOriginalPrice.setText(currencyFormat.format(product.getPrice()));
+                binding.tvOriginalPrice.setPaintFlags(binding.tvOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                binding.tvOriginalPrice.setVisibility(View.VISIBLE);
+            } else {
+                binding.tvFinalPrice.setText(currencyFormat.format(product.getPrice()));
+                binding.tvOriginalPrice.setVisibility(View.GONE);
+                binding.tvOriginalPrice.setPaintFlags(binding.tvOriginalPrice.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             }
 
-            Log.d("API_CALL", "Chuẩn bị gọi API chi tiết sản phẩm với ID: " + productId);
-
-            apiService.getProductById(productId).enqueue(new Callback<ProductDetail>() {
-                @Override
-                public void onResponse(@NonNull Call<ProductDetail> call, @NonNull Response<ProductDetail> response) {
-                    if (getBindingAdapterPosition() == RecyclerView.NO_POSITION) return;
-
-                    if (response.isSuccessful() && response.body() != null) {
-                        ProductDetail fullProductDetails = response.body();
-
-                        // === SỬA LỖI DUY NHẤT TẠI ĐÂY ===
-                        // 1. Thay List<String> bằng List<ImageInfo> để khớp với model ProductDetail
-                        List<ImageInfo> images = fullProductDetails.getDetailImages();
-                        Log.d("API_CALL", "Gọi API thành công cho sản phẩm: " + fullProductDetails.getName());
-
-                        if (images != null && !images.isEmpty()) {
-                            // 2. Lấy đối tượng ImageInfo đầu tiên
-                            ImageInfo firstImage = images.get(0);
-                            // 3. Từ đối tượng ImageInfo, lấy ra chuỗi URL
-                            String imageUrl = firstImage.getUrl();
-
-                            Log.i("API_CALL", "URL ảnh lấy được: " + imageUrl);
-
-                            if (itemView.getContext() != null) {
-                                Glide.with(itemView.getContext())
-                                        .load(imageUrl) // Tải URL vừa lấy được
-                                        .placeholder(R.drawable.placeholder)
-                                        .error(R.drawable.error_image)
-                                        .into(binding.imgProduct);
-                            }
-                        } else {
-                            Log.w("API_CALL", "Sản phẩm '" + fullProductDetails.getName() + "' có trả về nhưng không có ảnh.");
-                        }
-                    } else {
-                        Log.e("API_CALL", "Lỗi khi gọi API chi tiết sản phẩm. Code: " + response.code());
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<ProductDetail> call, @NonNull Throwable t) {
-                    Log.e("API_CALL", "Thất bại khi gọi API chi tiết sản phẩm. ID: " + productId + ", Lỗi: " + t.getMessage());
-                }
-            });
+            // Cập nhật hình ảnh sản phẩm
+            List<String> images = product.getImages();
+            if (images != null && !images.isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(images.get(0))
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.error_image)
+                        .into(binding.imgProduct);
+            } else {
+                binding.imgProduct.setImageResource(R.drawable.placeholder);
+            }
         }
     }
 }

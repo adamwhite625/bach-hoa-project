@@ -1,9 +1,14 @@
 package com.example.frontend2.data.remote;
 
+import com.example.frontend2.data.model.ApplyVoucherRequest;
+import com.example.frontend2.data.model.ApplyVoucherResponse;
+import com.example.frontend2.data.model.AvailableVouchersResponse;
 import com.example.frontend2.data.model.Category;
 import com.example.frontend2.data.model.LoginRequest;
 import com.example.frontend2.data.model.MessageResponse;
 import com.example.frontend2.data.model.Order;
+import com.example.frontend2.data.model.PreviewVoucherRequest;
+import com.example.frontend2.data.model.PreviewVoucherResponse;
 import com.example.frontend2.data.model.ProductDetail;
 import com.example.frontend2.data.model.ProductInList;
 import com.example.frontend2.data.model.ProductListResponse;
@@ -20,6 +25,8 @@ import com.example.frontend2.data.model.ChatMessageRequest;
 import com.example.frontend2.data.model.ChatMessageResponse;
 
 
+import com.example.frontend2.data.model.ValidateVoucherResponse;
+import com.example.frontend2.data.model.Voucher;
 import com.google.gson.JsonElement;
 
 import java.util.List;
@@ -122,6 +129,23 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Path("itemId") String itemId
     );
+
+    @DELETE("api/carts")
+    Call<CartResponse> clearCart(@Header("Authorization") String token);
+
+    // --- Discount ---
+
+    @GET("api/discounts/available")
+    Call<List<Voucher>> getAvailableDiscounts(
+            @Header("Authorization") String token
+    );
+
+    @POST("api/discounts/validate")
+    Call<ValidateVoucherResponse> validateDiscount(@Header("Authorization") String token, @Body PreviewVoucherRequest request);
+
+    @POST("api/discounts/preview")
+    Call<PreviewVoucherResponse> previewDiscount(@Header("Authorization") String token, @Body PreviewVoucherRequest request);
+
 
     // --- Chatbot (TẠM THỜI DÙNG ResponseBody ĐỂ DEBUG) ---
     @POST("api/chat")
