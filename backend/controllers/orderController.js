@@ -1,5 +1,6 @@
 const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
+const Notification = require('../models/notificationModel');
 
 // const addOrderItems = async (req, res) => {
 //     const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice } = req.body;
@@ -36,11 +37,9 @@ const addOrderItems = async (req, res) => {
       return res.status(400).json({ message: 'Không có sản phẩm trong đơn hàng' });
     }
 
-    // Validate và chuẩn bị orderItems
     const validatedItems = [];
     
     for (const item of orderItems) {
-      // Kiểm tra product tồn tại
       const product = await Product.findById(item.product);
       
       if (!product) {
@@ -55,7 +54,6 @@ const addOrderItems = async (req, res) => {
         });
       }
 
-      // Kiểm tra tồn kho
       if (product.quantity < item.quantity) {
         return res.status(400).json({ 
           message: `Sản phẩm ${item.name} chỉ còn ${product.quantity} sản phẩm trong kho` 
@@ -63,19 +61,17 @@ const addOrderItems = async (req, res) => {
       }
 
       validatedItems.push({
-        product: item.product, // ← Đúng: dùng item.product, không phải item._id
+        product: item.product,
         name: item.name,
         quantity: item.quantity,
         price: item.price,
         image: item.image,
       });
 
-      // Trừ số lượng trong kho
       product.quantity -= item.quantity;
       await product.save();
     }
 
-    // Tạo order
     const order = new Order({
       orderItems: validatedItems,
       user: req.user._id,
@@ -89,9 +85,40 @@ const addOrderItems = async (req, res) => {
 
     const createdOrder = await order.save();
     
-    res.status(201).json(createdOrder);
+    // Create notification
+    try {
+      await Notification.create({
+        user: req.user._id,
+        type: 'order_created',
+        title: 'Đơn hàng đã được tạo',
+        message: `Đơn hàng của bạn đã được tạo thành công với tổng giá trị ${totalPrice.toLocaleString('vi-VN')}₫`,
+        data: {
+          orderId: createdOrder._id,
+          orderCode: createdOrder._id.toString().slice(-8).toUpperCase(),
+          totalPrice,
+          itemCount: orderItems.length,
+        }
+      });
+    } catch (notifError) {
+      // Notification error should not fail the order creation
+    }
+    
+    res.status(201).json({
+      _id: createdOrder._id,
+      orderItems: createdOrder.orderItems,
+      shippingAddress: createdOrder.shippingAddress,
+      paymentMethod: createdOrder.paymentMethod,
+      itemsPrice: createdOrder.itemsPrice,
+      taxPrice: createdOrder.taxPrice,
+      shippingPrice: createdOrder.shippingPrice,
+      totalPrice: createdOrder.totalPrice,
+      status: createdOrder.status,
+      isPaid: createdOrder.isPaid,
+      isDelivered: createdOrder.isDelivered,
+      createdAt: createdOrder.createdAt,
+      message: 'Đơn hàng đã được tạo thành công'
+    });
   } catch (error) {
-    console.error('Create order error:', error);
     res.status(500).json({ 
       message: 'Lỗi tạo đơn hàng', 
       error: error.message 
@@ -132,13 +159,50 @@ const updateOrderStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    const order = await Order.findById(id);
+    const order = await Order.findById(id)
+      .populate('user', 'firstName lastName email');
+      
     if (!order) {
       return res.status(404).json({ EC: -1, DT: null, EM: 'Không tìm thấy đơn hàng' });
     }
 
+    const oldStatus = order.status;
     order.status = status;
+
+    // Update delivery status
+    if (status === 'Delivered' && !order.isDelivered) {
+      order.isDelivered = true;
+      order.deliveredAt = Date.now();
+    }
+
     await order.save();
+
+    // Tạo notification với message phù hợp (lưu vào DB để user xem sau)
+    try {
+      const statusMessages = {
+        'Pending': 'Đơn hàng của bạn đang chờ xác nhận',
+        'Processing': 'Đơn hàng của bạn đang được xử lý',
+        'Shipped': 'Đơn hàng của bạn đang được vận chuyển',
+        'Delivered': 'Đơn hàng của bạn đã được giao thành công',
+        'Cancelled': 'Đơn hàng của bạn đã bị hủy',
+      };
+
+      await Notification.create({
+        user: order.user._id,
+        type: 'order_status',
+        title: 'Cập nhật đơn hàng',
+        message: statusMessages[status] || `Trạng thái đơn hàng: ${status}`,
+        data: {
+          orderId: order._id,
+          orderCode: order._id.toString().slice(-8).toUpperCase(),
+          oldStatus,
+          newStatus: status,
+        }
+      });
+      console.log('✅ Status update notification saved to database');
+    } catch (notifError) {
+      console.error('Failed to save notification:', notifError);
+    }
 
     // Populate lại để trả về đầy đủ dữ liệu
     const updatedOrder = await Order.findById(id)
