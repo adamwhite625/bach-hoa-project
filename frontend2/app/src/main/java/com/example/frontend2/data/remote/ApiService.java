@@ -7,6 +7,8 @@ import com.example.frontend2.data.model.Category;
 import com.example.frontend2.data.model.LoginRequest;
 import com.example.frontend2.data.model.MessageResponse;
 import com.example.frontend2.data.model.Order;
+import com.example.frontend2.data.model.OrderRequest;
+import com.example.frontend2.data.model.OrderSummary;
 import com.example.frontend2.data.model.PreviewVoucherRequest;
 import com.example.frontend2.data.model.PreviewVoucherResponse;
 import com.example.frontend2.data.model.ProductDetail;
@@ -15,6 +17,7 @@ import com.example.frontend2.data.model.ProductListResponse;
 import com.example.frontend2.data.model.RegisterRequest;
 import com.example.frontend2.data.model.ResetPasswordFinalRequest;
 import com.example.frontend2.data.model.ResetPasswordRequest;
+import com.example.frontend2.data.model.Review;
 import com.example.frontend2.data.model.ShippingAddress;
 import com.example.frontend2.data.model.ShippingAddressResponse;
 import com.example.frontend2.data.model.User;
@@ -95,6 +98,11 @@ public interface ApiService {
     @GET("api/products/{id}")
     Call<ProductDetail> getProductById(@Path("id") String productId);
 
+    @POST("api/products/{id}/reviews")
+    Call<Review> createReview(@Header("Authorization") String token,
+                              @Path("id") String productId,
+                              @Body Review reviewData);
+
     @GET("api/products/search")
     Call<JsonElement> searchProducts(@Query("keyword") String keyword);
 
@@ -107,7 +115,13 @@ public interface ApiService {
 
     // --- Orders ---
     @GET("api/orders/myorders")
-    Call<List<Order>> getMyOrders(@Header("Authorization") String token);
+    Call<List<OrderSummary>> getMyOrders(@Header("Authorization") String token);
+
+    @POST("api/orders")
+    Call<Order> createOrder(@Header("Authorization") String token, @Body OrderRequest orderRequest);
+
+    @GET("api/orders/{id}")
+    Call<Order> getOrderDetails(@Header("Authorization") String token, @Path("id") String orderId);
 
     // --- Cart ---
 

@@ -19,6 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.frontend2.R;
 import com.example.frontend2.data.model.CartItem;
 import com.example.frontend2.data.model.CartResponse;
+import com.example.frontend2.data.model.Order;
+import com.example.frontend2.data.model.OrderItem;
+import com.example.frontend2.data.model.OrderRequest;
 import com.example.frontend2.data.model.PreviewVoucherRequest;
 import com.example.frontend2.data.model.PreviewVoucherResponse;
 import com.example.frontend2.data.model.ShippingAddress;
@@ -31,6 +34,7 @@ import com.example.frontend2.databinding.FragmentCartBinding;
 import com.example.frontend2.ui.adapter.CartAdapter;
 import com.example.frontend2.ui.main.CartSharedViewModel;
 import com.example.frontend2.ui.main.OnCartItemInteractionListener;
+import com.example.frontend2.ui.main.OrderSuccessActivity;
 import com.example.frontend2.ui.main.ShippingAddressActivity;
 import com.example.frontend2.utils.SharedPrefManager;
 import com.google.gson.Gson;
@@ -61,8 +65,7 @@ public class CartFragment extends Fragment implements OnCartItemInteractionListe
     private CartResponse mCartData;
     private PreviewVoucherResponse mDiscountData;
 
-    private ValidateVoucherResponse mValidateData;
-    private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
+    private ShippingAddress mShippingAddress;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -201,6 +204,7 @@ public class CartFragment extends Fragment implements OnCartItemInteractionListe
                         public void onResponse(@NonNull Call<ShippingAddressResponse> call, @NonNull Response<ShippingAddressResponse> response) {
                             if (response.isSuccessful() && response.body() != null) {
                                 updateShippingAddressUI(response.body().getShippingAddress());
+                                mShippingAddress = response.body().getShippingAddress();
                             } else {
                                 updateShippingAddressUI(null);
                             }
@@ -272,12 +276,86 @@ public class CartFragment extends Fragment implements OnCartItemInteractionListe
         });
 
         binding.buttonCheckout.setOnClickListener(v -> {
-            if (cartAdapter.getCurrentList().isEmpty()) {
+            if (mCartData == null || mCartData.getItems() == null || mCartData.getItems().isEmpty()) {
                 Toast.makeText(getContext(), "Giỏ hàng của bạn đang trống!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getContext(), "Chuyển đến màn hình thanh toán...", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            if (mShippingAddress == null) {
+                Toast.makeText(getContext(), "Vui lòng chọn địa chỉ giao hàng", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            List<OrderItem> orderItems = new ArrayList<>();
+            for (CartItem cartItem : mCartData.getItems()) {
+                // Chỗ này tôi thấy bạn dùng getImages().get(0), hãy đảm bảo model Product có getThumbnail()
+                // hoặc getImages() không bao giờ rỗng. Giữ nguyên theo code của bạn.
+                orderItems.add(new OrderItem(
+                        cartItem.getProduct().getId(),
+                        cartItem.getProduct().getName(),
+                        cartItem.getQuantity(),
+                        cartItem.getProduct().getFinalPrice(),
+                        cartItem.getProduct().getImages().get(0)
+                ));
+            }
+
+            String paymentMethod = "COD";
+            double itemsPrice = mCartData.getTotalPrice();
+            double taxPrice = 0;
+            double shippingPrice = 0;
+            double finalTotalPrice = itemsPrice + taxPrice + shippingPrice;
+
+            if (mDiscountData != null && mDiscountData.getDiscountAmount() > 0) {
+                finalTotalPrice = mDiscountData.getFinalTotal();
+            }
+
+            OrderRequest orderRequest = new OrderRequest(
+                    orderItems,
+                    mShippingAddress,
+                    paymentMethod,
+                    itemsPrice,
+                    taxPrice,
+                    shippingPrice,
+                    finalTotalPrice
+            );
+
+            showLoading(true);
+            String token = SharedPrefManager.getInstance(getContext()).getAuthToken();
+            if (token == null) {
+                showLoading(false);
+                Toast.makeText(getContext(), "Vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            apiService.createOrder("Bearer " + token, orderRequest).enqueue(new Callback<Order>() {
+                @Override
+                public void onResponse(@NonNull Call<Order> call, @NonNull Response<Order> response) {
+                    // KHÔNG TẮT LOADING Ở ĐÂY
+                    if (response.isSuccessful() && response.body() != null) {
+                        // Đặt hàng thành công -> Gọi hàm xóa giỏ hàng và điều hướng
+                        clearCartAndNavigate(token);
+                    } else {
+                        showLoading(false); // Đặt hàng thất bại thì tắt loading ngay
+                        String errorMessage = "Đặt hàng thất bại. Vui lòng thử lại.";
+                        try {
+                            if (response.errorBody() != null) {
+                                errorMessage = response.errorBody().string();
+                            }
+                        } catch (Exception e) {
+                            // Ignore
+                        }
+                        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<Order> call, @NonNull Throwable t) {
+                    showLoading(false);
+                    Toast.makeText(getContext(), "Lỗi kết nối khi đặt hàng: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
         });
+
 
         binding.layoutAddress.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ShippingAddressActivity.class);
@@ -359,6 +437,45 @@ public class CartFragment extends Fragment implements OnCartItemInteractionListe
         binding.extraFee.setText(currencyFormatter.format(shippingFee));
         binding.textTotalPrice.setText(currencyFormatter.format(finalPrice + shippingFee));
     }
+
+    private void clearCartAndNavigate(String token) {
+        if (getContext() == null || apiService == null) {
+            showLoading(false);
+            return;
+        }
+
+        // Giả định API của bạn trả về CartResponse khi xóa
+        apiService.clearCart("Bearer " + token).enqueue(new Callback<CartResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<CartResponse> call, @NonNull Response<CartResponse> response) {
+                // Luồng chính đã xong, tắt loading và chuyển trang
+                showLoading(false);
+                Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(getActivity(), OrderSuccessActivity.class);
+                startActivity(intent);
+
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<CartResponse> call, @NonNull Throwable t) {
+                // Ngay cả khi API xóa giỏ hàng lỗi, vẫn coi như thành công và chuyển trang
+                showLoading(false);
+                Toast.makeText(getContext(), "Đặt hàng thành công! (Lỗi khi dọn dẹp giỏ hàng)", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(getActivity(), OrderSuccessActivity.class);
+                startActivity(intent);
+
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+            }
+        });
+    }
+
     private void clearAllCartItems() {
         showLoading(true);
         String token = SharedPrefManager.getInstance(getContext()).getAuthToken();

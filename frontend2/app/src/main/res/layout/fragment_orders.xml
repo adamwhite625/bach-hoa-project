@@ -1,43 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5">
 
-    <!-- 1. Thanh màu xanh với ô tìm kiếm -->
-    <RelativeLayout
-        android:id="@+id/topSection"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
+    <View
+        android:id="@+id/primary_background"
+        android:layout_width="0dp"
+        android:layout_height="72dp"
         android:background="@color/primary"
-        android:padding="16dp">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <EditText
-            android:id="@+id/searchBar"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/search_bg" 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_bar_layout"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/search_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/fake_search_box"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:drawableStart="@drawable/ic_search"
-            android:drawablePadding="12dp"
-            android:hint="Tìm kiếm đơn hàng..."
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp" />
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:text="Bạn muốn mua gì?"
+            android:textColor="#555555"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </RelativeLayout>
-
-    <!-- 2. Khung "Đơn hàng từng mua" -->
     <androidx.cardview.widget.CardView
         android:id="@+id/purchasedOrdersCard"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/topSection"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:cardCornerRadius="12dp"
-        app:cardElevation="4dp">
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/primary_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:layout_width="match_parent"
@@ -51,14 +72,110 @@
 
     </androidx.cardview.widget.CardView>
 
-    <!-- 3. Danh sách các đơn hàng -->
+    <HorizontalScrollView
+        android:id="@+id/status_filter_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingHorizontal="12dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/purchasedOrdersCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <!-- Chip 1: Tất cả -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_all"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tất cả"
+                app:chipBackgroundColor="@color/chip_background_color_selector"
+                app:chipStrokeWidth="1dp"
+                app:chipStrokeColor="@color/chip_stroke_color_selector"
+                android:textColor="@color/chip_text_color_selector"
+                android:checked="true"/>
+
+            <!-- Chip 2: Chờ xử lý -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_pending"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chờ xử lý"
+                app:chipBackgroundColor="@color/chip_background_color_selector"
+                app:chipStrokeWidth="1dp"
+                app:chipStrokeColor="@color/chip_stroke_color_selector"
+                android:textColor="@color/chip_text_color_selector" />
+
+            <!-- Chip 3: Đang xử lý -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_processing"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đang xử lý"
+                app:chipBackgroundColor="@color/chip_background_color_selector"
+                app:chipStrokeWidth="1dp"
+                app:chipStrokeColor="@color/chip_stroke_color_selector"
+                android:textColor="@color/chip_text_color_selector" />
+
+            <!-- Chip 4: Đang giao -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_shipping"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đang giao"
+                app:chipBackgroundColor="@color/chip_background_color_selector"
+                app:chipStrokeWidth="1dp"
+                app:chipStrokeColor="@color/chip_stroke_color_selector"
+                android:textColor="@color/chip_text_color_selector" />
+
+            <!-- Chip 5: Hoàn thành -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_completed"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hoàn thành"
+                app:chipBackgroundColor="@color/chip_background_color_selector"
+                app:chipStrokeWidth="1dp"
+                app:chipStrokeColor="@color/chip_stroke_color_selector"
+                android:textColor="@color/chip_text_color_selector" />
+
+            <!-- Chip 6: Đã hủy -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_cancelled"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đã hủy"
+                app:chipBackgroundColor="@color/chip_background_color_selector"
+                app:chipStrokeWidth="1dp"
+                app:chipStrokeColor="@color/chip_stroke_color_selector"
+                android:textColor="@color/chip_text_color_selector" />
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ordersRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/purchasedOrdersCard"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         android:clipToPadding="false"
-        android:paddingTop="8dp"
-        android:paddingBottom="16dp" />
+        app:layout_constraintTop_toBottomOf="@id/status_filter_scrollview"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

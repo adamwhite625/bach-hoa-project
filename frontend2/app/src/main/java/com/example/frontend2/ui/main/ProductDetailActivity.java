@@ -14,12 +14,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.frontend2.R;
 import com.example.frontend2.data.model.AddToCartRequest;
@@ -27,13 +31,21 @@ import com.example.frontend2.data.model.CartItem;
 import com.example.frontend2.data.model.CartResponse;
 import com.example.frontend2.data.model.ImageInfo;
 import com.example.frontend2.data.model.ProductDetail;
+import com.example.frontend2.data.model.ProductInList;
 import com.example.frontend2.data.model.SaleInfo;
+import com.example.frontend2.data.model.Review;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.ActivityProductDetailBinding;
 import com.example.frontend2.ui.adapter.ImageUrlSliderAdapter;
+import com.example.frontend2.ui.adapter.ProductAdapter;
+import com.example.frontend2.ui.adapter.ReviewAdapter;
 import com.example.frontend2.ui.fragment.AddToCartBottomSheetFragment;
 import com.example.frontend2.utils.SharedPrefManager;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
+
 
 import java.text.NumberFormat;
 import java.time.Duration;
@@ -42,12 +54,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.lang.reflect.Type;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-public class ProductDetailActivity extends AppCompatActivity implements AddToCartBottomSheetFragment.CartUpdateListener {
+public class ProductDetailActivity extends AppCompatActivity implements AddToCartBottomSheetFragment.CartUpdateListener, ProductAdapter.OnItemClickListener {
 
     private static final String TAG = "ProductDetailActivity";
     private ActivityProductDetailBinding binding;
@@ -55,6 +68,22 @@ public class ProductDetailActivity extends AppCompatActivity implements AddToCar
     private ImageUrlSliderAdapter imageUrlSliderAdapter;
     private ProductDetail currentProduct;
     private CountDownTimer saleCountDownTimer;
+
+    private RecyclerView rvReviews;
+    private ReviewAdapter reviewAdapter;
+
+    private TextView tvNoReviews;
+    private List<Review> reviewList = new ArrayList<>();
+
+    private LinearLayout layoutAverageRating;
+    private TextView tvAverageRatingScore;
+    private TextView tvTotalReviewsCount;
+
+
+    private RecyclerView rvRelatedProducts;
+    private TextView tvRelatedProductsTitle;
+    private ProductAdapter relatedProductsAdapter;
+    private List<ProductInList> relatedProductList = new ArrayList<>();
 
     private static final int REQUEST_CODE_CART = 101;
 
@@ -66,10 +95,22 @@ public class ProductDetailActivity extends AppCompatActivity implements AddToCar
 
         apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
 
+        tvRelatedProductsTitle = findViewById(R.id.tv_related_products_title);
+        rvRelatedProducts = findViewById(R.id.rv_related_products);
+
+        layoutAverageRating = findViewById(R.id.layout_average_rating);
+        tvAverageRatingScore = findViewById(R.id.tv_average_rating_score);
+        tvTotalReviewsCount = findViewById(R.id.tv_total_reviews_count);
+
         setupBackButton();
         setupCartButton();
+        setupRecyclerViews();
         fetchProductDataFromIntent();
         fetchInitialCartCount();
+
+        rvReviews = findViewById(R.id.rv_reviews);
+        rvReviews.setLayoutManager(new LinearLayoutManager(this));
+        tvNoReviews = findViewById(R.id.tv_no_reviews);
 
         binding.btnAddToCart.setOnClickListener(v -> {
             if (currentProduct != null) {
@@ -206,10 +247,18 @@ public class ProductDetailActivity extends AppCompatActivity implements AddToCar
         apiService.getProductById(productId).enqueue(new Callback<ProductDetail>() {
             @Override
             public void onResponse(@NonNull Call<ProductDetail> call, @NonNull Response<ProductDetail> response) {
+                if (binding == null) {
+                    return;
+                }
                 binding.scroll.setVisibility(View.VISIBLE);
                 if (response.isSuccessful() && response.body() != null) {
                     ProductDetail product = response.body();
                     displayProductData(product);
+
+                    if (currentProduct.getCategory() != null && !currentProduct.getCategory().isEmpty()) {
+                        fetchRelatedProducts(currentProduct.getCategory());
+                    }
+
                     if (product.getStock() > 0) {
                         binding.btnAddToCart.setEnabled(true);
                         binding.btnAddToCart.setText("Thêm vào giỏ hàng");
@@ -226,6 +275,46 @@ public class ProductDetailActivity extends AppCompatActivity implements AddToCar
             public void onFailure(@NonNull Call<ProductDetail> call, @NonNull Throwable t) {
                 binding.scroll.setVisibility(View.VISIBLE);
                 Toast.makeText(ProductDetailActivity.this, "Lỗi kết nối mạng", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchRelatedProducts(String categoryId) {
+        apiService.getProductsByCategoryId(categoryId).enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isJsonObject()) {
+
+                    JsonElement productsArrayElement = response.body().getAsJsonObject().get("products");
+
+                    if (productsArrayElement != null && productsArrayElement.isJsonArray()) {
+                        Gson gson = new Gson();
+                        Type productListType = new TypeToken<List<ProductInList>>(){}.getType();
+                        List<ProductInList> allProductsInCategory = gson.fromJson(productsArrayElement, productListType);
+
+                        if (allProductsInCategory != null) {
+                            List<ProductInList> filteredProducts = allProductsInCategory.stream()
+                                    .filter(p -> !p.getId().equals(currentProduct.getId()))
+                                    .collect(Collectors.toList());
+
+                            if (!filteredProducts.isEmpty()) {
+                                tvRelatedProductsTitle.setVisibility(View.VISIBLE);
+                                rvRelatedProducts.setVisibility(View.VISIBLE);
+                                relatedProductsAdapter.updateData(filteredProducts);
+                            } else {
+                                tvRelatedProductsTitle.setVisibility(View.GONE);
+                                rvRelatedProducts.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "Lỗi khi tải sản phẩm liên quan hoặc response không hợp lệ: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                Log.e(TAG, "Lỗi kết nối khi tải sản phẩm liên quan: " + t.getMessage());
             }
         });
     }
@@ -253,6 +342,28 @@ public class ProductDetailActivity extends AppCompatActivity implements AddToCar
             binding.sliderProduct.setVisibility(View.VISIBLE);
         } else {
             binding.sliderProduct.setVisibility(View.GONE);
+        }
+
+        int numberOfReviews = productDetail.getNumReviews();
+        if (numberOfReviews > 0) {
+            rvReviews.setVisibility(View.VISIBLE);
+            tvNoReviews.setVisibility(View.GONE);
+            layoutAverageRating.setVisibility(View.VISIBLE);
+            tvTotalReviewsCount.setVisibility(View.VISIBLE);
+
+            double averageRating = productDetail.getRating();
+            tvAverageRatingScore.setText(String.format("%.1f", averageRating));
+            tvTotalReviewsCount.setText(String.format("(%d đánh giá)", numberOfReviews));
+
+            if (reviewAdapter != null && productDetail.getReviews() != null) {
+                reviewAdapter.updateData(productDetail.getReviews());
+            }
+
+        } else {
+            rvReviews.setVisibility(View.GONE);
+            tvNoReviews.setVisibility(View.VISIBLE);
+            layoutAverageRating.setVisibility(View.GONE);
+            tvTotalReviewsCount.setVisibility(View.GONE);
         }
 
         SaleInfo sale = productDetail.getSale();
@@ -358,4 +469,35 @@ public class ProductDetailActivity extends AppCompatActivity implements AddToCar
                             .start();
                 }).start();
     }
+
+    @Override
+    public void onItemClick(ProductInList productInList) {
+        Intent intent = new Intent(this, ProductDetailActivity.class);
+        intent.putExtra("product_id", productInList.getId());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void setupRecyclerViews() {
+        RecyclerView rvReviews = findViewById(R.id.rv_reviews);
+        rvReviews.setLayoutManager(new LinearLayoutManager(this));
+        reviewAdapter = new ReviewAdapter(this, reviewList);
+        rvReviews.setAdapter(reviewAdapter);
+
+        rvRelatedProducts.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        relatedProductsAdapter = new ProductAdapter(this, relatedProductList, this);
+        rvRelatedProducts.setAdapter(relatedProductsAdapter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (saleCountDownTimer != null) {
+            saleCountDownTimer.cancel();
+        }
+
+        binding = null;
+    }
+
 }
