@@ -1,11 +1,11 @@
 package com.example.frontend2.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ImageView;import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,9 +15,10 @@ import com.bumptech.glide.Glide;
 import com.example.frontend2.R;
 import com.example.frontend2.data.model.Order;
 import com.example.frontend2.data.model.OrderItem;
+import com.example.frontend2.data.model.OrderSummary;
+import com.example.frontend2.ui.main.OrderDetailsActivity;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -26,9 +27,9 @@ import java.util.Locale;
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
     private final Context context;
-    private List<Order> orderList;
+    private List<OrderSummary> orderList;
 
-    public OrderAdapter(Context context, List<Order> orderList) {
+    public OrderAdapter(Context context, List<OrderSummary> orderList) {
         this.context = context;
         this.orderList = orderList;
     }
@@ -42,8 +43,14 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
-        Order order = orderList.get(position);
+        OrderSummary order = orderList.get(position);
         holder.bind(order);
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, OrderDetailsActivity.class);
+            intent.putExtra("ORDER_ID", order.getId());
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -51,7 +58,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         return orderList.size();
     }
 
-    public void updateOrders(List<Order> newOrders) {
+    public void updateOrders(List<OrderSummary> newOrders) {
         this.orderList = newOrders;
         notifyDataSetChanged();
     }
@@ -70,16 +77,19 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             productImagesContainer = itemView.findViewById(R.id.productImagesContainer);
         }
 
-        public void bind(Order order) {
-            orderIdText.setText("Đơn hàng #" + order.getId().substring(0, 8));
+        public void bind(OrderSummary order) {
+            if (order.getId() != null) {
+                orderIdText.setText("Đơn hàng #" + order.getId().substring(0, 8));
+            }
             orderDateText.setText("Mua lúc: " + formatDateTime(order.getCreatedAt()));
 
             DecimalFormat formatter = new DecimalFormat("###,###,###");
             orderTotalText.setText(formatter.format(order.getTotalPrice()) + "đ");
 
-            // Xử lý hiển thị ảnh sản phẩm
-            productImagesContainer.removeAllViews(); // Xóa ảnh cũ
+            productImagesContainer.removeAllViews();
             List<OrderItem> items = order.getOrderItems();
+            if (items == null) return;
+
             int imageCount = Math.min(items.size(), 3);
 
             for (int i = 0; i < imageCount; i++) {
@@ -108,27 +118,30 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         private View createMoreView(int remainingCount) {
             LayoutInflater inflater = LayoutInflater.from(context);
             View moreView = inflater.inflate(R.layout.item_more_products, productImagesContainer, false);
-
             TextView countText = moreView.findViewById(R.id.more_count_text);
             countText.setText("+" + remainingCount);
-
             return moreView;
         }
 
-        private String formatDateTime(String isoDate) {
-            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
-            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-            try {
-                Date date = inputFormat.parse(isoDate);
-                return outputFormat.format(date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return isoDate; // Trả về ngày gốc nếu không parse được
+        private String formatDateTime(Date date) {
+            if (date == null) {
+                return "";
             }
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+            return outputFormat.format(date);
         }
 
         private int dpToPx(int dp) {
             return (int) (dp * context.getResources().getDisplayMetrics().density);
         }
     }
+    public void updateData(List<OrderSummary> newList) {
+        // 1. Xóa toàn bộ dữ liệu cũ trong danh sách hiện tại của adapter
+        this.orderList.clear();
+        // 2. Thêm tất cả dữ liệu từ danh sách mới vào
+        this.orderList.addAll(newList);
+        // 3. Thông báo cho Adapter rằng dữ liệu đã thay đổi để nó vẽ lại toàn bộ danh sách
+        notifyDataSetChanged();
+    }
+
 }

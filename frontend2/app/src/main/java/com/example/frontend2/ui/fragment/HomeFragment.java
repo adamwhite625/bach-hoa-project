@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -31,6 +33,7 @@ import com.example.frontend2.data.model.ChatMessage;
 import com.example.frontend2.data.model.ChatMessageRequest;
 import com.example.frontend2.data.model.ChatMessageResponse;
 import com.example.frontend2.data.model.ProductInList;
+import com.example.frontend2.data.model.UnreadCountResponse;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.FragmentHomeBinding;
@@ -40,6 +43,7 @@ import com.example.frontend2.ui.adapter.ProductAdapter;
 import com.example.frontend2.ui.adapter.SliderAdapter;
 import com.example.frontend2.ui.main.ProductDetailActivity;
 import com.example.frontend2.ui.main.ProductListActivity;
+import com.example.frontend2.utils.SharedPrefManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -76,6 +80,8 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
     private final Handler sliderHandler = new Handler(Looper.getMainLooper());
     private Timer sliderTimer;
 
+    private String authToken;
+
     // --- Biến cho Chatbot ---
     private ChatAdapter chatAdapter;
     private List<ChatMessage> messageList;
@@ -98,6 +104,11 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
+        if (getContext() != null) {
+            authToken = "Bearer " + SharedPrefManager.getInstance(getContext()).getAuthToken();
+        }
+
         setupBannerSlider();
         setupRecyclerViews();
         setupClickListeners();
@@ -112,6 +123,48 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
                         .replace(R.id.fragment_container, new SearchFragment())
                         .addToBackStack(null)
                         .commit();
+            }
+        });
+    }
+
+
+    private void checkUnreadNotifications() {
+        if (binding == null || getContext() == null) {
+            return;
+        }
+
+        String token = SharedPrefManager.getInstance(getContext()).getAuthToken();
+
+        if (token == null || token.isEmpty()) {
+            binding.notificationBadge.setVisibility(View.GONE);
+            return;
+        }
+
+        String authHeader = "Bearer " + token;
+
+        apiService.getUnreadNotificationCount(authHeader).enqueue(new Callback<UnreadCountResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<UnreadCountResponse> call, @NonNull Response<UnreadCountResponse> response) {
+                if (!isAdded() || binding == null) {
+                    return;
+                }
+
+                if (response.isSuccessful() && response.body() != null) {
+                    boolean hasUnread = response.body().hasUnread();
+                    binding.notificationBadge.setVisibility(hasUnread ? View.VISIBLE : View.GONE);
+                } else {
+                    binding.notificationBadge.setVisibility(View.GONE);
+                    Log.e("CheckNotifications", "API call successful but returned an error: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UnreadCountResponse> call, @NonNull Throwable t) {
+                if (!isAdded() || binding == null) {
+                    return;
+                }
+                binding.notificationBadge.setVisibility(View.GONE);
+                Log.e("CheckNotifications", "API call failed due to network error.", t);
             }
         });
     }
@@ -319,7 +372,20 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
     }
 
     private void setupClickListeners() {
-        if (binding == null) return;
+        if (binding == null) {
+            return;
+        }
+
+        binding.notificationsLayout.setOnClickListener(v -> {
+
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new NotificationsFragment()) // Sửa lại ID nếu cần
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
         binding.btnViewAllSale.setOnClickListener(v -> {
             Log.d(TAG, "Nút 'Xem tất cả Khuyến mãi' được nhấn.");
             navigateToProductList(TYPE_SALE);
@@ -330,6 +396,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
             navigateToProductList(TYPE_FEATURED);
         });
     }
+
 
     private void navigateToProductList(String productType) {
         if (getActivity() == null) {
@@ -362,6 +429,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
     public void onResume() {
         super.onResume();
         startAutoSlider();
+        checkUnreadNotifications();
     }
 
     @Override

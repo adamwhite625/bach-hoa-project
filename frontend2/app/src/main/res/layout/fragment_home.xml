@@ -62,14 +62,37 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <!-- Icon thông báo -->
-                <ImageView
-                    android:id="@+id/notifications_icon"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                <FrameLayout
+                    android:id="@+id/notifications_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:src="@drawable/ic_notifications"
-                    app:tint="@android:color/white"
-                    tools:ignore="ContentDescription" />
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:id="@+id/notifications_icon"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_notifications"
+                        app:tint="@android:color/white"
+                        tools:ignore="ContentDescription" />
+
+                    <!-- Chấm đỏ (Badge) -->
+                    <View
+                        android:id="@+id/notification_badge"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_gravity="top|end"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="2dp"
+                        android:background="@drawable/circle_red_shape"
+                        android:visibility="gone"
+                        tools:visibility="visible" /> <!-- Để thấy trên preview -->
+
+                </FrameLayout>
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>

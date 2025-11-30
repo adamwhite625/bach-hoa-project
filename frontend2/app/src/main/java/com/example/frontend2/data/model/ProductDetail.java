@@ -1,14 +1,11 @@
-// File: data/model/ProductDetail.java
 package com.example.frontend2.data.model;
 
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-// Giữ nguyên "implements Serializable"
 public class ProductDetail implements Serializable {
 
-    // Giữ nguyên serialVersionUID
     private static final long serialVersionUID = 1L;
 
     @SerializedName("_id")
@@ -21,22 +18,20 @@ public class ProductDetail implements Serializable {
     private double price;
 
     @SerializedName("quantity")
-    private int stock; // Giữ tên 'stock' cho rõ ràng
+    private int stock;
 
     private double rating;
     private int numReviews;
     private boolean isActive;
     private List<ImageInfo> detailImages;
-
     private String category;
 
-    // --- PHẦN SỬA DUY NHẤT: THÊM TRƯỜNG "sale" ---
     @SerializedName("sale")
     private SaleInfo sale;
-    // ---------------------------------------------
 
+    @SerializedName("reviews")
+    private List<Review> reviews;
 
-    // --- Getters ---
     public String getId() { return id; }
     public String getName() { return name; }
     public String getSku() { return sku; }
@@ -49,11 +44,8 @@ public class ProductDetail implements Serializable {
     public boolean isActive() { return isActive; }
     public List<ImageInfo> getDetailImages() { return detailImages; }
     public String getCategory() { return category; }
-
-    // --- PHẦN SỬA DUY NHẤT: THÊM GETTER CHO "sale" ---
-    public SaleInfo getSale() {
-        return sale;
-    }
+    public SaleInfo getSale() { return sale; }
+    public List<Review> getReviews() { return reviews; }
 
     public double getFinalPrice() {
         if (sale != null && sale.isActive() && sale.getValue() > 0) {
@@ -62,8 +54,6 @@ public class ProductDetail implements Serializable {
                 return finalPrice;
             }
         }
-
         return this.price;
     }
 }
-

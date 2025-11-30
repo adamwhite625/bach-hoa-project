@@ -1,12 +1,12 @@
 package com.example.frontend2.data.remote;
 
-import com.example.frontend2.data.model.ApplyVoucherRequest;
-import com.example.frontend2.data.model.ApplyVoucherResponse;
-import com.example.frontend2.data.model.AvailableVouchersResponse;
+
 import com.example.frontend2.data.model.Category;
 import com.example.frontend2.data.model.LoginRequest;
 import com.example.frontend2.data.model.MessageResponse;
 import com.example.frontend2.data.model.Order;
+import com.example.frontend2.data.model.OrderRequest;
+import com.example.frontend2.data.model.OrderSummary;
 import com.example.frontend2.data.model.PreviewVoucherRequest;
 import com.example.frontend2.data.model.PreviewVoucherResponse;
 import com.example.frontend2.data.model.ProductDetail;
@@ -15,14 +15,16 @@ import com.example.frontend2.data.model.ProductListResponse;
 import com.example.frontend2.data.model.RegisterRequest;
 import com.example.frontend2.data.model.ResetPasswordFinalRequest;
 import com.example.frontend2.data.model.ResetPasswordRequest;
+import com.example.frontend2.data.model.Review;
 import com.example.frontend2.data.model.ShippingAddress;
 import com.example.frontend2.data.model.ShippingAddressResponse;
+import com.example.frontend2.data.model.UnreadCountResponse;
 import com.example.frontend2.data.model.User;
 import com.example.frontend2.data.model.CartResponse;
 import com.example.frontend2.data.model.UpdateCartRequest;
 import com.example.frontend2.data.model.AddToCartRequest;
 import com.example.frontend2.data.model.ChatMessageRequest;
-import com.example.frontend2.data.model.ChatMessageResponse;
+import com.example.frontend2.data.model.Notification;
 
 
 import com.example.frontend2.data.model.ValidateVoucherResponse;
@@ -95,6 +97,11 @@ public interface ApiService {
     @GET("api/products/{id}")
     Call<ProductDetail> getProductById(@Path("id") String productId);
 
+    @POST("api/products/{id}/reviews")
+    Call<Review> createReview(@Header("Authorization") String token,
+                              @Path("id") String productId,
+                              @Body Review reviewData);
+
     @GET("api/products/search")
     Call<JsonElement> searchProducts(@Query("keyword") String keyword);
 
@@ -107,7 +114,13 @@ public interface ApiService {
 
     // --- Orders ---
     @GET("api/orders/myorders")
-    Call<List<Order>> getMyOrders(@Header("Authorization") String token);
+    Call<List<OrderSummary>> getMyOrders(@Header("Authorization") String token);
+
+    @POST("api/orders")
+    Call<Order> createOrder(@Header("Authorization") String token, @Body OrderRequest orderRequest);
+
+    @GET("api/orders/{id}")
+    Call<Order> getOrderDetails(@Header("Authorization") String token, @Path("id") String orderId);
 
     // --- Cart ---
 
@@ -146,6 +159,24 @@ public interface ApiService {
     @POST("api/discounts/preview")
     Call<PreviewVoucherResponse> previewDiscount(@Header("Authorization") String token, @Body PreviewVoucherRequest request);
 
+
+    // --- Notification ---
+
+
+    @GET("api/notifications")
+    Call<ResponseBody> getNotifications(@Header("Authorization") String authHeader);
+
+    @GET("api/notifications/unread-count")
+    Call<UnreadCountResponse> getUnreadNotificationCount(@Header("Authorization") String authHeader);
+
+    @PUT("api/notifications/{id}/read")
+    Call<Void> markAsRead(@Header("Authorization") String authHeader, @Path("id") String notificationId);
+
+    @PUT("api/notifications")
+    Call<Void> markAllAsRead(@Header("Authorization") String authHeader);
+
+    @DELETE("api/notifications/{id}")
+    Call<Void> deleteNotification(@Header("Authorization") String authHeader, @Path("id") String notificationId);
 
     // --- Chatbot (TẠM THỜI DÙNG ResponseBody ĐỂ DEBUG) ---
     @POST("api/chat")

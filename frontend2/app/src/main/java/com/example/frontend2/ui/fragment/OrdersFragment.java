@@ -1,5 +1,6 @@
 package com.example.frontend2.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,15 +13,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.frontend2.data.model.OrderSummary;
 import com.example.frontend2.ui.adapter.OrderAdapter;
-import com.example.frontend2.data.model.Order;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
 import com.example.frontend2.databinding.FragmentOrdersBinding;
+import com.example.frontend2.ui.main.MainActivity;
 import com.example.frontend2.utils.SharedPrefManager;
+import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,6 +36,8 @@ public class OrdersFragment extends Fragment {
     private FragmentOrdersBinding binding;
     private ApiService apiService;
     private OrderAdapter orderAdapter;
+
+    private List<OrderSummary> allOrders = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,7 +56,17 @@ public class OrdersFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        binding.searchBarLayout.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.putExtra("ACTION", "OPEN_SEARCH_FRAGMENT");
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        });
+
         setupRecyclerView();
+        setupFilterChips();
         fetchOrders();
     }
 
@@ -60,7 +76,17 @@ public class OrdersFragment extends Fragment {
         binding.ordersRecyclerView.setAdapter(orderAdapter);
     }
 
+    private void setupFilterChips() {
+        binding.chipGroupStatus.setOnCheckedChangeListener((group, checkedId) -> {
+            Chip selectedChip = group.findViewById(checkedId);
+            if (selectedChip != null) {
+                filterOrdersByStatus(selectedChip.getText().toString());
+            }
+        });
+    }
+
     private void fetchOrders() {
+        if (getContext() == null) return;
         String token = SharedPrefManager.getInstance(getContext()).getAuthToken();
         if (token == null || token.isEmpty()) {
             showError("Vui lòng đăng nhập để xem đơn hàng");
@@ -69,11 +95,17 @@ public class OrdersFragment extends Fragment {
 
         String authHeader = "Bearer " + token;
 
-        apiService.getMyOrders(authHeader).enqueue(new Callback<List<Order>>() {
+        apiService.getMyOrders(authHeader).enqueue(new Callback<List<OrderSummary>>() {
             @Override
-            public void onResponse(Call<List<Order>> call, Response<List<Order>> response) {
+            public void onResponse(@NonNull Call<List<OrderSummary>> call, @NonNull Response<List<OrderSummary>> response) {
+                if (getContext() == null) return;
+
                 if (response.isSuccessful() && response.body() != null) {
-                    orderAdapter.updateOrders(response.body());
+                    allOrders.clear();
+                    allOrders.addAll(response.body());
+
+                    filterOrdersByStatus("Tất cả");
+
                 } else {
                     showError("Không thể tải danh sách đơn hàng");
                     Log.e(TAG, "Error fetching orders: " + response.code());
@@ -81,11 +113,51 @@ public class OrdersFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<Order>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<OrderSummary>> call, @NonNull Throwable t) {
+                if (getContext() == null) return;
                 showError("Lỗi kết nối mạng");
                 Log.e(TAG, "Network error: ", t);
             }
         });
+    }
+
+    private void filterOrdersByStatus(String chipText) {
+        List<OrderSummary> filteredList;
+
+        if ("Tất cả".equalsIgnoreCase(chipText)) {
+            filteredList = new ArrayList<>(allOrders);
+        } else {
+            String backendStatus = mapChipTextToBackendStatus(chipText);
+
+            filteredList = allOrders.stream()
+                    .filter(order -> backendStatus.equalsIgnoreCase(order.getOrderStatus()))
+                    .collect(Collectors.toList());
+        }
+
+        orderAdapter.updateData(filteredList);
+
+        if (filteredList.isEmpty()) {
+            binding.ordersRecyclerView.setVisibility(View.GONE);
+        } else {
+            binding.ordersRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private String mapChipTextToBackendStatus(String chipText) {
+        switch (chipText) {
+            case "Chờ xử lý":
+                return "Pending";
+            case "Đang xử lý":
+                return "Processing";
+            case "Đang giao":
+                return "Shipped";
+            case "Hoàn thành":
+                return "Delivered";
+            case "Đã hủy":
+                return "Cancelled";
+            default:
+                return "a_non_matching_string";
+        }
     }
 
     private void showError(String message) {

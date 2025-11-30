@@ -292,7 +292,8 @@ const validateDiscount = async (req, res) => {
     }
     
     res.json({
-      valid: true,
+      success: true, 
+      message: `Áp dụng thành công mã ${discount.code}!`, 
       discount: {
         code: discount.code,
         type: discount.type,

@@ -1,17 +1,9 @@
 package com.example.frontend2.data.model;
 
 import com.google.gson.annotations.SerializedName;
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
-public class Order implements Serializable {
-
-    @SerializedName("_id")
-    private String id;
-
-    @SerializedName("user")
-    private User user;
+public class OrderRequest {
 
     @SerializedName("orderItems")
     private List<OrderItem> orderItems;
@@ -34,35 +26,14 @@ public class Order implements Serializable {
     @SerializedName("totalPrice")
     private double totalPrice;
 
-    @SerializedName("status")
-    private String orderStatus;
-
-    @SerializedName("isPaid")
-    private boolean isPaid;
-
-    @SerializedName("isDelivered")
-    private boolean isDelivered;
-
-    @SerializedName("createdAt")
-    private Date createdAt;
-
-    @SerializedName("updatedAt")
-    private Date updatedAt;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public OrderRequest(List<OrderItem> orderItems, ShippingAddress shippingAddress, String paymentMethod, double itemsPrice, double taxPrice, double shippingPrice, double totalPrice) {
+        this.orderItems = orderItems;
+        this.shippingAddress = shippingAddress;
+        this.paymentMethod = paymentMethod;
+        this.itemsPrice = itemsPrice;
+        this.taxPrice = taxPrice;
+        this.shippingPrice = shippingPrice;
+        this.totalPrice = totalPrice;
     }
 
     public List<OrderItem> getOrderItems() {
@@ -119,47 +90,5 @@ public class Order implements Serializable {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public boolean isPaid() {
-        return isPaid;
-    }
-
-    public void setPaid(boolean paid) {
-        isPaid = paid;
-    }
-
-
-
-    public boolean isDelivered() {
-        return isDelivered;
-    }
-
-    public void setDelivered(boolean delivered) {
-        isDelivered = delivered;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

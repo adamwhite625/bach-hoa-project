@@ -91,17 +91,27 @@ const OrderManager = () => {
       const res = await OrderService.updateStatus(orderId, newStatus);
       hide();
       if (res.EC === 0) {
-        const updated = res.DT || { id: orderId, status: newStatus };
-        setOrders(prev => prev.map(o => (o.id === orderId ? { ...o, ...updated } : o)));
+        // Fetch fresh data to ensure consistency
+        await fetchOrders();
+        
+        // Update selected order if drawer is open
         if (selectedOrder?.id === orderId) {
-          setSelectedOrder(prev => (prev ? { ...prev, ...updated } : prev));
+          const updatedOrderData = res.DT || {};
+          setSelectedOrder(prev => prev ? {
+            ...prev,
+            ...updatedOrderData,
+            id: updatedOrderData._id || updatedOrderData.id || orderId,
+            status: newStatus
+          } : prev);
         }
+        
         message.success('Cập nhật trạng thái thành công');
       } else {
         message.error(res.EM || 'Không thể cập nhật trạng thái đơn hàng');
       }
     } catch (error) {
       hide();
+      console.error('Update status error:', error);
       message.error('Không thể cập nhật trạng thái đơn hàng');
     }
   };
@@ -234,21 +244,22 @@ const OrderManager = () => {
         <Select
           value={status}
           onChange={(value) => handleStatusChange(record.id, value)}
+          onClick={(e) => e.stopPropagation()}
           style={{ width: 140 }}
         >
-          <Option value="pending">Chờ xử lý</Option>
-          <Option value="processing">Đang xử lý</Option>
-          <Option value="shipping">Đang giao</Option>
-          <Option value="completed">Hoàn thành</Option>
-          <Option value="cancelled">Đã hủy</Option>
+          <Option value="Pending">Chờ xử lý</Option>
+          <Option value="Processing">Đang xử lý</Option>
+          <Option value="Shipped">Đang giao</Option>
+          <Option value="Delivered">Hoàn thành</Option>
+          <Option value="Cancelled">Đã hủy</Option>
         </Select>
       ),
       filters: [
-        { text: 'Chờ xử lý', value: 'pending' },
-        { text: 'Đang xử lý', value: 'processing' },
-        { text: 'Đang giao', value: 'shipping' },
-        { text: 'Hoàn thành', value: 'completed' },
-        { text: 'Đã hủy', value: 'cancelled' },
+        { text: 'Chờ xử lý', value: 'Pending' },
+        { text: 'Đang xử lý', value: 'Processing' },
+        { text: 'Đang giao', value: 'Shipped' },
+        { text: 'Hoàn thành', value: 'Delivered' },
+        { text: 'Đã hủy', value: 'Cancelled' },
       ],
       onFilter: (value, record) => record.status === value,
     },
@@ -263,10 +274,11 @@ const OrderManager = () => {
       title: 'Thao tác',
       key: 'action',
       render: (_, record) => (
-        <Space>
+        <Space onClick={(e) => e.stopPropagation()}>
           <Button
             icon={<EyeOutlined />}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setSelectedOrder(record);
               setDrawerVisible(true);
             }}
@@ -291,14 +303,15 @@ const OrderManager = () => {
   ];
 
   const getStatusBadge = (status) => {
+    const normalizedStatus = status?.toLowerCase();
     const statusMap = {
       pending: { status: 'warning', text: 'Chờ xử lý' },
       processing: { status: 'processing', text: 'Đang xử lý' },
-      shipping: { status: 'processing', text: 'Đang giao' },
-      completed: { status: 'success', text: 'Hoàn thành' },
+      shipped: { status: 'processing', text: 'Đang giao' },
+      delivered: { status: 'success', text: 'Hoàn thành' },
       cancelled: { status: 'error', text: 'Đã hủy' }
     };
-    return statusMap[status] || { status: 'default', text: status };
+    return statusMap[normalizedStatus] || { status: 'default', text: status };
   };
 
   return (
@@ -376,11 +389,11 @@ const OrderManager = () => {
               onChange={value => setFilters({ ...filters, status: value })}
             >
               <Option value="all">Tất cả trạng thái</Option>
-              <Option value="pending">Chờ xử lý</Option>
-              <Option value="processing">Đang xử lý</Option>
-              <Option value="shipping">Đang giao</Option>
-              <Option value="completed">Hoàn thành</Option>
-              <Option value="cancelled">Đã hủy</Option>
+              <Option value="Pending">Chờ xử lý</Option>
+              <Option value="Processing">Đang xử lý</Option>
+              <Option value="Shipped">Đang giao</Option>
+              <Option value="Delivered">Hoàn thành</Option>
+              <Option value="Cancelled">Đã hủy</Option>
             </Select>
             <RangePicker
               value={filters.dateRange?.length ? filters.dateRange : null}
@@ -442,7 +455,9 @@ const OrderManager = () => {
                 {selectedOrder.phone}
               </Descriptions.Item>
               <Descriptions.Item label="Địa chỉ giao hàng">
-                {selectedOrder.shippingAddress}
+                {typeof selectedOrder.shippingAddress === 'object' 
+                  ? `${selectedOrder.shippingAddress.address || ''}, ${selectedOrder.shippingAddress.city || ''}`.trim().replace(/^,\s*|,\s*$/g, '') || 'Không có địa chỉ'
+                  : selectedOrder.shippingAddress || 'Không có địa chỉ'}
               </Descriptions.Item>
               <Descriptions.Item label="Phương thức thanh toán">
                 {selectedOrder.paymentMethod}
@@ -455,11 +470,12 @@ const OrderManager = () => {
             <Steps
               size="small"
               current={(() => {
-                if (selectedOrder.status === 'cancelled') return 0;
-                const steps = ['pending', 'processing', 'shipping', 'completed'];
-                return Math.max(steps.indexOf(selectedOrder.status), 0);
+                const normalizedStatus = selectedOrder.status?.toLowerCase();
+                if (normalizedStatus === 'cancelled') return 0;
+                const steps = ['pending', 'processing', 'shipped', 'delivered'];
+                return Math.max(steps.indexOf(normalizedStatus), 0);
               })()}
-              items={selectedOrder.status === 'cancelled' ? [
+              items={selectedOrder.status?.toLowerCase() === 'cancelled' ? [
                 { title: 'Đã hủy', status: 'error' }
               ] : [
                 { title: 'Chờ xử lý' },

@@ -269,9 +269,35 @@ const removeFromCart = async (req, res) => {
   }
 };
 
+// @desc    Clear all items from cart
+// @route   DELETE /api/carts
+// @access  Private
+const clearCart = async (req, res) => {
+  try {
+    const cart = await Cart.findOne({ user: req.user._id });
+    
+    if (!cart) {
+      return res.json({ items: [], totalPrice: 0 });
+    }
+
+    cart.items = [];
+    await cart.save();
+
+    res.json({
+      items: [],
+      totalPrice: 0,
+      message: 'Đã xóa tất cả sản phẩm trong giỏ hàng'
+    });
+  } catch (error) {
+    console.error('Clear cart error:', error);
+    res.status(500).json({ message: 'Lỗi server' });
+  }
+};
+
 module.exports = {
     addToCart,
     getCart,
     updateCartItem,
-    removeFromCart
+    removeFromCart,
+    clearCart
 };

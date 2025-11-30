@@ -15,6 +15,9 @@ const normalize = (item = {}) => ({
     ? Number(item.maxDiscount)
     : (Number.isFinite(item.maxDiscountAmount) ? Number(item.maxDiscountAmount) : null),
   usageLimit: Number.isFinite(item.usageLimit) ? Number(item.usageLimit) : null,
+  perUserLimit: Number.isFinite(item.perUserLimit) ? Number(item.perUserLimit) : null,
+  userType: item.userType || 'all',
+  allowedUsers: Array.isArray(item.allowedUsers) ? item.allowedUsers : [],
   usedCount: Number(item.usedCount) || 0,
   startAt: item.startAt || item.start_date || item.startDate || null,
   endAt: item.endAt || item.end_date || item.endDate || null,

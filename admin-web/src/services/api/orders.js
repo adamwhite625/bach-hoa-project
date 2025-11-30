@@ -3,25 +3,47 @@ import { API_ENDPOINTS } from '../../config/api';
 
 const normalizeOrder = (o = {}) => {
   const id = o._id || o.id;
+  
+  // Handle user field (populated by backend)
+  const user = o.user || {};
+  const customerName = o.customerName 
+    || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}`.trim() : '')
+    || o.shippingAddress?.fullName
+    || '';
+  const email = o.email || user.email || '';
+  const phone = o.phone || o.shippingAddress?.phone || '';
+  
+  // Handle shipping address
+  const shippingAddress = typeof o.shippingAddress === 'object' 
+    ? o.shippingAddress 
+    : { address: o.shippingAddress || '' };
+  
   return {
     id,
     _id: id,
-    customerName: o.customerName || o.customer?.name || o.name || '',
-    email: o.email || o.customer?.email || '',
-    phone: o.phone || o.customer?.phone || '',
-    total: o.total || o.totalAmount || 0,
+    customerName,
+    email,
+    phone,
+    total: o.totalPrice || o.total || o.totalAmount || 0,
     status: o.status || 'pending',
     paymentMethod: o.paymentMethod || o.payment || 'COD',
     createdAt: o.createdAt || o.date || o.created_at || new Date().toISOString(),
-    items: Array.isArray(o.items) ? o.items.map(it => ({
-      id: it._id || it.id || it.productId,
-      productId: it.productId || it.id || it._id,
+    items: Array.isArray(o.orderItems || o.items) ? (o.orderItems || o.items).map(it => ({
+      id: it._id || it.id || it.productId || it.product?._id,
+      productId: it.product?._id || it.productId || it.id || it._id,
       name: it.name || it.product?.name || '',
       quantity: it.quantity || it.qty || 0,
       price: it.price || it.unitPrice || 0,
+      image: it.image || it.product?.image || '',
       subtotal: it.subtotal || ((it.price || it.unitPrice || 0) * (it.quantity || it.qty || 0))
     })) : [],
-    shippingAddress: o.shippingAddress || o.address || '',
+    shippingAddress,
+    user: {
+      id: user._id || user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email
+    }
   };
 };
 

@@ -43,6 +43,20 @@ const discountTypeLabel = {
   fixed: 'Theo số tiền'
 };
 
+const userTypeLabel = {
+  all: 'Tất cả',
+  new: 'Khách mới',
+  vip: 'VIP',
+  specific: 'Chọn người dùng'
+};
+
+const userTypeColor = {
+  all: 'default',
+  new: 'cyan',
+  vip: 'gold',
+  specific: 'purple'
+};
+
 const determineStatus = (discount) => {
   if (!discount.isActive) return 'inactive';
   const now = dayjs();
@@ -209,6 +223,28 @@ const DiscountManager = () => {
         record.type === 'percent'
           ? `${value}%`
           : `${Number(value).toLocaleString('vi-VN')}₫`
+      )
+    },
+    {
+      title: 'Đối tượng',
+      dataIndex: 'userType',
+      key: 'userType',
+      render: (userType, record) => (
+        <Space direction="vertical" size={0}>
+          <Tag color={userTypeColor[userType] || 'default'}>
+            {userTypeLabel[userType] || userType}
+          </Tag>
+          {record.perUserLimit > 0 && (
+            <Text type="secondary" style={{ fontSize: 12 }}>
+              {record.perUserLimit} lần/người
+            </Text>
+          )}
+          {userType === 'specific' && record.allowedUsers?.length > 0 && (
+            <Text type="secondary" style={{ fontSize: 12 }}>
+              {record.allowedUsers.length} người
+            </Text>
+          )}
+        </Space>
       )
     },
     {
