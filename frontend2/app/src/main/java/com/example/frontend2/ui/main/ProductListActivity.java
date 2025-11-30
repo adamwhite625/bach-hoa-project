@@ -18,6 +18,7 @@ import com.example.frontend2.R;
 import com.example.frontend2.ui.adapter.ProductAdapter;
 import com.example.frontend2.data.model.ProductInList;
 import com.example.frontend2.databinding.ActivityProductListBinding;
+import com.example.frontend2.ui.fragment.SearchFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ public class ProductListActivity extends AppCompatActivity implements ProductAda
 
         handleIntent();
         setupRecyclerViews();
+        setupClickListeners();
         setupSortListeners();
         setupObservers();
         binding.btnBackSmall.setOnClickListener(v -> onBackPressed());
@@ -96,6 +98,15 @@ public class ProductListActivity extends AppCompatActivity implements ProductAda
             binding.dividerView.setVisibility(View.GONE);
             binding.tvAllProductsHeader.setVisibility(View.GONE);
         }
+    }
+
+    private void setupClickListeners() {
+        binding.searchBarLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("ACTION", "OPEN_SEARCH_FRAGMENT");
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+        });
     }
 
     private void setupSortListeners() {
