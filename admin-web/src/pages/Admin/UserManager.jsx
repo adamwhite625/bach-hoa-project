@@ -42,6 +42,18 @@ const ROLE_LABELS = {
   customer: 'Khách hàng'
 };
 
+const CUSTOMER_TIER_LABELS = {
+  new: 'Khách mới',
+  regular: 'Thường',
+  vip: 'VIP'
+};
+
+const CUSTOMER_TIER_COLORS = {
+  new: 'cyan',
+  regular: 'default',
+  vip: 'gold'
+};
+
 const STATUS_LABELS = {
   active: 'Hoạt động',
   inactive: 'Ngừng hoạt động',
@@ -74,9 +86,23 @@ const normalizeUser = (user = {}) => {
   const role = (user.role || user.type || 'user').toLowerCase();
   let status = (user.status || '').toLowerCase();
   if (!status) status = user.isActive === false ? 'inactive' : 'active';
+  const customerTier = user.customerTier || 'new';
   const createdAt = user.createdAt || user.created_at || user.joinedAt || user.date || user.createdOn || null;
   const lastLogin = user.lastLogin || user.lastLoginAt || user.lastActiveAt || null;
-  const address = user.address || user.location || user.profile?.address || user.shippingAddress || '';
+  
+  // Handle shippingAddress which can be object or string
+  let address = '';
+  if (typeof user.shippingAddress === 'string') {
+    address = user.shippingAddress;
+  } else if (user.shippingAddress?.address) {
+    const parts = [
+      user.shippingAddress.address,
+      user.shippingAddress.city
+    ].filter(Boolean);
+    address = parts.join(', ');
+  } else {
+    address = user.address || user.location || user.profile?.address || '';
+  }
 
   return {
     key: id,
@@ -85,6 +111,7 @@ const normalizeUser = (user = {}) => {
     email,
     phone,
     role,
+    customerTier,
     status,
     createdAt,
     lastLogin,
@@ -196,6 +223,16 @@ const UserManager = () => {
       ),
       filters: roleOptions.map((role) => ({ text: ROLE_LABELS[role] || role, value: role })),
       onFilter: (value, record) => record.role === value
+    },
+    {
+      title: 'Cấp độ',
+      dataIndex: 'customerTier',
+      key: 'customerTier',
+      render: (tier) => (
+        <Tag color={CUSTOMER_TIER_COLORS[tier] || 'default'}>
+          {CUSTOMER_TIER_LABELS[tier] || tier || 'Không rõ'}
+        </Tag>
+      )
     },
     {
       title: 'Trạng thái',
@@ -338,6 +375,11 @@ const UserManager = () => {
               </Descriptions.Item>
               <Descriptions.Item label="Vai trò">
                 {ROLE_LABELS[selectedUser.role] || selectedUser.role || 'Không rõ'}
+              </Descriptions.Item>
+              <Descriptions.Item label="Cấp độ khách hàng">
+                <Tag color={CUSTOMER_TIER_COLORS[selectedUser.customerTier] || 'default'}>
+                  {CUSTOMER_TIER_LABELS[selectedUser.customerTier] || selectedUser.customerTier || 'Không rõ'}
+                </Tag>
               </Descriptions.Item>
               <Descriptions.Item label="Ngày tạo">
                 <Space size={8}>

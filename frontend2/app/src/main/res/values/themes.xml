@@ -6,4 +6,25 @@
     </style>
 
     <style name="Theme.Frontend2" parent="Base.Theme.Frontend2" />
+
+    <style name="Theme.Frontend2.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/black</item>
+        <item name="colorSecondaryVariant">@color/white</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <!-- Màu sao được chọn (màu vàng) -->
+        <item name="colorControlActivated">@color/rating_star_color</item>
+        <!-- Màu sao chưa được chọn (màu xám) -->
+        <item name="colorControlNormal">@android:color/darker_gray</item>
+    </style>
 </resources>

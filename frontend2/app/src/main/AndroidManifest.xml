@@ -64,6 +64,18 @@
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Frontend2" />
+
+        <activity
+            android:name=".ui.main.OrderSuccessActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.main.OrderDetailsActivity"
+            android:exported="false"/>
+
+        <activity android:name=".ui.main.ReviewActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Frontend2.NoActionBar"/>
     </application>
 
 </manifest>

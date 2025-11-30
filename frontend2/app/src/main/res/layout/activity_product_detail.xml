@@ -206,14 +206,6 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#000000"/>
-
-                <TextView
-                    android:id="@+id/tv_share"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Link chia sẻ"
-                    android:textColor="#3b82f6"
-                    android:layout_marginStart="8dp"/>
             </LinearLayout>
 
             <!-- Container chứa giá mới và giá cũ (gạch ngang) -->
@@ -279,10 +271,143 @@
                     android:textColor="#444444"/>
             </LinearLayout>
 
-            <View
+            <androidx.constraintlayout.widget.ConstraintLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/reviews_section"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"/>
+                android:layout_height="wrap_content"
+                android:paddingBottom="24dp">
+
+                <!-- 1. Tiêu đề "Đánh giá sản phẩm" -->
+                <TextView
+                    android:id="@+id/tv_reviews_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:text="Đánh giá sản phẩm"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 2. CONTAINER MỚI: Chứa sao và số điểm trung bình -->
+                <LinearLayout
+                    android:id="@+id/layout_average_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_reviews_title"
+                    app:layout_constraintStart_toEndOf="@+id/tv_reviews_title"
+                    app:layout_constraintTop_toTopOf="@+id/tv_reviews_title"
+                    tools:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/iv_average_star"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_star"
+                        app:tint="#FFC107" />
+
+                    <TextView
+                        android:id="@+id/tv_average_rating_score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        tools:text="4.8" />
+                </LinearLayout>
+
+                <!-- 3. VIEW MỚI: Số lượt đánh giá -->
+                <TextView
+                    android:id="@+id/tv_total_reviews_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="#888888"
+                    android:textSize="14sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_reviews_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:text="(125 đánh giá)"
+                    tools:visibility="visible"/>
+
+
+                <!-- Các View còn lại giữ nguyên -->
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    android:background="#E0E0E0"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_reviews_title" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_reviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:nestedScrollingEnabled="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/review_item" />
+
+                <TextView
+                    android:id="@+id/tv_no_reviews"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="24dp"
+                    android:text="Chưa có đánh giá nào cho sản phẩm này."
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="15sp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider"
+                    tools:visibility="visible" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <TextView
+                android:id="@+id/tv_related_products_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sản phẩm cùng loại"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="16dp"
+                android:visibility="gone"
+            tools:visibility="visible"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_related_products"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:listitem="@layout/product_item_grid"
+                tools:itemCount="4"
+                tools:orientation="horizontal"/>
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
     ---

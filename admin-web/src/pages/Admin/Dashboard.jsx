@@ -12,7 +12,9 @@ import {
   Badge,
   Empty,
   List,
-  Spin
+  Spin,
+  DatePicker,
+  Select
 } from 'antd';
 import {
   RiseOutlined,
@@ -97,7 +99,19 @@ const createDailyBuckets = (days) => {
   return { buckets, map, start };
 };
 
-const buildOrderTrend = (orders, days = 7) => {
+const buildOrderTrend = (orders, days = 7, customRange = null) => {
+  let startDate, endDate;
+  
+  if (customRange && customRange[0] && customRange[1]) {
+    startDate = new Date(customRange[0]);
+    startDate.setHours(0, 0, 0, 0);
+    endDate = new Date(customRange[1]);
+    endDate.setHours(23, 59, 59, 999);
+    const diffTime = Math.abs(endDate - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    days = diffDays;
+  }
+  
   const { buckets, map, start } = createDailyBuckets(days);
   const end = new Date();
   end.setHours(23, 59, 59, 999);
@@ -125,8 +139,19 @@ const buildOrderTrend = (orders, days = 7) => {
   }));
 };
 
-const buildUserTrend = (users, days = 7) => {
-  const { buckets, map, start } = createDailyBuckets(days);
+const buildUserTrend = (users, days = 7, customRange = null) => {
+  let actualDays = days;
+  
+  if (customRange && customRange[0] && customRange[1]) {
+    const startOverride = new Date(customRange[0]);
+    startOverride.setHours(0, 0, 0, 0);
+    const endOverride = new Date(customRange[1]);
+    endOverride.setHours(23, 59, 59, 999);
+    const diffTime = Math.abs(endOverride - startOverride);
+    actualDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  }
+  
+  const { buckets, map, start } = createDailyBuckets(actualDays);
   const end = new Date();
   end.setHours(23, 59, 59, 999);
   buckets.forEach((bucket) => {
@@ -150,7 +175,7 @@ const buildUserTrend = (users, days = 7) => {
   }));
 };
 
-const USE_DASHBOARD_MOCK = true;
+const USE_DASHBOARD_MOCK = false;
 
 const daysAgoIso = (days) => {
   const date = new Date();
@@ -212,6 +237,10 @@ const Dashboard = () => {
   const [orderError, setOrderError] = useState(null);
   const [userError, setUserError] = useState(null);
   const [productError, setProductError] = useState(null);
+  const [dateRange, setDateRange] = useState('7days');
+  const [customDateRange, setCustomDateRange] = useState(null);
+  const [userDateRange, setUserDateRange] = useState('7days');
+  const [customUserDateRange, setCustomUserDateRange] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -236,7 +265,8 @@ const Dashboard = () => {
         const averageOrderValue = totalOrders ? totalSales / totalOrders : 0;
 
         setRecentOrders(normalized);
-        setOrderTrendData(buildOrderTrend(orders));
+        const trendDays = dateRange === '7days' ? 7 : dateRange === '30days' ? 30 : dateRange === '90days' ? 90 : 7;
+        setOrderTrendData(buildOrderTrend(orders, trendDays, dateRange === 'custom' ? customDateRange : null));
         setStatistics((prev) => ({
           ...prev,
           totalSales,
@@ -253,16 +283,22 @@ const Dashboard = () => {
       const response = await OrderService.list({ limit: 50, sort: 'desc' });
       if (!active) return;
 
-      if (response.EC === 0) {
-        const orders = Array.isArray(response.DT) ? response.DT : [];
-        const sorted = [...orders].sort((a, b) => new Date(b.createdAt || b.created_at || 0) - new Date(a.createdAt || a.created_at || 0));
+      if (response.EC === 0 || Array.isArray(response.DT) || Array.isArray(response)) {
+        const rawOrders = Array.isArray(response.DT) ? response.DT : Array.isArray(response) ? response : [];
+        const orders = rawOrders.map(o => ({
+          ...o,
+          total: o.totalPrice || o.total || 0,
+          createdAt: o.createdAt || o.created_at || new Date().toISOString()
+        }));
+        
+        const sorted = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         const normalized = sorted.slice(0, 6).map((order) => ({
           key: order._id || order.id || Math.random().toString(36).slice(2),
           id: order._id || order.id,
-          customer: order.customerName || order.customer?.name || order.customer || 'Khách lẻ',
+          customer: order.shippingAddress?.fullName || order.user?.firstName + ' ' + order.user?.lastName || 'Khách lẻ',
           total: Number(order.total) || 0,
-          status: order.status || 'pending',
-          createdAt: order.createdAt || order.created_at || order.date || null
+          status: (order.status || 'Pending').toLowerCase(),
+          createdAt: order.createdAt
         }));
 
         const totalSales = orders.reduce((sum, order) => sum + (Number(order.total) || 0), 0);
@@ -278,7 +314,8 @@ const Dashboard = () => {
           pendingOrders,
           averageOrderValue
         }));
-        setOrderTrendData(buildOrderTrend(orders));
+        const trendDays = dateRange === '7days' ? 7 : dateRange === '30days' ? 30 : dateRange === '90days' ? 90 : 7;
+        setOrderTrendData(buildOrderTrend(orders, trendDays, dateRange === 'custom' ? customDateRange : null));
       } else {
         setRecentOrders([]);
         setOrderError(response.EM || 'Không thể tải đơn hàng');
@@ -311,7 +348,8 @@ const Dashboard = () => {
         }).length;
 
         setRecentUsers(normalized.slice(0, 5));
-        setUserTrendData(buildUserTrend(normalized));
+        const userTrendDays = userDateRange === '7days' ? 7 : userDateRange === '30days' ? 30 : userDateRange === '90days' ? 90 : 7;
+        setUserTrendData(buildUserTrend(normalized, userTrendDays, userDateRange === 'custom' ? customUserDateRange : null));
         setStatistics((prev) => ({
           ...prev,
           totalUsers: normalized.length,
@@ -358,7 +396,8 @@ const Dashboard = () => {
           totalUsers: normalized.length,
           usersThisWeek
         }));
-        setUserTrendData(buildUserTrend(normalized));
+        const userTrendDays = userDateRange === '7days' ? 7 : userDateRange === '30days' ? 30 : userDateRange === '90days' ? 90 : 7;
+        setUserTrendData(buildUserTrend(normalized, userTrendDays, userDateRange === 'custom' ? customUserDateRange : null));
       } else {
         setRecentUsers([]);
         setUserError(response.EM || 'Không thể tải người dùng');
@@ -403,7 +442,7 @@ const Dashboard = () => {
     return () => {
       active = false;
     };
-  }, []);
+  }, [dateRange, customDateRange, userDateRange, customUserDateRange]);
 
   const hasOrderTrendData = useMemo(
     () => orderTrendData.some((item) => (item.orders || 0) > 0 || (item.revenue || 0) > 0),
@@ -569,7 +608,37 @@ const Dashboard = () => {
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={16}>
           <Card
-            title={<Space><DollarOutlined /> <span style={{ fontWeight: 600 }}>Hiệu suất bán hàng 7 ngày</span></Space>}
+            title={
+              <Space style={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                <Space><DollarOutlined /> <span style={{ fontWeight: 600 }}>Hiệu suất bán hàng</span></Space>
+                <Space size={8}>
+                  <Select
+                    value={dateRange}
+                    onChange={(value) => {
+                      setDateRange(value);
+                      if (value !== 'custom') {
+                        setCustomDateRange(null);
+                      }
+                    }}
+                    style={{ width: 140 }}
+                    options={[
+                      { label: '7 ngày', value: '7days' },
+                      { label: '30 ngày', value: '30days' },
+                      { label: '90 ngày', value: '90days' },
+                      { label: 'Tùy chỉnh', value: 'custom' }
+                    ]}
+                  />
+                  {dateRange === 'custom' && (
+                    <DatePicker.RangePicker
+                      value={customDateRange}
+                      onChange={(dates) => setCustomDateRange(dates)}
+                      format="DD/MM/YYYY"
+                      placeholder={['Từ ngày', 'Đến ngày']}
+                    />
+                  )}
+                </Space>
+              </Space>
+            }
             bordered={false}
             style={{ borderRadius: 14, height: '100%' }}
           >
@@ -638,7 +707,37 @@ const Dashboard = () => {
         </Col>
         <Col xs={24} lg={8}>
           <Card
-            title={<Space><UserOutlined /> <span style={{ fontWeight: 600 }}>Người dùng mới 7 ngày</span></Space>}
+            title={
+              <Space style={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                <Space><UserOutlined /> <span style={{ fontWeight: 600 }}>Người dùng mới</span></Space>
+                <Space size={8}>
+                  <Select
+                    value={userDateRange}
+                    onChange={(value) => {
+                      setUserDateRange(value);
+                      if (value !== 'custom') {
+                        setCustomUserDateRange(null);
+                      }
+                    }}
+                    style={{ width: 140 }}
+                    options={[
+                      { label: '7 ngày', value: '7days' },
+                      { label: '30 ngày', value: '30days' },
+                      { label: '90 ngày', value: '90days' },
+                      { label: 'Tùy chỉnh', value: 'custom' }
+                    ]}
+                  />
+                  {userDateRange === 'custom' && (
+                    <DatePicker.RangePicker
+                      value={customUserDateRange}
+                      onChange={(dates) => setCustomUserDateRange(dates)}
+                      format="DD/MM/YYYY"
+                      placeholder={['Từ ngày', 'Đến ngày']}
+                    />
+                  )}
+                </Space>
+              </Space>
+            }
             bordered={false}
             style={{ borderRadius: 14, height: '100%' }}
           >
