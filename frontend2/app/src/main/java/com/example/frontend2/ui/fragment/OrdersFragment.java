@@ -13,7 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.frontend2.data.model.ApiResponse;
 import com.example.frontend2.data.model.OrderSummary;
+import com.example.frontend2.data.model.TotalSpent;
 import com.example.frontend2.ui.adapter.OrderAdapter;
 import com.example.frontend2.data.remote.ApiClient;
 import com.example.frontend2.data.remote.ApiService;
@@ -68,6 +70,7 @@ public class OrdersFragment extends Fragment {
         setupRecyclerView();
         setupFilterChips();
         fetchOrders();
+        fetchTotalSpent(); // Gọi hàm để lấy tổng chi tiêu
     }
 
     private void setupRecyclerView() {
@@ -104,6 +107,8 @@ public class OrdersFragment extends Fragment {
                     allOrders.clear();
                     allOrders.addAll(response.body());
 
+                    // Set chip "Tất cả" làm chip mặc định được chọn
+                    binding.chipAll.setChecked(true);
                     filterOrdersByStatus("Tất cả");
 
                 } else {
@@ -120,6 +125,41 @@ public class OrdersFragment extends Fragment {
             }
         });
     }
+
+    private void fetchTotalSpent() {
+        if (getContext() == null) return;
+        String token = SharedPrefManager.getInstance(getContext()).getAuthToken();
+        if (token == null || token.isEmpty()) {
+            binding.totalSpentCard.setVisibility(View.GONE);
+            return;
+        }
+
+        String authHeader = "Bearer " + token;
+
+        apiService.getTotalSpent(authHeader).enqueue(new Callback<ApiResponse<TotalSpent>>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<TotalSpent>> call, @NonNull Response<ApiResponse<TotalSpent>> response) {
+                if (isAdded() && binding != null && response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    binding.totalSpentValue.setText(response.body().getData().getFormattedTotal());
+                } else {
+                    if (binding != null) {
+                        binding.totalSpentValue.setText("Lỗi");
+                    }
+                    String errorMsg = response.body() != null ? response.body().getErrorMessage() : "Unknown Error";
+                    Log.e(TAG, "Error fetching total spent: " + errorMsg);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<TotalSpent>> call, @NonNull Throwable t) {
+                if (isAdded() && binding != null) {
+                    binding.totalSpentValue.setText("Lỗi mạng");
+                }
+                Log.e(TAG, "Network error fetching total spent: ", t);
+            }
+        });
+    }
+
 
     private void filterOrdersByStatus(String chipText) {
         List<OrderSummary> filteredList;
@@ -138,6 +178,7 @@ public class OrdersFragment extends Fragment {
 
         if (filteredList.isEmpty()) {
             binding.ordersRecyclerView.setVisibility(View.GONE);
+            // Optionally show an empty state message
         } else {
             binding.ordersRecyclerView.setVisibility(View.VISIBLE);
         }
