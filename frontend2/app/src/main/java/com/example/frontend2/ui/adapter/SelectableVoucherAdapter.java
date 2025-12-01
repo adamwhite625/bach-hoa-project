@@ -9,12 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.frontend2.data.model.Voucher;
 import com.example.frontend2.databinding.ItemVoucherSelectableBinding;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 public class SelectableVoucherAdapter extends RecyclerView.Adapter<SelectableVoucherAdapter.VoucherHolder> {
 
@@ -77,24 +75,16 @@ public class SelectableVoucherAdapter extends RecyclerView.Adapter<SelectableVou
             binding.tvVoucherCode.setText(voucher.getCode());
             binding.tvVoucherDescription.setText(voucher.getDescription());
 
-            String formattedDate = formatDate(voucher.getEndDate());
+            String formattedDate = formatDate(voucher.getEndAt());
             binding.tvVoucherExpiry.setText("HSD: " + formattedDate);
         }
 
-        private String formatDate(String isoDate) {
-            if (isoDate == null || isoDate.isEmpty()) {
+        private String formatDate(Date date) {
+            if (date == null) {
                 return "N/A";
             }
-            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
-            inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            try {
-                Date date = inputFormat.parse(isoDate);
-                return outputFormat.format(date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return "N/A";
-            }
+            return outputFormat.format(date);
         }
     }
 }

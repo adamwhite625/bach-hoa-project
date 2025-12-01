@@ -29,10 +29,19 @@ const userSchema = mongoose.Schema(
       enum: ["Customer", "Admin", "Sales", "Warehouse"],
       default: "Customer",
     },
-    customerTier: {
+    loyaltyTier: {
       type: String,
-      enum: ["new", "regular", "vip"],
-      default: "new",
+      enum: ["bronze", "silver", "gold"],
+      default: "bronze",
+    },
+    totalSpent: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    lastTierUpdateAt: {
+      type: Date,
+      default: null,
     },
     isActive: { type: Boolean, default: true },
   },

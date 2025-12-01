@@ -1,8 +1,11 @@
 package com.example.frontend2.data.remote;
 
 
+import com.example.frontend2.data.model.ApiResponse;
 import com.example.frontend2.data.model.Category;
 import com.example.frontend2.data.model.LoginRequest;
+import com.example.frontend2.data.model.LoyaltyInfo;
+import com.example.frontend2.data.model.LoyaltyStatus;
 import com.example.frontend2.data.model.MessageResponse;
 import com.example.frontend2.data.model.Order;
 import com.example.frontend2.data.model.OrderRequest;
@@ -18,6 +21,7 @@ import com.example.frontend2.data.model.ResetPasswordRequest;
 import com.example.frontend2.data.model.Review;
 import com.example.frontend2.data.model.ShippingAddress;
 import com.example.frontend2.data.model.ShippingAddressResponse;
+import com.example.frontend2.data.model.TotalSpent;
 import com.example.frontend2.data.model.UnreadCountResponse;
 import com.example.frontend2.data.model.User;
 import com.example.frontend2.data.model.CartResponse;
@@ -76,6 +80,16 @@ public interface ApiService {
             @PartMap Map<String, RequestBody> partMap,
             @Part MultipartBody.Part file
     );
+
+    // --- Loyalty Tier ---
+    @GET("api/users/loyalty/info")
+    Call<ApiResponse<LoyaltyInfo>> getLoyaltyInfo(@Header("Authorization") String token);
+
+    @GET("api/users/loyalty/status")
+    Call<ApiResponse<LoyaltyStatus>> getLoyaltyStatus(@Header("Authorization") String token);
+
+    @GET("api/users/loyalty/total-spent")
+    Call<ApiResponse<TotalSpent>> getTotalSpent(@Header("Authorization") String token);
 
     // --- Shipping Address ---
     @GET("api/users/shipping-address")
