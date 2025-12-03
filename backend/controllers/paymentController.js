@@ -21,8 +21,6 @@ const createZaloPayPayment = async (req, res) => {
     try {
         const { amount, orderInfo, orderId } = req.body;
 
-        console.log('📝 Creating ZaloPay payment:', { orderId, amount });
-
         if (!amount || amount <= 0) {
             return res.status(400).json({ message: 'Số tiền không hợp lệ' });
         }
@@ -87,17 +85,11 @@ const createZaloPayPayment = async (req, res) => {
             + "|" + order_data.app_time + "|" + order_data.embed_data + "|" + order_data.item;
         order_data.mac = crypto.createHmac('sha256', config.key1).update(data).digest('hex');
 
-        console.log('🔄 Calling ZaloPay API...');
         const response = await axios.post(config.endpoint, null, { params: order_data });
 
         // ⚠️ UNCOMMENT DÒNG DƯỚI ĐỂ TEST ROLLBACK
         // response.data.return_code = 2;
         // response.data.return_message = 'TEST: Force payment failure';
-
-        console.log('📬 ZaloPay response:', {
-            return_code: response.data.return_code,
-            return_message: response.data.return_message
-        });
 
         if (response.data.return_code === 1) {
             // ✅ Lưu app_trans_id vào paymentResult.id
@@ -107,9 +99,6 @@ const createZaloPayPayment = async (req, res) => {
                 update_time: new Date().toISOString()
             };
             await order.save();
-
-            console.log('✅ Payment created successfully:', app_trans_id);
-            console.log('✅ Order updated with paymentResult.id:', order.paymentResult.id);
 
             res.json({
                 paymentUrl: response.data.order_url,
@@ -125,7 +114,6 @@ const createZaloPayPayment = async (req, res) => {
             try {
                 await rollbackOrder(order, session);
                 await session.commitTransaction();
-                console.log('✅ Rollback completed successfully');
             } catch (rollbackError) {
                 await session.abortTransaction();
                 throw rollbackError;
@@ -145,7 +133,6 @@ const createZaloPayPayment = async (req, res) => {
                 await session.startTransaction();
                 await rollbackOrder(orderToRollback, session);
                 await session.commitTransaction();
-                console.log('✅ Rollback completed after exception');
             } catch (rollbackError) {
                 await session.abortTransaction();
                 console.error('❌ Rollback error:', rollbackError.message);
@@ -164,34 +151,24 @@ const createZaloPayPayment = async (req, res) => {
 // Helper function: Rollback order và restore product quantities
 async function rollbackOrder(order, session = null) {
     try {
-        console.log(`🔄 [ROLLBACK] Starting rollback for order ${order._id}...`);
-        
         // Kiểm tra xem order có tồn tại không
         const existingOrder = await Order.findById(order._id).session(session);
         if (!existingOrder) {
-            console.log(`⚠️ [ROLLBACK] Order ${order._id} already deleted, skipping...`);
             return;
         }
 
         // Kiểm tra xem order đã thanh toán chưa (tránh rollback order đã thanh toán)
         if (existingOrder.isPaid) {
-            console.log(`⚠️ [ROLLBACK] Order ${order._id} is already paid, CANNOT rollback!`);
             throw new Error('Cannot rollback a paid order');
         }
 
         // Restore product quantities
         for (const item of order.orderItems) {
-            const product = await Product.findByIdAndUpdate(
+            await Product.findByIdAndUpdate(
                 item.product,
                 { $inc: { quantity: item.qty } },
                 { new: true, session }
             );
-            
-            if (product) {
-                console.log(`✅ [ROLLBACK] Restored ${item.qty} items to product "${item.name}" (ID: ${item.product})`);
-            } else {
-                console.log(`⚠️ [ROLLBACK] Product ${item.product} not found, skipping...`);
-            }
         }
         
         // Lưu user ID trước khi xóa order
@@ -201,10 +178,7 @@ async function rollbackOrder(order, session = null) {
         // Delete order
         const deleteResult = await Order.findByIdAndDelete(order._id).session(session);
         
-        if (deleteResult) {
-            console.log(`✅ [ROLLBACK] Order ${order._id} deleted successfully`);
-        } else {
-            console.error(`❌ [ROLLBACK] Failed to delete order ${order._id}`);
+        if (!deleteResult) {
             throw new Error('Failed to delete order');
         }
         
@@ -222,9 +196,8 @@ async function rollbackOrder(order, session = null) {
                         reason: 'payment_failed'
                     }
                 });
-                console.log(`✅ [ROLLBACK] Cancellation notification sent to user ${userId}`);
             } catch (notifError) {
-                console.log(`⚠️ [ROLLBACK] Failed to send notification:`, notifError.message);
+                // Ignore notification errors
             }
         }
         
@@ -240,7 +213,6 @@ const zaloPayCallback = async (req, res) => {
     
     try {
         let result = {};
-        console.log('📬 [CALLBACK] ZaloPay callback:', req.body);
 
         const dataStr = req.body.data;
         const reqMac = req.body.mac;
@@ -275,8 +247,6 @@ const zaloPayCallback = async (req, res) => {
                     order.paymentResult.update_time = new Date().toISOString();
                     await order.save();
 
-                    console.log(`✅ [CALLBACK] Payment SUCCESS - Order ${order._id} → isPaid=true`);
-
                     // Tạo notification
                     try {
                         await Notification.create({
@@ -292,23 +262,20 @@ const zaloPayCallback = async (req, res) => {
                             }
                         });
                     } catch (notifError) {
-                        console.error('❌ Notification error:', notifError.message);
+                        // Ignore notification errors
                     }
                 } else {
-                    console.log(`⚠️ [CALLBACK] Order ${order._id} already paid, skipping...`);
+                    // Order already paid, skip
                 }
 
                 result.return_code = 1;
                 result.return_message = 'success';
             } else {
                 // ❌ Thanh toán thất bại → ROLLBACK
-                console.log(`❌ [CALLBACK] Payment FAILED - Order ${order._id}, Code: ${dataJson.return_code}`);
-                
                 await session.startTransaction();
                 try {
                     await rollbackOrder(order, session);
                     await session.commitTransaction();
-                    console.log(`✅ [CALLBACK] Rollback completed for order ${order._id}`);
                 } catch (rollbackError) {
                     await session.abortTransaction();
                     console.error(`❌ [CALLBACK] Rollback failed:`, rollbackError.message);
@@ -339,15 +306,12 @@ const queryZaloPayStatus = async (req, res) => {
         let order = null;
         let app_trans_id_to_query = app_trans_id;
 
-        console.log('🔍 [QUERY] Request params:', { app_trans_id, order_id });
-
         // Tìm order bằng orderId hoặc app_trans_id
         if (order_id) {
             // Query bằng orderId
             order = await Order.findById(order_id);
             if (order && order.paymentResult?.id) {
                 app_trans_id_to_query = order.paymentResult.id;
-                console.log('🔍 [QUERY] Found order by orderId, app_trans_id:', app_trans_id_to_query);
             } else if (!order) {
                 console.error('❌ [QUERY] Order not found for orderId:', order_id);
                 return res.status(404).json({
@@ -364,7 +328,6 @@ const queryZaloPayStatus = async (req, res) => {
         } else if (app_trans_id) {
             // Query bằng app_trans_id
             app_trans_id_to_query = app_trans_id;
-            console.log('🔍 [QUERY] Checking payment status for app_trans_id:', app_trans_id);
         } else {
             return res.status(400).json({
                 success: false,
@@ -383,8 +346,6 @@ const queryZaloPayStatus = async (req, res) => {
         const response = await axios.post('https://sb-openapi.zalopay.vn/v2/query', null, {
             params: postData
         });
-
-        console.log('📬 [QUERY] ZaloPay response:', response.data);
 
         // Tìm order nếu chưa có (trong trường hợp query bằng app_trans_id)
         if (!order) {
@@ -408,8 +369,6 @@ const queryZaloPayStatus = async (req, res) => {
                 order.paymentResult.status = 'completed';
                 order.paymentResult.update_time = new Date().toISOString();
                 await order.save();
-                
-                console.log(`✅ [QUERY] Order ${order._id} updated → isPaid=true`);
 
                 // Tạo notification
                 try {
@@ -425,12 +384,9 @@ const queryZaloPayStatus = async (req, res) => {
                             transId: app_trans_id_to_query,
                         }
                     });
-                    console.log(`✅ [QUERY] Notification sent to user ${order.user}`);
                 } catch (notifError) {
-                    console.error('❌ [QUERY] Notification error:', notifError.message);
+                    // Ignore notification errors
                 }
-            } else {
-                console.log(`⚠️ [QUERY] Order ${order._id} already marked as paid`);
             }
 
             res.json({
@@ -442,8 +398,6 @@ const queryZaloPayStatus = async (req, res) => {
             });
         } else if (response.data.return_code === 2) {
             // ❌ Thanh toán thất bại
-            console.log(`❌ [QUERY] Payment FAILED for order ${order._id}`);
-            
             res.json({
                 success: false,
                 message: 'Thanh toán thất bại',
@@ -453,8 +407,6 @@ const queryZaloPayStatus = async (req, res) => {
             });
         } else {
             // ⏳ Đang xử lý
-            console.log(`⏳ [QUERY] Payment PROCESSING for order ${order._id}`);
-            
             res.json({
                 success: false,
                 message: 'Đơn hàng đang được xử lý',

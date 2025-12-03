@@ -178,7 +178,6 @@ const updateOrderStatus = async (req, res) => {
       if (order.paymentMethod === 'COD' && !order.isPaid) {
         order.isPaid = true;
         order.paidAt = Date.now();
-        console.log('💰 COD order marked as paid on delivery');
       }
     }
 
@@ -206,7 +205,6 @@ const updateOrderStatus = async (req, res) => {
           newStatus: status,
         }
       });
-      console.log('✅ Status update notification saved to database');
     } catch (notifError) {
       console.error('Failed to save notification:', notifError);
     }

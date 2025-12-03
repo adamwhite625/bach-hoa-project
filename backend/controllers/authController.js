@@ -34,7 +34,6 @@ const adminLogin = async (req, res) => {
         try {
             const isMatch = await bcrypt.compare(password, admin.password);
             if (!isMatch) {
-                console.log('Password không khớp');
                 return res.status(401).json({ 
                     message: 'Mật khẩu không đúng',
                     EC: 1
