@@ -173,6 +173,13 @@ const updateOrderStatus = async (req, res) => {
     if (status === 'Delivered' && !order.isDelivered) {
       order.isDelivered = true;
       order.deliveredAt = Date.now();
+      
+      // For COD orders, mark as paid when delivered
+      if (order.paymentMethod === 'COD' && !order.isPaid) {
+        order.isPaid = true;
+        order.paidAt = Date.now();
+        console.log('💰 COD order marked as paid on delivery');
+      }
     }
 
     await order.save();
