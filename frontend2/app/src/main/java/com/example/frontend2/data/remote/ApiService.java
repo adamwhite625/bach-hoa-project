@@ -7,6 +7,7 @@ import com.example.frontend2.data.model.MessageResponse;
 import com.example.frontend2.data.model.Order;
 import com.example.frontend2.data.model.OrderRequest;
 import com.example.frontend2.data.model.OrderSummary;
+import com.example.frontend2.data.model.PaymentStatusResponse;
 import com.example.frontend2.data.model.PreviewVoucherRequest;
 import com.example.frontend2.data.model.PreviewVoucherResponse;
 import com.example.frontend2.data.model.ProductDetail;
@@ -25,11 +26,13 @@ import com.example.frontend2.data.model.UpdateCartRequest;
 import com.example.frontend2.data.model.AddToCartRequest;
 import com.example.frontend2.data.model.ChatMessageRequest;
 import com.example.frontend2.data.model.Notification;
+import com.example.frontend2.data.model.PaymentResponse;
 
 
 import com.example.frontend2.data.model.ValidateVoucherResponse;
 import com.example.frontend2.data.model.Voucher;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 import java.util.Map;
@@ -161,8 +164,6 @@ public interface ApiService {
 
 
     // --- Notification ---
-
-
     @GET("api/notifications")
     Call<ResponseBody> getNotifications(@Header("Authorization") String authHeader);
 
@@ -177,6 +178,25 @@ public interface ApiService {
 
     @DELETE("api/notifications/{id}")
     Call<Void> deleteNotification(@Header("Authorization") String authHeader, @Path("id") String notificationId);
+
+    // Payment APIs
+    @POST("api/payment/create-zalopay")
+    Call<PaymentResponse> createZaloPayPayment(
+            @Header("Authorization") String token,
+            @Body JsonObject body
+    );
+
+    @GET("api/payment/zalopay-status/{app_trans_id}")
+    Call<PaymentStatusResponse> queryZaloPayStatus(
+            @Header("Authorization") String token,
+            @Path("app_trans_id") String appTransId
+    );
+
+    @GET("api/payment/zalopay-status-by-order/{order_id}")
+    Call<PaymentStatusResponse> queryZaloPayStatusByOrderId(
+            @Header("Authorization") String token,
+            @Path("order_id") String orderId
+    );
 
     // --- Chatbot (TẠM THỜI DÙNG ResponseBody ĐỂ DEBUG) ---
     @POST("api/chat")
