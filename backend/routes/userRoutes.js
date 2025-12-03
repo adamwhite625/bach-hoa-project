@@ -10,6 +10,11 @@ const {
 } = require("../controllers/userController");
 const { protect, admin } = require("../middlewares/authMiddleware");
 const uploadMemory = require("../middlewares/multerMemory");
+const {
+  getLoyaltyInfo,
+  checkLoyaltyStatus,
+  getTotalSpent,
+} = require("../controllers/loyaltyController");
 
 // Accept avatar upload as a single file named 'avatar' (stored in memory and uploaded to Cloudinary)
 router
@@ -22,6 +27,13 @@ router
   .route("/shipping-address")
   .get(protect, getShippingAddress)
   .put(protect, updateShippingAddress);
+
+// Loyalty routes
+router.route("/loyalty/info").get(protect, getLoyaltyInfo);
+
+router.route("/loyalty/status").get(protect, checkLoyaltyStatus);
+
+router.route("/loyalty/total-spent").get(protect, getTotalSpent);
 
 // Admin routes
 router.route("/").get(protect, admin, getUsers);

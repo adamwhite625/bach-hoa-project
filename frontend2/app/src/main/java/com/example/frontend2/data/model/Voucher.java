@@ -2,6 +2,7 @@ package com.example.frontend2.data.model;
 
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
+import java.util.Date;
 
 public class Voucher implements Serializable {
 
@@ -20,20 +21,23 @@ public class Voucher implements Serializable {
     @SerializedName("value")
     private double value;
 
-    @SerializedName("minOrderValue")
-    private double minOrderValue;
+    @SerializedName("minOrder")
+    private double minOrder;
 
-    @SerializedName("maxDiscountAmount")
-    private double maxDiscountAmount;
+    @SerializedName("maxDiscount")
+    private double maxDiscount;
 
-    @SerializedName("startDate")
-    private String startDate;
+    @SerializedName("startAt")
+    private Date startAt;
 
-    @SerializedName("endDate")
-    private String endDate;
+    @SerializedName("endAt")
+    private Date endAt;
 
     @SerializedName("isActive")
     private boolean isActive;
+
+    @SerializedName("tierRequired")
+    private String tierRequired;
 
     public String getId() {
         return id;
@@ -55,23 +59,27 @@ public class Voucher implements Serializable {
         return value;
     }
 
-    public double getMinOrderValue() {
-        return minOrderValue;
+    public double getMinOrder() {
+        return minOrder;
     }
 
-    public double getMaxDiscountAmount() {
-        return maxDiscountAmount;
+    public double getMaxDiscount() {
+        return maxDiscount;
     }
 
-    public String getStartDate() {
-        return startDate;
+    public Date getStartAt() {
+        return startAt;
     }
 
-    public String getEndDate() {
-        return endDate;
+    public Date getEndAt() {
+        return endAt;
     }
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public String getTierRequired() {
+        return tierRequired;
     }
 }
