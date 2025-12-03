@@ -90,6 +90,29 @@ public class OrderDetailsActivity extends AppCompatActivity {
         binding.tvOrderDate.setText("Ngày đặt: " + formatDate(order.getCreatedAt()));
         binding.tvOrderStatus.setText(order.getOrderStatus());
 
+        // Payment status
+        if (order.isPaid()) {
+            binding.tvPaymentStatus.setText("Đã thanh toán");
+            binding.tvPaymentStatus.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+        } else {
+            binding.tvPaymentStatus.setText("Chưa thanh toán");
+            binding.tvPaymentStatus.setTextColor(getResources().getColor(android.R.color.holo_orange_dark));
+        }
+
+        // Payment method
+        String paymentMethod = order.getPaymentMethod();
+        if (paymentMethod != null && !paymentMethod.isEmpty()) {
+            if (paymentMethod.equalsIgnoreCase("ZaloPay")) {
+                binding.tvPaymentMethod.setText("Thanh toán qua ZaloPay");
+            } else if (paymentMethod.equalsIgnoreCase("COD")) {
+                binding.tvPaymentMethod.setText("Thanh toán khi nhận hàng (COD)");
+            } else {
+                binding.tvPaymentMethod.setText(paymentMethod);
+            }
+        } else {
+            binding.tvPaymentMethod.setText("Chưa xác định");
+        }
+
         ShippingAddress address = order.getShippingAddress();
         if (address != null) {
             binding.tvShippingName.setText(address.getFullName());

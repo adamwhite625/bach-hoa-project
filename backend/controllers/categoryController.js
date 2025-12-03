@@ -25,10 +25,6 @@ const createCategory = asyncHandler(async (req, res) => {
         throw new Error('Danh mục đã tồn tại');
     }
 
-    // Debug file upload
-    console.log('File in request:', req.file);
-    console.log('Cloudinary config:', process.env.CLOUDINARY_CLOUD_NAME);
-
     let imageUrl;
     
     // Upload image to cloudinary if exists

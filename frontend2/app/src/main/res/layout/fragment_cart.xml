@@ -258,19 +258,23 @@
                         android:orientation="horizontal"
                         android:padding="8dp">
 
+                        <!-- ID ĐÃ ĐƯỢC SỬA LẠI CHO ĐÚNG -->
                         <ImageView
+                            android:id="@+id/iv_payment_icon"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:contentDescription="Cash"
+                            android:contentDescription="Payment Icon"
                             android:src="@drawable/ic_cash"
                             app:tint="#677C52" />
 
+                        <!-- ID ĐÃ ĐƯỢC SỬA LẠI CHO ĐÚNG -->
                         <TextView
+                            android:id="@+id/tv_payment_method"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_weight="1"
-                            android:text="Tiền mặt"
+                            android:text="Thanh toán khi nhận hàng (COD)"
                             android:textColor="#000"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -288,10 +292,11 @@
                             android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:layout_marginStart="4dp"
-                            android:contentDescription="Ticket"
+                            android:contentDescription="Arrow Right"
                             android:src="@drawable/ic_arrow_right" />
                     </LinearLayout>
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/btn_clear_all"
