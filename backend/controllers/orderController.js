@@ -183,16 +183,22 @@ const updateOrderStatus = async (req, res) => {
 
     // Update delivery status and add spending to loyalty
     if (status === "Delivered" && !order.isDelivered) {
-      order.isDelivered = true;
-      order.deliveredAt = Date.now();
+        order.isDelivered = true;
+        order.deliveredAt = Date.now();
+        
+        // For COD orders, mark as paid when delivered
+        if (order.paymentMethod === 'COD' && !order.isPaid) {
+          order.isPaid = true;
+          order.paidAt = Date.now();
 
-      // Add spending to user loyalty tier (only once when delivered)
-      try {
-        await addSpending(order.user._id, order.totalPrice);
-      } catch (loyaltyError) {
-        console.error("Error updating loyalty tier:", loyaltyError);
-        // Don't fail the order update if loyalty update fails
-      }
+        // Add spending to user loyalty tier (only once when delivered)
+          try {
+            await addSpending(order.user._id, order.totalPrice);
+          } catch (loyaltyError) {
+            console.error("Error updating loyalty tier:", loyaltyError);
+            // Don't fail the order update if loyalty update fails
+          }
+        } 
     }
 
     await order.save();
