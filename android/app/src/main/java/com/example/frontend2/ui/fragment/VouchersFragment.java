@@ -56,7 +56,7 @@ public class VouchersFragment extends Fragment {
     }
 
     private void setupToolbar() {
-        // SỬA LỖI: Dùng FragmentManager để quay lại màn hình trước đó
+        // SỬA LỖI DỨT ĐIỂM: Dùng FragmentManager để quay lại màn hình trước đó
         binding.toolbar.setNavigationOnClickListener(v -> {
             if (getActivity() != null) {
                 getActivity().getSupportFragmentManager().popBackStack();
