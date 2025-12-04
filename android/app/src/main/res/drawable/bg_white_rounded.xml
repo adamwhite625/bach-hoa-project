@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Đặt màu nền cho shape là màu trắng -->
+    <solid android:color="@android:color/white" />
+
+    <!--
+        Bo tròn các góc.
+        Bạn có thể thay đổi giá trị "8dp" để bo tròn nhiều hơn hoặc ít hơn.
+    -->
+    <corners android:radius="8dp" />
+
+</shape>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!--
+        android:shape="oval": Định nghĩa hình dạng là một hình bầu dục.
+        Vì chúng ta sẽ đặt width và height bằng nhau trong layout (ví dụ: 10dp x 10dp),
+        hình bầu dục này sẽ trở thành một hình tròn hoàn hảo.
+    -->
+
+    <solid android:color="@color/primary" />
+    <!--
+        <solid>: Đổ màu nền cho hình dạng.
+        android:color="@color/primary": Sử dụng màu "primary" đã được định nghĩa
+        trong file colors.xml của bạn.
+    -->
+
+</shape>

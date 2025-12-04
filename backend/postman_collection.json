@@ -1,0 +1,1120 @@
+{
+  "info": {
+    "_postman_id": "bach-hoa-ecommerce-api",
+    "name": "Bach Hoa E-Commerce API",
+    "description": "Complete API Collection for Bach Hoa E-Commerce Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "description": "User authentication endpoints",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Nguyễn\",\n  \"lastName\": \"Văn A\",\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Đăng ký tài khoản người dùng mới"
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Đăng nhập tài khoản người dùng"
+          }
+        },
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/admin/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "admin", "login"]
+            },
+            "description": "Đăng nhập tài khoản admin"
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/forgot-password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "forgot-password"]
+            },
+            "description": "Yêu cầu reset mật khẩu"
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"reset_token_from_email\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/reset-password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "reset-password"]
+            },
+            "description": "Reset mật khẩu mới"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "description": "User management endpoints",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "profile"]
+            },
+            "description": "Lấy thông tin hồ sơ người dùng hiện tại"
+          }
+        },
+        {
+          "name": "Update User Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Nguyễn Văn B\",\n  \"phone\": \"0909876543\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "profile"]
+            },
+            "description": "Cập nhật thông tin hồ sơ người dùng"
+          }
+        },
+        {
+          "name": "Get All Users (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"]
+            },
+            "description": "Lấy danh sách tất cả người dùng (chỉ admin)"
+          }
+        },
+        {
+          "name": "Delete User (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/507f1f77bcf86cd799439011",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "507f1f77bcf86cd799439011"]
+            },
+            "description": "Xóa người dùng (chỉ admin)"
+          }
+        },
+        {
+          "name": "Get Shipping Address",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/shipping-address",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "shipping-address"]
+            },
+            "description": "Lấy địa chỉ giao hàng"
+          }
+        },
+        {
+          "name": "Update Shipping Address",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"addressLine1\": \"456 Đường XYZ\",\n  \"addressLine2\": \"Quận 2\",\n  \"city\": \"Hồ Chí Minh\",\n  \"state\": \"HCM\",\n  \"postalCode\": \"700000\",\n  \"country\": \"Vietnam\",\n  \"phoneNumber\": \"0909876543\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/shipping-address",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "shipping-address"]
+            },
+            "description": "Cập nhật địa chỉ giao hàng"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Loyalty Tier",
+      "description": "Loyalty tier endpoints",
+      "item": [
+        {
+          "name": "Get Loyalty Information",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/loyalty/info",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "loyalty", "info"]
+            },
+            "description": "Lấy thông tin cấp độ thân thiết đầy đủ"
+          }
+        },
+        {
+          "name": "Check Loyalty Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/loyalty/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "loyalty", "status"]
+            },
+            "description": "Kiểm tra trạng thái cấp độ thân thiết hiện tại"
+          }
+        },
+        {
+          "name": "Get Total Spending",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/loyalty/total-spent",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "loyalty", "total-spent"]
+            },
+            "description": "Lấy tổng tiền chi tiêu của người dùng"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "description": "Product management endpoints",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Lấy danh sách sản phẩm (hỗ trợ phân trang, sắp xếp, lọc)"
+          }
+        },
+        {
+          "name": "Get Product By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/507f1f77bcf86cd799439021",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "507f1f77bcf86cd799439021"]
+            },
+            "description": "Lấy chi tiết sản phẩm theo ID"
+          }
+        },
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/search?q=điện thoại",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "điện thoại"
+                }
+              ]
+            },
+            "description": "Tìm kiếm sản phẩm theo từ khóa"
+          }
+        },
+        {
+          "name": "Create Product (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sản phẩm mới\",\n  \"description\": \"Mô tả sản phẩm\",\n  \"price\": 150000,\n  \"category\": \"507f1f77bcf86cd799439031\",\n  \"stock\": 100\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products"]
+            },
+            "description": "Tạo sản phẩm mới (chỉ admin)"
+          }
+        },
+        {
+          "name": "Update Product (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sản phẩm cập nhật\",\n  \"price\": 120000,\n  \"stock\": 80\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/products/507f1f77bcf86cd799439021",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "507f1f77bcf86cd799439021"]
+            },
+            "description": "Cập nhật sản phẩm (chỉ admin)"
+          }
+        },
+        {
+          "name": "Delete Product (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/507f1f77bcf86cd799439021",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "507f1f77bcf86cd799439021"]
+            },
+            "description": "Xóa sản phẩm (chỉ admin)"
+          }
+        },
+        {
+          "name": "Create Product Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Sản phẩm tuyệt vời!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/products/507f1f77bcf86cd799439021/reviews",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "507f1f77bcf86cd799439021", "reviews"]
+            },
+            "description": "Đánh giá sản phẩm"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "description": "Category management endpoints",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categories"]
+            },
+            "description": "Lấy danh sách tất cả danh mục"
+          }
+        },
+        {
+          "name": "Get Category Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories/507f1f77bcf86cd799439031/products",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categories", "507f1f77bcf86cd799439031", "products"]
+            },
+            "description": "Lấy danh sách sản phẩm trong danh mục"
+          }
+        },
+        {
+          "name": "Create Category (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Máy tính\",\n  \"description\": \"Các thiết bị máy tính\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categories"]
+            },
+            "description": "Tạo danh mục mới (chỉ admin)"
+          }
+        },
+        {
+          "name": "Update Category (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Điện thoại di động\",\n  \"description\": \"Các thiết bị điện thoại di động\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/categories/507f1f77bcf86cd799439031",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categories", "507f1f77bcf86cd799439031"]
+            },
+            "description": "Cập nhật danh mục (chỉ admin)"
+          }
+        },
+        {
+          "name": "Delete Category (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories/507f1f77bcf86cd799439031",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categories", "507f1f77bcf86cd799439031"]
+            },
+            "description": "Xóa danh mục (chỉ admin)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "description": "Shopping cart endpoints",
+      "item": [
+        {
+          "name": "Get User Cart",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/carts",
+              "host": ["{{base_url}}"],
+              "path": ["api", "carts"]
+            },
+            "description": "Lấy giỏ hàng của người dùng"
+          }
+        },
+        {
+          "name": "Add To Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"507f1f77bcf86cd799439021\",\n  \"quantity\": 2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/carts",
+              "host": ["{{base_url}}"],
+              "path": ["api", "carts"]
+            },
+            "description": "Thêm sản phẩm vào giỏ hàng"
+          }
+        },
+        {
+          "name": "Update Cart Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/carts/507f1f77bcf86cd799439061",
+              "host": ["{{base_url}}"],
+              "path": ["api", "carts", "507f1f77bcf86cd799439061"]
+            },
+            "description": "Cập nhật số lượng sản phẩm trong giỏ"
+          }
+        },
+        {
+          "name": "Remove From Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/carts/507f1f77bcf86cd799439061",
+              "host": ["{{base_url}}"],
+              "path": ["api", "carts", "507f1f77bcf86cd799439061"]
+            },
+            "description": "Xóa sản phẩm khỏi giỏ hàng"
+          }
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/carts",
+              "host": ["{{base_url}}"],
+              "path": ["api", "carts"]
+            },
+            "description": "Xóa toàn bộ giỏ hàng"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Discounts",
+      "description": "Discount and coupon endpoints",
+      "item": [
+        {
+          "name": "Get All Discounts (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/discounts",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discounts"]
+            },
+            "description": "Lấy danh sách tất cả mã giảm giá (chỉ admin)"
+          }
+        },
+        {
+          "name": "Get Available Discounts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/discounts/available",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discounts", "available"]
+            },
+            "description": "Lấy danh sách mã giảm giá có sẵn cho người dùng"
+          }
+        },
+        {
+          "name": "Validate Discount Code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SUMMER10\",\n  \"totalPrice\": 500000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/discounts/validate",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discounts", "validate"]
+            },
+            "description": "Kiểm tra mã giảm giá có hợp lệ không"
+          }
+        },
+        {
+          "name": "Preview Discount",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SUMMER10\",\n  \"totalPrice\": 500000,\n  \"items\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/discounts/preview",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discounts", "preview"]
+            },
+            "description": "Xem trước kết quả áp dụng mã giảm giá"
+          }
+        },
+        {
+          "name": "Create Discount (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"NEWYEAR2025\",\n  \"description\": \"Giảm 20% cho năm mới\",\n  \"type\": \"percent\",\n  \"value\": 20,\n  \"minOrder\": 200000,\n  \"maxDiscount\": 100000,\n  \"tierRequired\": \"silver\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/discounts",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discounts"]
+            },
+            "description": "Tạo mã giảm giá mới (chỉ admin)"
+          }
+        },
+        {
+          "name": "Update Discount (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": 15,\n  \"maxDiscount\": 75000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/discounts/507f1f77bcf86cd799439071",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discounts", "507f1f77bcf86cd799439071"]
+            },
+            "description": "Cập nhật mã giảm giá (chỉ admin)"
+          }
+        },
+        {
+          "name": "Delete Discount (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/discounts/507f1f77bcf86cd799439071",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discounts", "507f1f77bcf86cd799439071"]
+            },
+            "description": "Xóa mã giảm giá (chỉ admin)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "description": "Order management endpoints",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cartId\": \"507f1f77bcf86cd799439051\",\n  \"shippingAddress\": {\n    \"addressLine1\": \"123 Đường ABC\",\n    \"city\": \"Hồ Chí Minh\",\n    \"postalCode\": \"700000\"\n  },\n  \"paymentMethod\": \"COD\",\n  \"discountCode\": \"SUMMER10\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders"]
+            },
+            "description": "Tạo đơn hàng mới"
+          }
+        },
+        {
+          "name": "Get All Orders (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders"]
+            },
+            "description": "Lấy danh sách tất cả đơn hàng (chỉ admin)"
+          }
+        },
+        {
+          "name": "Get User Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/orders/user",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders", "user"]
+            },
+            "description": "Lấy danh sách đơn hàng của người dùng"
+          }
+        },
+        {
+          "name": "Get Order By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/orders/507f1f77bcf86cd799439091",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders", "507f1f77bcf86cd799439091"]
+            },
+            "description": "Lấy chi tiết đơn hàng"
+          }
+        },
+        {
+          "name": "Update Order Status (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Delivered\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders/507f1f77bcf86cd799439091/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders", "507f1f77bcf86cd799439091", "status"]
+            },
+            "description": "Cập nhật trạng thái đơn hàng (chỉ admin)"
+          }
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Đổi ý\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders/507f1f77bcf86cd799439091/cancel",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders", "507f1f77bcf86cd799439091", "cancel"]
+            },
+            "description": "Hủy đơn hàng"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "description": "Notification management endpoints",
+      "item": [
+        {
+          "name": "Get User Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications",
+              "host": ["{{base_url}}"],
+              "path": ["api", "notifications"]
+            },
+            "description": "Lấy danh sách thông báo của người dùng"
+          }
+        },
+        {
+          "name": "Get Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/unread-count",
+              "host": ["{{base_url}}"],
+              "path": ["api", "notifications", "unread-count"]
+            },
+            "description": "Lấy số lượng thông báo chưa đọc"
+          }
+        },
+        {
+          "name": "Mark Notification As Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/507f1f77bcf86cd799439101/read",
+              "host": ["{{base_url}}"],
+              "path": ["api", "notifications", "507f1f77bcf86cd799439101", "read"]
+            },
+            "description": "Đánh dấu thông báo đã đọc"
+          }
+        },
+        {
+          "name": "Mark All Notifications As Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications",
+              "host": ["{{base_url}}"],
+              "path": ["api", "notifications"]
+            },
+            "description": "Đánh dấu tất cả thông báo đã đọc"
+          }
+        },
+        {
+          "name": "Delete Notification",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/507f1f77bcf86cd799439101",
+              "host": ["{{base_url}}"],
+              "path": ["api", "notifications", "507f1f77bcf86cd799439101"]
+            },
+            "description": "Xóa thông báo"
+          }
+        },
+        {
+          "name": "Delete All Notifications",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications",
+              "host": ["{{base_url}}"],
+              "path": ["api", "notifications"]
+            },
+            "description": "Xóa tất cả thông báo"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

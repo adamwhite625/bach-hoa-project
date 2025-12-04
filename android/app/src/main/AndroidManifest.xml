@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Frontend2"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+
+        <!-- ACTIVITY MỚI: ĐỊA CHỈ NHẬN HÀNG -->
+        <activity
+            android:name=".ui.main.ShippingAddressActivity"
+            android:exported="false" />
+
+        <!-- CÁC ACTIVITY ĐÃ CÓ -->
+        <activity
+            android:name=".ui.main.ProductListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.ProductDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.RegisterActivity"
+            android:exported="false" />
+
+        <!-- KHAI BÁO CÁC ACTIVITY QUÊN MẬT KHẨU -->
+        <activity
+            android:name=".ui.auth.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ResetPasswordActivity"
+            android:exported="false" />
+
+        <!-- ACTIVITY CHÍNH VÀ LAUNCHER -->
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="true">
+        </activity>
+
+        <!-- LUU TOKEN KHI DA DANG NHAP LAN DAU ROI SE CHUYEN DEN TRANG MAIN LUON -->
+        <activity
+            android:name=".ui.auth.SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Frontend2" />
+
+        <activity
+            android:name=".ui.main.OrderSuccessActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.main.OrderDetailsActivity"
+            android:exported="false"/>
+
+        <activity android:name=".ui.main.ReviewActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Frontend2.NoActionBar"/>
+
+        <activity
+            android:name=".ui.main.PaymentResultActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="bachhoa"
+                    android:host="payment-result" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
