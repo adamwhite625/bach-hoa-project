@@ -92,7 +92,6 @@ export const useProducts = () => {
         } catch (err) {
           retryCount++;
           if (retryCount === maxRetries) {
-            console.error('Đã thử lại tối đa, không thể tải danh mục.');
             break;
           }
           await new Promise(resolve => setTimeout(resolve, retryDelay * retryCount));
@@ -111,7 +110,7 @@ export const useProducts = () => {
         await fetchProducts();
       } catch (err) {
         if (!controller.signal.aborted) {
-          console.error('Lỗi khi tải sản phẩm:', err);
+          setError(err.message);
         }
       }
     };
@@ -130,14 +129,12 @@ export const useProducts = () => {
   ]);
 
   const updateFilters = (newFilters) => {
-    console.log('updateFilters called with:', newFilters);
     setFilters(prev => {
       const updated = {
         ...prev,
         ...newFilters,
         page: 1 // Reset page when filters change
       };
-      console.log('Updated filters:', updated);
       return updated;
     });
   };

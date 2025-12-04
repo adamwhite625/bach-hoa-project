@@ -130,8 +130,8 @@ Admin Web sẽ chạy tại: **http://localhost:5173** (hoặc port khác nếu 
 
 ### Đăng nhập Admin
 
-- Email: `admin@example.com`
-- Password: `admin123`
+- Email: `nguyenhaithien2k5@gmail.com`
+- Password: `12345678`
 
 ---
 

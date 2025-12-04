@@ -32,8 +32,7 @@ app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/carts', require('./routes/cartRoutes'));
 app.use('/api/discounts', require('./routes/discountRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
-app.use('/api/payment', require('./routes/paymentRoutes')); // ✅ Sửa từ /payments thành /payment
-// app.use('/file', require('./routes/fileRoutes'));
+app.use('/api/payment', require('./routes/paymentRoutes')); 
 
 // Start cron jobs
 startUnpaidOrdersCronJob();

@@ -125,7 +125,6 @@ export const ProductService = {
   updateProduct: async (id, payload) => {
     try {
       const res = await axios.put(API_ENDPOINTS.PRODUCTS.UPDATE(id), payload);
-      console.log(API_ENDPOINTS.PRODUCTS.UPDATE(id), payload);
       if (res?.message && !hasId(res)) return failure(res.message, res?.EC ?? -1, null);
       if (hasId(res)) return success(normalizeProduct(res), res?.EM || 'Cập nhật thành công');
       if (hasId(res?.DT)) return success(normalizeProduct(res.DT), res?.EM || 'Cập nhật thành công');

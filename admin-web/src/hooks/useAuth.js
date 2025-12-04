@@ -46,10 +46,8 @@ export const useAuth = () => {
         
         return true;
       }
-      console.error('Invalid response format:', response);
       return false;
     } catch (error) {
-      console.error('Error in login function:', error);
       return false;
     }
   };
@@ -62,7 +60,7 @@ export const useAuth = () => {
       setUser(null);
       navigate('/login');
     } catch (error) {
-      console.error('Lỗi khi đăng xuất:', error);
+      // Ignore logout errors
     }
   };
 

@@ -111,7 +111,6 @@ const OrderManager = () => {
       }
     } catch (error) {
       hide();
-      console.error('Update status error:', error);
       message.error('Không thể cập nhật trạng thái đơn hàng');
     }
   };
@@ -527,6 +526,28 @@ const OrderManager = () => {
               ]}
               summary={() => (
                 <Table.Summary>
+                  <Table.Summary.Row>
+                    <Table.Summary.Cell colSpan={3}>
+                      <strong>Tạm tính</strong>
+                    </Table.Summary.Cell>
+                    <Table.Summary.Cell>
+                      <strong>{selectedOrder.itemsPrice ? selectedOrder.itemsPrice.toLocaleString() : selectedOrder.total.toLocaleString()}₫</strong>
+                    </Table.Summary.Cell>
+                  </Table.Summary.Row>
+                  {selectedOrder.discountAmount > 0 && (
+                    <Table.Summary.Row>
+                      <Table.Summary.Cell colSpan={3}>
+                        <strong style={{ color: '#ff4d4f' }}>
+                          Giảm giá {selectedOrder.discountCode ? `(${selectedOrder.discountCode})` : ''}
+                          {selectedOrder.itemsPrice && selectedOrder.discountAmount ? 
+                            ` - ${Math.round((selectedOrder.discountAmount / selectedOrder.itemsPrice) * 100)}%` : ''}
+                        </strong>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell>
+                        <strong style={{ color: '#ff4d4f' }}>-{selectedOrder.discountAmount.toLocaleString()}₫</strong>
+                      </Table.Summary.Cell>
+                    </Table.Summary.Row>
+                  )}
                   <Table.Summary.Row>
                     <Table.Summary.Cell colSpan={3}>
                       <strong>Tổng tiền</strong>

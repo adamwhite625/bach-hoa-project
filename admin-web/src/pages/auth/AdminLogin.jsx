@@ -27,40 +27,70 @@ const AdminLogin = () => {
   const onFinish = async (values) => {
     setLoading(true);
     setError('');
-    let loginSuccess = false;
+    
     try {
       const email = String(values.email || '').trim();
       const password = String(values.password || '');
       const res = await handleLogin(email, password);
-      console.log('Login response:', res);
 
-     if (res.EC === 0) {
+      if (res.EC === 0) {
         if (res.user.role !== 'Admin') {
           setError('Tài khoản không có quyền truy cập admin');
+          notification.error({
+            message: 'Truy cập bị từ chối',
+            description: 'Tài khoản không có quyền truy cập trang quản trị',
+            placement: 'topRight',
+          });
           localStorage.removeItem('access_token');
           localStorage.removeItem('user');
           setLoading(false);
           return;
         }
+
+        // Lưu thông tin đăng nhập
         localStorage.setItem('access_token', res.access_token);
         localStorage.setItem('user', JSON.stringify(res.user));
-        loginSuccess = true;
-     }
-   }
-   catch (err) {
-      console.error(err);
-      setError(err.message || 'Đăng nhập thất bại');
-      notification.error({ message: 'Đăng nhập thất bại', description: err.message || 'Vui lòng thử lại' });
+
+        // Lưu email nếu có chọn ghi nhớ
+        if (remember) {
+          localStorage.setItem('remember_email', values.email);
+        } else {
+          localStorage.removeItem('remember_email');
+        }
+
+        // Hiển thị thông báo thành công
+        notification.success({
+          message: 'Đăng nhập thành công',
+          description: `Chào mừng ${res.user.firstName} ${res.user.lastName}`,
+          placement: 'topRight',
+        });
+
+        // Chuyển hướng sau khi thông báo hiển thị
+        setTimeout(() => {
+          const from = location.state?.from?.pathname || '/admin';
+          navigate(from, { replace: true });
+        }, 500);
+      } else {
+        // Backend trả về lỗi
+        const errorMsg = res.EM || 'Email hoặc mật khẩu không đúng';
+        setError(errorMsg);
+        notification.error({
+          message: 'Đăng nhập thất bại',
+          description: errorMsg,
+          placement: 'topRight',
+        });
+      }
+    } catch (err) {
+      const errorMsg = err.message || 'Không thể kết nối đến server';
+      setError(errorMsg);
+      notification.error({
+        message: 'Đăng nhập thất bại',
+        description: errorMsg,
+        placement: 'topRight',
+      });
     } finally {
       setLoading(false);
     }
-    if (remember) {
-      localStorage.setItem('remember_email', values.email);
-    } else {
-      localStorage.removeItem('remember_email');
-    }
-    const from = location.state?.from?.pathname || '/admin';
-    navigate(from, { replace: true });
   }
 
 
