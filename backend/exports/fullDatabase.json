@@ -1,0 +1,2633 @@
+{
+  "users": [
+    {
+      "_id": "68ff79e50623257ac02cd17f",
+      "firstName": "Nguyen",
+      "lastName": "Hai Thien",
+      "email": "nguyenhaithien2k5@gmail.com",
+      "gender": "Other",
+      "password": "$2a$10$TZQOZW9mz66uGGMUitNEseF.dxfBaYnVEXPC4.vbE6sWET.zCiAQm",
+      "role": "Admin",
+      "isActive": true,
+      "addresses": [],
+      "createdAt": "2025-10-27T13:55:49.658Z",
+      "updatedAt": "2025-10-27T13:55:49.658Z",
+      "__v": 0,
+      "customerTier": "regular"
+    },
+    {
+      "_id": "68ff7d1ada7b2dc61516bcad",
+      "firstName": "Nguyễn",
+      "lastName": "Văn A",
+      "email": "nguyenvana@example.com",
+      "gender": "Other",
+      "password": "$2a$10$t8hdBHpWc1lMo47uG2z.xuCMFVAaAY7d1sc4Brl2EKRFoVtIjBOdC",
+      "role": "Customer",
+      "isActive": true,
+      "addresses": [],
+      "createdAt": "2025-10-27T14:09:30.683Z",
+      "updatedAt": "2025-10-27T14:09:30.683Z",
+      "__v": 0,
+      "customerTier": "regular"
+    },
+    {
+      "_id": "68ff7d680f92094310959e4d",
+      "firstName": "Nguyễn",
+      "lastName": "Văn A",
+      "email": "nguyenvana2@example.com",
+      "gender": "Other",
+      "password": "$2a$10$gh4EbdE/P0g.yNZGKGboguC8ms30hhO/1dpmzKgMsOyIzTHTJoGXC",
+      "role": "Customer",
+      "isActive": true,
+      "addresses": [],
+      "createdAt": "2025-10-27T14:10:48.772Z",
+      "updatedAt": "2025-10-27T14:10:48.772Z",
+      "__v": 0,
+      "customerTier": "regular"
+    },
+    {
+      "_id": "68ff7ec7cf59e92737da39f4",
+      "firstName": "Nguyễn",
+      "lastName": "Văn A",
+      "email": "nguyenvana3@example.com",
+      "gender": "Other",
+      "password": "$2a$10$v/i6hoKDH6LSyv9dFQYohObLTVLZHavE4i9qfoQGrrsAMdw6hL5xS",
+      "role": "Customer",
+      "isActive": true,
+      "addresses": [],
+      "createdAt": "2025-10-27T14:16:39.539Z",
+      "updatedAt": "2025-10-27T14:16:39.539Z",
+      "__v": 0,
+      "customerTier": "regular"
+    },
+    {
+      "_id": "68ff8087c27ba60ac0c9bdd0",
+      "firstName": "Nguyễn",
+      "lastName": "Văn Aa",
+      "email": "thienmocay1235@gmail.com",
+      "gender": "Other",
+      "password": "$2a$10$1YuiY6BPs75G0F8Vucw1XucQ/8e2oUhPrhtnNWI6YBuNohaus0Z1q",
+      "role": "Customer",
+      "isActive": true,
+      "addresses": [],
+      "createdAt": "2025-10-27T14:24:07.313Z",
+      "updatedAt": "2025-12-01T14:30:03.762Z",
+      "__v": 0,
+      "avatar": "https://res.cloudinary.com/daeeumk1i/image/upload/v1763797422/avatars/sqm6gchyt9nrulbpjhle.jpg",
+      "phone": "0987654321",
+      "shippingAddress": {
+        "fullName": "nguyen van a",
+        "phone": "0123",
+        "address": "25 abc",
+        "city": "ha noi",
+        "_id": "6912d760b267afccf13e143d"
+      },
+      "customerTier": "regular",
+      "totalSpent": 578630,
+      "lastTierUpdateAt": "2025-11-30T15:57:59.389Z",
+      "loyaltyTier": "silver"
+    },
+    {
+      "_id": "68ff83e26826b33c1503de91",
+      "firstName": "Trần",
+      "lastName": "Văn B",
+      "email": "tranvanb@example.com",
+      "gender": "Other",
+      "password": "$2a$10$h4nWNZj/KTFqXffpGV/pp.UxVk6lha2oKXlRPIXoIhkfOvnI7LN7m",
+      "phone": "0987654321",
+      "avatar": "https://avatar.iran.liara.run/public/48",
+      "role": "Customer",
+      "isActive": true,
+      "addresses": [
+        {
+          "fullName": "Trần Văn B",
+          "phone": "0987654321",
+          "street": "456 Đường XYZ",
+          "city": "Quận 2, TP.HCM",
+          "isDefault": true,
+          "_id": "68ff83e26826b33c1503de92"
+        }
+      ],
+      "createdAt": "2025-10-27T14:38:26.340Z",
+      "updatedAt": "2025-11-29T06:49:53.259Z",
+      "__v": 0,
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm",
+        "_id": "692a979117428c03d144eed3"
+      },
+      "customerTier": "regular"
+    },
+    {
+      "_id": "69108a8bf2452e5727ce5e91",
+      "firstName": "testt",
+      "lastName": "nguyen",
+      "email": "thienmocay12355@gmail.com",
+      "gender": "Other",
+      "password": "$2a$10$o125W974Nsg3Ws91jbyEquNm541eKGqz1Ek/VQ1tsVP4VbLxIjn4i",
+      "role": "Customer",
+      "isActive": true,
+      "addresses": [],
+      "createdAt": "2025-11-09T12:35:23.759Z",
+      "updatedAt": "2025-11-10T14:40:27.910Z",
+      "__v": 0,
+      "shippingAddress": {
+        "fullName": "Thien",
+        "phone": "0123",
+        "address": "25 abc",
+        "city": "Ha Noi",
+        "_id": "6911f95b19ea06044328b592"
+      },
+      "customerTier": "regular"
+    }
+  ],
+  "products": [
+    {
+      "_id": "68ff83e26826b33c1503de8a",
+      "name": "Cà rốt Đà Lạt",
+      "sku": "CRT001",
+      "description": "Cà rốt Đà Lạt là loại rau củ tươi ngon nổi tiếng, được trồng tại vùng khí hậu mát mẻ của cao nguyên, cho củ to đều, vỏ mịn, ruột cam tươi, vị ngọt thanh tự nhiên. Sản phẩm giàu dinh dưỡng và phù hợp để chế biến nhiều món ăn khác nhau.<br><br>\n\nCà rốt được thu hoạch và đóng gói theo quy trình an toàn vệ sinh thực phẩm, giữ nguyên độ tươi giòn và màu sắc hấp dẫn, đảm bảo chất lượng cao khi đến tay người tiêu dùng.<br><br>\n\nCà rốt chứa nhiều vitamin A, C, K, cùng các khoáng chất như kali và chất xơ, có tác dụng tốt cho mắt, da và hệ tiêu hóa, đồng thời giúp tăng cường sức đề kháng cho cơ thể.<br><br>\n\n<b>Trọng lượng:</b> 500g<br>\n<b>Xuất xứ:</b> Đà Lạt – Việt Nam<br>\n<b>Thành phần:</b> 100% cà rốt tươi<br>\n<b>Bảo quản:</b> Ngăn mát 0°C – 4°C (tối đa 5 – 7 ngày)<br>\n<b>Gợi ý chế biến:</b> Cà rốt xào thịt bò, canh cà rốt hầm xương, salad cà rốt trộn, nước ép cà rốt, cà rốt hấp chín, nấu súp rau củ.<br>",
+      "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/ca_rot_vcjtqu.webp",
+      "category": "68ff8086c27ba60ac0c9bdb9",
+      "price": 32900,
+      "quantity": 0,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "reviews": [],
+      "__v": 10,
+      "createdAt": "2025-10-27T14:38:26.277Z",
+      "updatedAt": "2025-11-30T08:37:15.426Z",
+      "detailImages": [
+        {
+          "url": "https://img.pikbest.com/ai/illus_our/20230426/5fe6d680a87c4c2a88f01e3343a4bee4.jpg!w700wp",
+          "_id": "6922c97b5880088c3b8aad03"
+        },
+        {
+          "url": "https://cdn.tgdd.vn/2021/09/CookDish/cach-chon-mua-va-cach-bao-quan-ca-rot-tuoi-lau-mot-cach-hieu-avt-1200x676-2.jpg",
+          "_id": "6922c97b5880088c3b8aad04"
+        },
+        {
+          "url": "https://thanhnien.mediacdn.vn/uploaded/ngocthanh/2015_09_01/lam-dep1_SSPT.jpg?width=500",
+          "_id": "6922c97b5880088c3b8aad05"
+        }
+      ],
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 10,
+        "startAt": "2025-11-21T22:00:00.000Z",
+        "endAt": "2025-11-24T01:06:00.000Z"
+      }
+    },
+    {
+      "_id": "68ff83e26826b33c1503de8b",
+      "name": "Nước chấm cá cơm 3 Miền",
+      "sku": "SPC001",
+      "description": "Nước chấm cá cơm 3 Miền được làm từ cá cơm tươi chọn lọc lên men tự nhiên, mang đến hương vị đậm đà, thơm ngon đặc trưng của nước mắm truyền thống Việt Nam. Sản phẩm có màu nâu cánh gián đẹp mắt, mùi thơm nhẹ, vị mặn ngọt hài hòa, rất dễ dùng trong mọi bữa ăn.<br><br>\n\nNước mắm được sản xuất theo quy trình khép kín, đảm bảo vệ sinh an toàn thực phẩm, giúp giữ trọn hương vị nguyên chất của cá cơm và muối biển tinh khiết.<br><br>\n\nSản phẩm giàu đạm tự nhiên, giúp món ăn thêm dậy mùi, tôn lên hương vị đặc sắc khi chấm, ướp hay chế biến món ăn.<br><br>\n\n<b>Thể tích:</b> 500ml<br>\n<b>Xuất xứ:</b> Việt Nam<br>\n<b>Thành phần:</b> Nước, đạm cá cơm, muối, đường, chất điều vị (E621), chất bảo quản (E202)<br>\n<b>Bảo quản:</b> Nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp<br>\n<b>Gợi ý sử dụng:</b> Dùng làm nước chấm trực tiếp cho món chiên, luộc, gỏi, hoặc pha chế nước mắm chua ngọt cho bún, phở, cơm tấm, nem rán, bánh cuốn.<br>",
+      "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/nuoc_mam_3mien_uypln5.webp",
+      "category": "68ff8086c27ba60ac0c9bdbb",
+      "price": 22000,
+      "quantity": 0,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "reviews": [],
+      "__v": 3,
+      "createdAt": "2025-10-27T14:38:26.277Z",
+      "updatedAt": "2025-11-30T08:58:02.313Z",
+      "detailImages": [
+        {
+          "url": "https://cdn.tgdd.vn/Products/Images/2289/96258/bhx/sellingpoint.jpg",
+          "_id": "6911ee494d29fc39c47e31ba"
+        },
+        {
+          "url": "https://suckhoedoisong.qltns.mediacdn.vn/Images/quangcao/2019/05/30/3mien12.jpg",
+          "_id": "6911ee494d29fc39c47e31bb"
+        }
+      ],
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "68ff83e26826b33c1503de8c",
+      "name": "Cá bạc má",
+      "sku": "FSH001",
+      "description": "Cá bạc má là loại cá biển phổ biến, được ưa chuộng nhờ thịt thơm ngon, săn chắc và giàu dinh dưỡng. Cá có thân thon dài, da sáng bạc, vị ngọt tự nhiên, rất thích hợp cho nhiều món ăn truyền thống và hiện đại.<br><br>\n\nSản phẩm được đánh bắt, sơ chế và đóng gói đảm bảo vệ sinh an toàn thực phẩm, giúp giữ nguyên độ tươi ngon và hương vị đặc trưng của cá biển.<br><br>\n\nCá bạc má chứa nhiều protein, omega-3, vitamin D, B12 cùng các khoáng chất như canxi, sắt và kẽm, có tác dụng tốt cho tim mạch, não bộ và hệ miễn dịch.<br><br>\n\n<b>Trọng lượng:</b> 500g<br>\n<b>Xuất xứ:</b> Việt Nam<br>\n<b>Thành phần:</b> 100% cá bạc má tươi<br>\n<b>Bảo quản:</b> Ngăn mát 0°C – 4°C (tối đa 2 – 3 ngày) hoặc ngăn đông -18°C (tối đa 6 tháng)<br>\n<b>Gợi ý chế biến:</b> Cá bạc má chiên giòn, cá bạc má kho tiêu, cá bạc má nướng muối ớt, canh chua cá bạc má, cá bạc má sốt cà chua.<br>",
+      "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/ca_bac_ma_ai3qjh.webp",
+      "category": "68ff8086c27ba60ac0c9bdba",
+      "price": 89000,
+      "quantity": 5,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "reviews": [],
+      "__v": 4,
+      "createdAt": "2025-10-27T14:38:26.278Z",
+      "updatedAt": "2025-12-01T14:35:37.370Z",
+      "detailImages": [
+        {
+          "url": "https://nghilocfoods.com/wp-content/uploads/2020/01/timthumb.jpg",
+          "_id": "692bb06919d62ba23645cc0b"
+        },
+        {
+          "url": "https://thaovienseafoods.com/wp-content/uploads/2020/07/8.png",
+          "_id": "692bb06919d62ba23645cc0c"
+        },
+        {
+          "url": "https://cdn.tgdd.vn/Files/2021/07/29/1371591/ca-bac-ma-la-gi-cac-mon-ngon-tu-ca-bac-ma-202206111615509866.jpg",
+          "_id": "692bb06919d62ba23645cc0d"
+        }
+      ],
+      "sale": {
+        "active": true,
+        "type": "percent",
+        "value": 25,
+        "startAt": "2025-11-29T21:07:00.000Z",
+        "endAt": "2025-12-03T23:06:00.000Z"
+      }
+    },
+    {
+      "_id": "68ff83e26826b33c1503de8e",
+      "name": "Ức gà 3F",
+      "sku": "CHK001",
+      "description": "Ức gà tươi 3F là sản phẩm chất lượng cao, được tuyển chọn từ nguồn gà sạch, chăn nuôi theo tiêu chuẩn an toàn sinh học và quy trình khép kín 3F (Feed – Farm – Food). Thịt gà săn chắc, ít mỡ, vị ngọt tự nhiên, là nguyên liệu lý tưởng cho nhiều món ăn gia đình.<br><br>\n\nSản phẩm được sơ chế, đóng gói hút chân không đảm bảo vệ sinh, giúp giữ nguyên độ tươi ngon, màu sắc hấp dẫn và giá trị dinh dưỡng của thịt.<br><br>\n\nỨc gà là phần thịt nạc, chứa nhiều protein, ít cholesterol, giàu vitamin B6, B12 và các khoáng chất như sắt, kẽm, giúp tăng cường năng lượng, hỗ trợ phát triển cơ bắp và duy trì vóc dáng khỏe mạnh.<br><br>\n\n<b>Trọng lượng:</b> 500g<br>\n<b>Xuất xứ:</b> Việt Nam<br>\n<b>Thành phần:</b> 100% thịt ức gà tươi<br>\n<b>Bảo quản:</b> Ngăn mát 0°C – 4°C (tối đa 3 – 5 ngày) hoặc ngăn đông -18°C (tối đa 6 tháng)<br>\n<b>Gợi ý chế biến:</b> Ức gà luộc, ức gà nướng mật ong, salad ức gà, ức gà áp chảo tiêu đen, súp gà rau củ, cơm gà xối mỡ.<br>",
+      "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/uc_ga_k6a17p.webp",
+      "category": "68ff8086c27ba60ac0c9bdba",
+      "price": 50000,
+      "quantity": 3,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "reviews": [],
+      "__v": 5,
+      "createdAt": "2025-10-27T14:38:26.278Z",
+      "updatedAt": "2025-12-02T14:40:15.442Z",
+      "detailImages": [
+        {
+          "url": "https://tamanhhospital.vn/wp-content/uploads/2025/05/uc-ga-co-chat-beo-khong.jpg",
+          "_id": "6912d7d0b267afccf13e14aa"
+        },
+        {
+          "url": "https://cdn.tgdd.vn/Files/2021/02/23/1329749/tong-hop-8-mon-an-tu-uc-ga-ma-tin-do-giam-can-me-tit-202103051052174741.jpg",
+          "_id": "6912d7d0b267afccf13e14ab"
+        },
+        {
+          "url": "https://cdn.tgdd.vn/Files/2021/02/23/1329749/tong-hop-8-mon-an-tu-uc-ga-ma-tin-do-giam-can-me-tit-202102230908268263.jpg",
+          "_id": "6912d7d0b267afccf13e14ac"
+        }
+      ],
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "68ff83e26826b33c1503de89",
+      "name": "Thanh Long ruột đỏ",
+      "sku": "DRG001",
+      "description": "Thanh long ruột đỏ là loại trái cây nhiệt đới đặc trưng của Việt Nam, nổi bật với lớp vỏ hồng tươi và phần ruột đỏ rực rỡ, ngọt thanh mát, giàu dinh dưỡng. Trái có mùi thơm nhẹ, vị ngọt tự nhiên, dễ ăn và phù hợp với mọi lứa tuổi.<br><br>\n\nSản phẩm được tuyển chọn từ những trái thanh long chín mọng, đạt chuẩn an toàn, không dùng chất bảo quản, đảm bảo độ tươi ngon và hương vị nguyên bản khi đến tay người tiêu dùng.<br><br>\n\nThanh long ruột đỏ giàu vitamin C, chất xơ và chất chống oxy hóa tự nhiên (betacyanin), giúp làm đẹp da, hỗ trợ tiêu hóa, tăng sức đề kháng và tốt cho tim mạch.<br><br>\n\n<b>Trọng lượng:</b> 1 trái (khoảng 400g – 600g)<br>\n<b>Xuất xứ:</b> Việt Nam<br>\n<b>Thành phần:</b> 100% thanh long ruột đỏ tươi<br>\n<b>Bảo quản:</b> Nơi thoáng mát hoặc ngăn mát tủ lạnh 3 – 5 ngày<br>\n<b>Gợi ý sử dụng:</b> Ăn trực tiếp, làm sinh tố, nước ép, hoặc kết hợp cùng sữa chua, salad trái cây, món tráng miệng.<br>",
+      "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/thanh_long_o5jo83.webp",
+      "category": "68ff8086c27ba60ac0c9bdb9",
+      "price": 11900,
+      "quantity": 0,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "reviews": [],
+      "__v": 2,
+      "createdAt": "2025-10-27T14:38:26.277Z",
+      "updatedAt": "2025-11-09T02:43:31.168Z",
+      "detailImages": [
+        {
+          "url": "https://giadinh.mediacdn.vn/296230595582509056/2022/8/14/thanhlongruotdo9-1660461532675-1660461534914348157979.jpg",
+          "_id": "690fffd304e4380f30e9db48"
+        },
+        {
+          "url": "https://giadinh.mediacdn.vn/296230595582509056/2021/11/29/thanh-long-do-16381551825001097002688.jpg",
+          "_id": "690fffd304e4380f30e9db49"
+        },
+        {
+          "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxaLGYr_emEhNAq0qT85NK5dpGhi094zH15g&s",
+          "_id": "690fffd304e4380f30e9db4a"
+        }
+      ]
+    },
+    {
+      "_id": "68ff83e26826b33c1503de87",
+      "name": "Dưa hấu đỏ",
+      "sku": "WTM001",
+      "description": "Dưa hấu đỏ là loại trái cây quen thuộc, được yêu thích trong mọi gia đình nhờ vị ngọt mát, mọng nước và màu đỏ tươi hấp dẫn. Thịt dưa giòn, vị ngọt tự nhiên, giúp giải nhiệt hiệu quả trong những ngày nắng nóng.<br><br>\n\nSản phẩm được chọn lọc kỹ lưỡng, đảm bảo độ chín vừa phải và chất lượng tươi ngon. Dưa được rửa sạch, đóng gói cẩn thận, thuận tiện khi sử dụng và bảo quản.<br><br>\n\nDưa hấu đỏ chứa nhiều vitamin A, C, cùng các chất chống oxy hóa như lycopene, giúp tăng cường hệ miễn dịch, hỗ trợ tim mạch và duy trì làn da khỏe mạnh.<br><br>\n\n<b>Trọng lượng:</b> 1kg<br>\n<b>Xuất xứ:</b> Việt Nam<br>\n<b>Thành phần:</b> 100% dưa hấu đỏ tươi<br>\n<b>Bảo quản:</b> Nhiệt độ 10°C – 15°C (hoặc ngăn mát tủ lạnh 3 – 5 ngày)<br>\n<b>Gợi ý sử dụng:</b> Ăn trực tiếp, ép nước, làm sinh tố, hoặc dùng trong các món tráng miệng và salad trái cây.<br>",
+      "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/dua_hau_i4cw8r.webp",
+      "category": "68ff8086c27ba60ac0c9bdb9",
+      "price": 14900,
+      "quantity": 0,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "reviews": [],
+      "__v": 21,
+      "createdAt": "2025-10-27T14:38:26.276Z",
+      "updatedAt": "2025-11-24T13:30:43.618Z",
+      "detailImages": [
+        {
+          "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi8PIDePfRaz42Zfdi4FvFyti9FycDHKFYdQ&s",
+          "_id": "6922df941c53a59224170d13"
+        },
+        {
+          "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShbGlbn7mQSBDI1BOlTneBLzHdzax00MJDog&s",
+          "_id": "6922df941c53a59224170d14"
+        },
+        {
+          "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx9iTxV-VBnXEU-VVtprXKphN2k1eJgR7wnQ&s",
+          "_id": "6922df941c53a59224170d15"
+        },
+        {
+          "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr38yJTYfkhDORC1fZXYQt_nNF-p2CCyY5cg&s",
+          "_id": "6922df941c53a59224170d16"
+        }
+      ],
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 30,
+        "startAt": "2025-11-19T14:45:25.250Z",
+        "endAt": "2025-11-23T14:58:00.000Z"
+      }
+    },
+    {
+      "_id": "68ff83e26826b33c1503de88",
+      "name": "Cải ngồng Hưng Phát",
+      "sku": "VEG001",
+      "description": "Cải ngọt là một trong những loại rau cải phổ biến, được sử dụng rộng rãi trong bữa ăn hằng ngày của người Việt. Rau có thân tròn, lá xanh mướt, vị ngọt thanh, khi già có vị cay nhẹ, rất thích hợp để chế biến nhiều món ăn khác nhau.<br><br>\nSản phẩm được đóng túi đảm bảo vệ sinh, tiện lợi khi sử dụng, giữ trọn hương vị tươi ngon và giá trị dinh dưỡng tự nhiên của rau.<br><br>\nCải ngọt giàu vitamin A, C, K, cùng các khoáng chất như canxi, sắt, kali, giúp tăng sức đề kháng, thanh lọc cơ thể và hỗ trợ tiêu hóa tốt.<br><br>\n<b>Trọng lượng:</b> 500G<br>\n<b>Xuất xứ:</b> Việt Nam<br>\n<b>Thành phần:</b> 100% rau cải ngọt tươi<br>\n<b>Bảo quản:</b> Ngăn mát 0°C – 4°C (tối đa 3 – 5 ngày)<br>\n<b>Gợi ý chế biến:</b> Canh cải ngọt thịt bằm, Cải ngọt xào tỏi, Cải ngọt xào nấm bào ngư, Canh cải ngọt hến, Mì xào cải ngọt hải sản,…",
+      "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/cai_sah0ae.webp",
+      "category": "68ff8086c27ba60ac0c9bdb9",
+      "price": 23500,
+      "quantity": 0,
+      "rating": 5,
+      "numReviews": 1,
+      "isActive": true,
+      "reviews": [
+        {
+          "user": "68ff83e26826b33c1503de91",
+          "name": "Trần Văn B",
+          "rating": 5,
+          "comment": "sản phẩm ngon",
+          "_id": "692b1682bb3e73000c791465",
+          "createdAt": "2025-11-29T15:51:30.812Z",
+          "updatedAt": "2025-11-29T15:51:30.812Z"
+        }
+      ],
+      "__v": 14,
+      "createdAt": "2025-10-27T14:38:26.277Z",
+      "updatedAt": "2025-11-29T16:00:30.551Z",
+      "detailImages": [
+        {
+          "url": "https://cdn.tgdd.vn/Files/2022/06/03/1436686/cach-chon-cai-ngot-ngon-an-toan-khong-hoa-chat-202206030901324273.jpg",
+          "_id": "6929b210f9b771b696c1f5f4"
+        },
+        {
+          "url": "https://cdn.tgdd.vn/Files/2018/01/24/1061437/cai-be-xanh-chua-benh-mua-lanh-ban-da-biet-202110271122566003.jpg",
+          "_id": "6929b210f9b771b696c1f5f5"
+        },
+        {
+          "url": "https://cdn.tgdd.vn/Files/2022/06/03/1436686/cach-chon-cai-ngot-ngon-an-toan-khong-hoa-chat-202206030854559758.jpg",
+          "_id": "6929b210f9b771b696c1f5f6"
+        }
+      ],
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 35,
+        "startAt": "2025-11-20T17:00:00.000Z",
+        "endAt": "2025-11-29T16:00:00.000Z"
+      }
+    },
+    {
+      "_id": "68ff83e26826b33c1503de8d",
+      "name": "Ba rọi heo CJ",
+      "sku": "PRK001",
+      "description": "Ba rọi heo CJ 400g là sản phẩm thịt heo cao cấp, được chọn lọc kỹ từ phần bụng heo – nơi có sự xen kẽ hoàn hảo giữa nạc và mỡ, mang đến hương vị béo ngậy, mềm thơm đặc trưng. Thịt được cắt lát vừa ăn, tiện lợi khi chế biến nhiều món ngon truyền thống và hiện đại.<br><br>\n\nSản phẩm được sản xuất và đóng gói theo quy trình khép kín của CJ Foods, đảm bảo vệ sinh an toàn thực phẩm, giữ trọn hương vị tươi ngon tự nhiên và giá trị dinh dưỡng cao.<br><br>\n\nBa rọi heo chứa nhiều protein, vitamin nhóm B (đặc biệt là B1, B6) và các khoáng chất cần thiết như sắt, kẽm, giúp bổ sung năng lượng, hỗ trợ tái tạo tế bào và tăng cường sức khỏe cơ bắp.<br><br>\n\n<b>Trọng lượng:</b> 400G<br>\n<b>Xuất xứ:</b> Hàn Quốc<br>\n<b>Thành phần:</b> 100% thịt ba rọi heo tươi<br>\n<b>Bảo quản:</b> Ngăn mát 0°C – 4°C (tối đa 3 – 5 ngày) hoặc ngăn đông -18°C để dùng lâu hơn<br>\n<b>Gợi ý chế biến:</b> Ba rọi nướng Hàn Quốc, Ba rọi chiên giòn, Thịt ba rọi kho trứng, Ba rọi luộc cuốn rau sống, Lẩu kim chi ba rọi heo, Ba rọi xào hành tỏi, v.v.",
+      "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484205/ba_roi_tknpsa.webp",
+      "category": "68ff8086c27ba60ac0c9bdba",
+      "price": 78000,
+      "quantity": 0,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "reviews": [],
+      "__v": 3,
+      "createdAt": "2025-10-27T14:38:26.278Z",
+      "updatedAt": "2025-11-09T02:33:55.031Z",
+      "detailImages": [
+        {
+          "url": "https://cdn.tgdd.vn/2021/01/content/ketcau-800x450.jpg",
+          "_id": "690ffd9304e4380f30e9da76"
+        },
+        {
+          "url": "https://anh.24h.com.vn/upload/2-2017/images/2017-06-25/1498391999-149803437862550-vi-3.jpg",
+          "_id": "690ffd9304e4380f30e9da77"
+        },
+        {
+          "url": "https://cdn.tgdd.vn/2021/01/CookProduct/thum-1200x676-9.jpg",
+          "_id": "690ffd9304e4380f30e9da78"
+        }
+      ]
+    },
+    {
+      "_id": "69202f829011e311b73a6053",
+      "name": "Sữa óc cho nguyên chất 137 độ C lốc 3x180ml",
+      "sku": "SUA001",
+      "description": "Sữa óc cho nguyên chất 137 độ C, lốc 3x180ml",
+      "image": "https://lh3.googleusercontent.com/bkuMdFtyOSXqCr5eKq5CNBCSdY6vkzyYljoycSi7dt2IySsqzbqXiPomPjeSKy1dX0nkGCbk9R1SOo1-Mqd616rbNm8Pm7QB=w230-rw",
+      "brand": "137 Degrees",
+      "category": "68ff8086c27ba60ac0c9bdbc",
+      "price": 104000,
+      "quantity": 100,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/bkuMdFtyOSXqCr5eKq5CNBCSdY6vkzyYljoycSi7dt2IySsqzbqXiPomPjeSKy1dX0nkGCbk9R1SOo1-Mqd616rbNm8Pm7QB=w230-rw",
+          "_id": "6922c1ff6b1eb4c8e3a237d9"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:14.688Z",
+      "updatedAt": "2025-11-23T08:12:47.898Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f829011e311b73a6056",
+      "name": "Sữa óc cho 137 độ C nguyên chất hộp 1L",
+      "sku": "SUA002",
+      "description": "Sữa óc cho 137 độ C nguyên chất, hộp 1L",
+      "image": "https://lh3.googleusercontent.com/6jJi7Skof8FliTBt_fHtVU30WXVrJjthfmtnuEyg-7ZTplqmdrgLe84w1lIoP1XI2u5P8mY_sCKg54VTbPKuOJeI8JkYOacK=w230-rw",
+      "brand": "137 Degrees",
+      "category": "68ff8086c27ba60ac0c9bdbc",
+      "price": 108000,
+      "quantity": 96,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/6jJi7Skof8FliTBt_fHtVU30WXVrJjthfmtnuEyg-7ZTplqmdrgLe84w1lIoP1XI2u5P8mY_sCKg54VTbPKuOJeI8JkYOacK=w230-rw",
+          "_id": "6922c2066b1eb4c8e3a237dd"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:14.788Z",
+      "updatedAt": "2025-11-30T09:03:25.983Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f829011e311b73a6059",
+      "name": "Sản phẩm dinh dưỡng Ensure Original vani chai 237ml",
+      "sku": "ENS001",
+      "description": "Sản phẩm dinh dưỡng Ensure Original vani, chai 237ml",
+      "image": "https://lh3.googleusercontent.com/HVZ-kluEpyyp04SDtD4yjd9ukpN2sQ0Dd0vjD2sBuNpT7A--6pHkMLXjrZcVWItIIMnmGeD8s5-YlEuGLYAouLLIiw_FT8hh=w230-rw",
+      "brand": "Ensure",
+      "category": "68ff8086c27ba60ac0c9bdbc",
+      "price": 42500,
+      "quantity": 78,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/HVZ-kluEpyyp04SDtD4yjd9ukpN2sQ0Dd0vjD2sBuNpT7A--6pHkMLXjrZcVWItIIMnmGeD8s5-YlEuGLYAouLLIiw_FT8hh=w230-rw",
+          "_id": "6922c20f6b1eb4c8e3a237e1"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:14.884Z",
+      "updatedAt": "2025-12-01T14:40:29.093Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f829011e311b73a605c",
+      "name": "Nước uống sữa trái cây Nutri Boost cam mật ong lốc 6 chai x 297ml",
+      "sku": "NUT001",
+      "description": "Nước uống sữa trái cây Nutri Boost cam mật ong, lốc 6 chai x 297ml",
+      "image": "https://lh3.googleusercontent.com/s-gFYjX9-aHe1zlfbhVhvLyT69TKOJOiPR4j4iGWg9NKeL_b581S_wN1l78M61ZqsSF6YSUwZ-aDr5WLzjT_lysAQh0bQGIs=w230-rw",
+      "brand": "Nutriboost",
+      "category": "68ff8086c27ba60ac0c9bdbc",
+      "price": 49500,
+      "quantity": 120,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/s-gFYjX9-aHe1zlfbhVhvLyT69TKOJOiPR4j4iGWg9NKeL_b581S_wN1l78M61ZqsSF6YSUwZ-aDr5WLzjT_lysAQh0bQGIs=w230-rw",
+          "_id": "6922c2146b1eb4c8e3a237e5"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:14.980Z",
+      "updatedAt": "2025-11-23T08:13:08.817Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f839011e311b73a605f",
+      "name": "Nước uống sữa trái cây Nutri Boost dâu yến mạch lốc 6 chai x 297ml",
+      "sku": "NUT002",
+      "description": "Nước uống sữa trái cây Nutri Boost dâu yến mạch, lốc 6 chai x 297ml",
+      "image": "https://lh3.googleusercontent.com/YQQWZSoDApcKu6ZKrRvS81hiuQaUT3JFqrY8uzG6lFTHgM2vOC9ZUEwShRDQkUUgVpmhdu4BoTsBoz8kNDBjmXiJNMdR_ttD=w230-rw",
+      "brand": "Nutriboost",
+      "category": "68ff8086c27ba60ac0c9bdbc",
+      "price": 49500,
+      "quantity": 120,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/YQQWZSoDApcKu6ZKrRvS81hiuQaUT3JFqrY8uzG6lFTHgM2vOC9ZUEwShRDQkUUgVpmhdu4BoTsBoz8kNDBjmXiJNMdR_ttD=w230-rw",
+          "_id": "6922c21a6b1eb4c8e3a237e9"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:15.074Z",
+      "updatedAt": "2025-11-23T08:13:14.023Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f839011e311b73a6062",
+      "name": "Sữa lên men Betagen hương cam chai 700ml",
+      "sku": "BET001",
+      "description": "Sữa lên men Betagen hương cam, chai 700ml",
+      "image": "https://lh3.googleusercontent.com/390dzxMbAXeLJu54cdo6Y_HuMTW7v--Wr3yuDW5UXnBaQtFYWm4q5TNCX5clXFsQQrQvUC3hFvJHR5roEhD17X7iH6WTfkde=w230-rw",
+      "brand": "Betagen",
+      "category": "68ff8086c27ba60ac0c9bdbc",
+      "price": 42000,
+      "quantity": 90,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/390dzxMbAXeLJu54cdo6Y_HuMTW7v--Wr3yuDW5UXnBaQtFYWm4q5TNCX5clXFsQQrQvUC3hFvJHR5roEhD17X7iH6WTfkde=w230-rw",
+          "_id": "6922c2216b1eb4c8e3a237ed"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:15.167Z",
+      "updatedAt": "2025-11-23T08:13:21.388Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f839011e311b73a6065",
+      "name": "Phô mai La Vache Quirit truyền thống hộp 224g",
+      "sku": "PHO001",
+      "description": "Phô mai La Vache Quirit truyền thống, hộp 224g",
+      "image": "https://lh3.googleusercontent.com/zWQS4Sm4YfbcTfPu-t7O5Taplji0A4kd9c8xutUcDQ2LWnbzl39psKYbeQCPqcO7u_PneJwlFa7nFw5PwZjnMXEhjx3_eOIw=w230-rw",
+      "brand": "Con Bò Cười",
+      "category": "68ff8086c27ba60ac0c9bdbc",
+      "price": 64000,
+      "quantity": 66,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/zWQS4Sm4YfbcTfPu-t7O5Taplji0A4kd9c8xutUcDQ2LWnbzl39psKYbeQCPqcO7u_PneJwlFa7nFw5PwZjnMXEhjx3_eOIw=w230-rw",
+          "_id": "6922c2276b1eb4c8e3a237f1"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:15.258Z",
+      "updatedAt": "2025-12-02T14:24:04.305Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f839011e311b73a606d",
+      "name": "Mướp hương Co.op Select kg",
+      "sku": "VEG002",
+      "description": "Mướp hương Co.op Select, tính theo kg",
+      "image": "https://lh3.googleusercontent.com/p2DQlYByzrw4DFqP1w4D59be9gdDhVdjg5IYe56LyIp9hceLhKEU3sKKONagRyqjbWxbc0m6HhUYYKznDe0b2nbjg6UctVQf=w230-rw",
+      "brand": "Co.op Select",
+      "category": "68ff8086c27ba60ac0c9bdb9",
+      "price": 26500,
+      "quantity": 140,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/p2DQlYByzrw4DFqP1w4D59be9gdDhVdjg5IYe56LyIp9hceLhKEU3sKKONagRyqjbWxbc0m6HhUYYKznDe0b2nbjg6UctVQf=w230-rw",
+          "_id": "6922c22c6b1eb4c8e3a237f5"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:15.445Z",
+      "updatedAt": "2025-11-23T08:13:32.676Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f839011e311b73a6070",
+      "name": "Khổ qua Co.op Select kg",
+      "sku": "VEG003",
+      "description": "Khổ qua Co.op Select, tính theo kg",
+      "image": "https://lh3.googleusercontent.com/FJ3O9mfFuKo4UoTeKvzKGFxUXz27mGRIu5gtumDB5AE5WnUe3MKuRTuPiVgV5B8JZcZ1q_6PX-LlrKCtxd890XPkWlpwWOfhmg=w230-rw",
+      "brand": "Co.op Select",
+      "category": "68ff8086c27ba60ac0c9bdb9",
+      "price": 33500,
+      "quantity": 120,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/FJ3O9mfFuKo4UoTeKvzKGFxUXz27mGRIu5gtumDB5AE5WnUe3MKuRTuPiVgV5B8JZcZ1q_6PX-LlrKCtxd890XPkWlpwWOfhmg=w230-rw",
+          "_id": "6922c2346b1eb4c8e3a237f9"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:15.537Z",
+      "updatedAt": "2025-11-23T08:13:40.643Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f839011e311b73a6074",
+      "name": "Mì Reeva 3 Miền tôm chua cay thùng 30 gói x 65g",
+      "sku": "GIA001",
+      "description": "Mì Reeva 3 Miền tôm chua cay, thùng 30 gói x 65g",
+      "image": "https://lh3.googleusercontent.com/bIhVx5u6dz6G48RzHIP3bQrQVTSiRBoTupC19BlagJoQf1MgLTeIdtOBOqvYN45CEwojgzBn-a_pC9elenOb1n_MpLHU9KHNaQ=w230-rw",
+      "brand": "3 Miền",
+      "category": "68ff8086c27ba60ac0c9bdbb",
+      "price": 94000,
+      "quantity": 80,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/bIhVx5u6dz6G48RzHIP3bQrQVTSiRBoTupC19BlagJoQf1MgLTeIdtOBOqvYN45CEwojgzBn-a_pC9elenOb1n_MpLHU9KHNaQ=w230-rw",
+          "_id": "6922c23a6b1eb4c8e3a237fd"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:15.673Z",
+      "updatedAt": "2025-11-23T08:13:46.586Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f839011e311b73a6077",
+      "name": "Mì Hảo Hảo vị tôm chua cay gói 75g",
+      "sku": "GIA002",
+      "description": "Mì Hảo Hảo vị tôm chua cay, gói 75g",
+      "image": "https://lh3.googleusercontent.com/d2-sZeltwojyYhLEQ0luhuWAIlZrm5zAXc2FoJNEzf0vTTKII56c_YOniCLLBO9S-W1VZ4UwG-zCI_33CMvJMfwh7G6LJfo=w230-rw",
+      "brand": "Hảo Hảo",
+      "category": "68ff8086c27ba60ac0c9bdbb",
+      "price": 4300,
+      "quantity": 200,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/d2-sZeltwojyYhLEQ0luhuWAIlZrm5zAXc2FoJNEzf0vTTKII56c_YOniCLLBO9S-W1VZ4UwG-zCI_33CMvJMfwh7G6LJfo=w230-rw",
+          "_id": "6922c2406b1eb4c8e3a23801"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:15.765Z",
+      "updatedAt": "2025-11-23T08:13:52.562Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f839011e311b73a607a",
+      "name": "Mì Đệ Nhất vị thịt bằm gói 83g",
+      "sku": "GIA003",
+      "description": "Mì Đệ Nhất vị thịt bằm, gói 83g",
+      "image": "https://lh3.googleusercontent.com/D9hMXaNygECqsenRWNjhvLhHSEFUBe5PXS1EwL5VCPstHPS6MQxZtOGo3AjOV-LKpPu0KY5W8Va0Gz0216DZk0udo5GeZGe-=w230-rw",
+      "brand": "Đệ Nhất",
+      "category": "68ff8086c27ba60ac0c9bdbb",
+      "price": 7800,
+      "quantity": 180,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/D9hMXaNygECqsenRWNjhvLhHSEFUBe5PXS1EwL5VCPstHPS6MQxZtOGo3AjOV-LKpPu0KY5W8Va0Gz0216DZk0udo5GeZGe-=w230-rw",
+          "_id": "6922c2476b1eb4c8e3a23805"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:15.856Z",
+      "updatedAt": "2025-11-23T08:13:59.249Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f839011e311b73a607d",
+      "name": "Hủ tiếu Nhịp Sống vị nam vang 69g",
+      "sku": "GIA004",
+      "description": "Hủ tiếu Nhịp Sống vị nam vang, gói 69g",
+      "image": "https://lh3.googleusercontent.com/wF0uew5aFdxCRaq-4szyLGhyml4BWKl-LwLrcpGo9_XEDeW7VifHYT03HjhphFXvp5ohc6kWIccZPRj-c6D7U-s820bH0bw=w230-rw",
+      "brand": "Nhịp Sống",
+      "category": "68ff8086c27ba60ac0c9bdbb",
+      "price": 9700,
+      "quantity": 160,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/wF0uew5aFdxCRaq-4szyLGhyml4BWKl-LwLrcpGo9_XEDeW7VifHYT03HjhphFXvp5ohc6kWIccZPRj-c6D7U-s820bH0bw=w230-rw",
+          "_id": "6922c24e6b1eb4c8e3a23809"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:15.946Z",
+      "updatedAt": "2025-11-23T08:14:06.846Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f849011e311b73a6081",
+      "name": "Thịt heo xay 400g - CJ",
+      "sku": "MEAT001",
+      "description": "Thịt heo xay 400g, hãng CJ",
+      "image": "https://lh3.googleusercontent.com/yHPvzzKrkwpfKKdtI4Rb81jjWs2Ucsi0QTI0Q6jHX1fs9QxowrOBaMHeasAKc15_g5kvIHXSShY9LwhUVgI6K9P1LF0OTensSQ=w230-rw",
+      "brand": "CJ Food",
+      "category": "68ff8086c27ba60ac0c9bdba",
+      "price": 49000,
+      "quantity": 100,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/yHPvzzKrkwpfKKdtI4Rb81jjWs2Ucsi0QTI0Q6jHX1fs9QxowrOBaMHeasAKc15_g5kvIHXSShY9LwhUVgI6K9P1LF0OTensSQ=w230-rw",
+          "_id": "6922c2536b1eb4c8e3a2380d"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:16.081Z",
+      "updatedAt": "2025-11-23T08:14:11.975Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f849011e311b73a6084",
+      "name": "File gà công nghiệp 500g - Leboucher",
+      "sku": "MEAT002",
+      "description": "File gà công nghiệp 500g, hãng Leboucher",
+      "image": "https://lh3.googleusercontent.com/-tZkO5LvOqIZZ01Jo9n-y1fuzLpPbVens5cHboyGCDKUfA3hOmQZCMYMxQESTNdFW66EWQAebjq1Hf2rFe_KQtLv6ZFtPQcI=w230-rw",
+      "brand": "Leboucher",
+      "category": "68ff8086c27ba60ac0c9bdba",
+      "price": 41000,
+      "quantity": 90,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/-tZkO5LvOqIZZ01Jo9n-y1fuzLpPbVens5cHboyGCDKUfA3hOmQZCMYMxQESTNdFW66EWQAebjq1Hf2rFe_KQtLv6ZFtPQcI=w230-rw",
+          "_id": "6922c2596b1eb4c8e3a23811"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:16.173Z",
+      "updatedAt": "2025-11-23T08:14:17.901Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f849011e311b73a6087",
+      "name": "Nghêu sạch Lenger 600g/túi",
+      "sku": "MEAT003",
+      "description": "Nghêu sạch Lenger, 600g/túi",
+      "image": "https://lh3.googleusercontent.com/nLQWMUE2ghfMv3uH3L5SkrA-ZVsiBJaztGMQglMpllKsdmEun25Zedxq3e70ql4CMspGsvhGq87mnmg6LWUH7GXr-jqBXZpl=w230-rw",
+      "brand": "Lenger",
+      "category": "68ff8086c27ba60ac0c9bdba",
+      "price": 32900,
+      "quantity": 110,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/nLQWMUE2ghfMv3uH3L5SkrA-ZVsiBJaztGMQglMpllKsdmEun25Zedxq3e70ql4CMspGsvhGq87mnmg6LWUH7GXr-jqBXZpl=w230-rw",
+          "_id": "6922c25f6b1eb4c8e3a23815"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:16.262Z",
+      "updatedAt": "2025-11-23T08:14:23.125Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    },
+    {
+      "_id": "69202f849011e311b73a608a",
+      "name": "Trứng gà tươi TAFA 600g - Hộp nhựa",
+      "sku": "MEAT004",
+      "description": "Trứng gà tươi TAFA 600g, hộp nhựa",
+      "image": "https://lh3.googleusercontent.com/p5AagndSCHDhqfCkIlbS6KuNPVHR3EBjJFRlrcHJKpl4r9xCNgF6Y6WXrrxgM4R77nG5bjF2kdYu48TDh1gffJog5PD1wUGE=w230-rw",
+      "brand": "Tafa",
+      "category": "68ff8086c27ba60ac0c9bdba",
+      "price": 28000,
+      "quantity": 130,
+      "rating": 0,
+      "numReviews": 0,
+      "isActive": true,
+      "detailImages": [
+        {
+          "url": "https://lh3.googleusercontent.com/p5AagndSCHDhqfCkIlbS6KuNPVHR3EBjJFRlrcHJKpl4r9xCNgF6Y6WXrrxgM4R77nG5bjF2kdYu48TDh1gffJog5PD1wUGE=w230-rw",
+          "_id": "6922c2646b1eb4c8e3a23819"
+        }
+      ],
+      "reviews": [],
+      "createdAt": "2025-11-21T09:23:16.355Z",
+      "updatedAt": "2025-11-23T08:14:28.073Z",
+      "__v": 1,
+      "sale": {
+        "active": false,
+        "type": "percent",
+        "value": 0
+      }
+    }
+  ],
+  "categories": [
+    {
+      "_id": "68ff8086c27ba60ac0c9bdb9",
+      "name": "Rau củ, trái cây",
+      "description": "Các loại rau củ và trái cây tươi",
+      "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761288969/vegetables_isr34m.jpg",
+      "__v": 0,
+      "createdAt": "2025-10-27T14:24:06.598Z",
+      "updatedAt": "2025-10-27T14:24:06.598Z"
+    },
+    {
+      "_id": "68ff8086c27ba60ac0c9bdba",
+      "name": "Thịt, trứng, hải sản",
+      "description": "Các loại thịt, trứng và hải sản tươi sống",
+      "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761288815/meat_fish_egg_rqgpzl.jpg",
+      "__v": 0,
+      "createdAt": "2025-10-27T14:24:06.599Z",
+      "updatedAt": "2025-10-27T14:24:06.599Z"
+    },
+    {
+      "_id": "68ff8086c27ba60ac0c9bdbb",
+      "name": "Gia vị, thực phẩm khô",
+      "description": "Gia vị và các loại thực phẩm khô",
+      "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761289006/gia_vi_katcto.jpg",
+      "__v": 0,
+      "createdAt": "2025-10-27T14:24:06.600Z",
+      "updatedAt": "2025-10-27T14:24:06.600Z"
+    },
+    {
+      "_id": "68ff8086c27ba60ac0c9bdbc",
+      "name": "Sữa, sản phẩm từ sữa",
+      "description": "Sữa và các sản phẩm được chế biến từ sữa",
+      "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761288951/milk_gvpbcm.webp",
+      "__v": 0,
+      "createdAt": "2025-10-27T14:24:06.600Z",
+      "updatedAt": "2025-10-27T14:24:06.600Z"
+    }
+  ],
+  "orders": [
+    {
+      "_id": "690b6e11ddfa79aac9134f8f",
+      "user": "68ff8087c27ba60ac0c9bdd0",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de87",
+          "name": "Dưa hấu đỏ",
+          "quantity": 2,
+          "price": 14900,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/dua_hau_i4cw8r.webp",
+          "_id": "690b6e11ddfa79aac9134f90"
+        },
+        {
+          "product": "68ff83e26826b33c1503de88",
+          "name": "Cải ngồng Hưng Phát",
+          "quantity": 1,
+          "price": 23500,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/cai_sah0ae.webp",
+          "_id": "690b6e11ddfa79aac9134f91"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "Nguyễn Văn A",
+        "phone": "0123456789",
+        "address": "123 Đường ABC",
+        "city": "Quận 1, TP.HCM"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 53300,
+      "taxPrice": 5330,
+      "shippingPrice": 20000,
+      "totalPrice": 78630,
+      "status": "Delivered",
+      "isPaid": true,
+      "paidAt": "2025-11-05T15:32:33.490Z",
+      "isDelivered": true,
+      "deliveredAt": "2025-11-05T15:32:33.490Z",
+      "__v": 0,
+      "createdAt": "2025-11-05T15:32:33.500Z",
+      "updatedAt": "2025-11-05T15:32:33.500Z"
+    },
+    {
+      "_id": "690b6e11ddfa79aac9134f92",
+      "user": "68ff8087c27ba60ac0c9bdd0",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8c",
+          "name": "Cá bạc má",
+          "quantity": 1,
+          "price": 89000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/ca_bac_ma_ai3qjh.webp",
+          "_id": "690b6e11ddfa79aac9134f93"
+        },
+        {
+          "product": "68ff83e26826b33c1503de8d",
+          "name": "Ba rọi heo CJ",
+          "quantity": 2,
+          "price": 78000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484205/ba_roi_tknpsa.webp",
+          "_id": "690b6e11ddfa79aac9134f94"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "Nguyễn Văn A",
+        "phone": "0123456789",
+        "address": "123 Đường ABC",
+        "city": "Quận 1, TP.HCM"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 245000,
+      "taxPrice": 24500,
+      "shippingPrice": 20000,
+      "totalPrice": 289500,
+      "status": "Processing",
+      "isPaid": false,
+      "isDelivered": false,
+      "__v": 0,
+      "createdAt": "2025-11-05T15:32:33.501Z",
+      "updatedAt": "2025-11-05T15:32:33.501Z"
+    },
+    {
+      "_id": "692a9f263a9a81b237d03b22",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de88",
+          "name": "Cải ngồng Hưng Phát",
+          "quantity": 3,
+          "price": 15275,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/cai_sah0ae.webp",
+          "_id": "692a9f263a9a81b237d03b23"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 45825,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 45825,
+      "status": "Delivered",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-11-29T07:22:14.208Z",
+      "updatedAt": "2025-11-29T08:38:21.911Z",
+      "__v": 0
+    },
+    {
+      "_id": "692a9f413a9a81b237d03bbd",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de88",
+          "name": "Cải ngồng Hưng Phát",
+          "quantity": 3,
+          "price": 15275,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/cai_sah0ae.webp",
+          "_id": "692a9f413a9a81b237d03bbe"
+        },
+        {
+          "product": "68ff83e26826b33c1503de8a",
+          "name": "Cà rốt Đà Lạt",
+          "quantity": 3,
+          "price": 32900,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/ca_rot_vcjtqu.webp",
+          "_id": "692a9f413a9a81b237d03bbf"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 144525,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 122846,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-11-29T07:22:41.907Z",
+      "updatedAt": "2025-11-29T07:22:41.907Z",
+      "__v": 0
+    },
+    {
+      "_id": "692aa1343a9a81b237d03c77",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de88",
+          "name": "Cải ngồng Hưng Phát",
+          "quantity": 3,
+          "price": 15275,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/cai_sah0ae.webp",
+          "_id": "692aa1343a9a81b237d03c78"
+        },
+        {
+          "product": "68ff83e26826b33c1503de8a",
+          "name": "Cà rốt Đà Lạt",
+          "quantity": 4,
+          "price": 32900,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/ca_rot_vcjtqu.webp",
+          "_id": "692aa1343a9a81b237d03c79"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 177425,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 150811,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-11-29T07:31:00.939Z",
+      "updatedAt": "2025-11-29T07:31:00.939Z",
+      "__v": 0
+    },
+    {
+      "_id": "692c035d4f529399f96bdbc3",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8b",
+          "name": "Nước chấm cá cơm 3 Miền",
+          "quantity": 1,
+          "price": 22000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/nuoc_mam_3mien_uypln5.webp",
+          "_id": "692c035d4f529399f96bdbc4"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 22000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 21980,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-11-30T08:42:05.192Z",
+      "updatedAt": "2025-11-30T08:42:05.192Z",
+      "__v": 0
+    },
+    {
+      "_id": "692c0497b77b19a16f680b11",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8b",
+          "name": "Nước chấm cá cơm 3 Miền",
+          "quantity": 1,
+          "price": 22000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/nuoc_mam_3mien_uypln5.webp",
+          "_id": "692c0497b77b19a16f680b12"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 22000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 22000,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-11-30T08:47:19.596Z",
+      "updatedAt": "2025-11-30T08:47:19.596Z",
+      "__v": 0
+    },
+    {
+      "_id": "692c050f96c5cc3b2ce50349",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8b",
+          "name": "Nước chấm cá cơm 3 Miền",
+          "quantity": 1,
+          "price": 22000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/nuoc_mam_3mien_uypln5.webp",
+          "_id": "692c050f96c5cc3b2ce5034a"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 22000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 22000,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-11-30T08:49:19.343Z",
+      "updatedAt": "2025-11-30T08:49:19.343Z",
+      "__v": 0
+    },
+    {
+      "_id": "692c055557913069b850e8dd",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8b",
+          "name": "Nước chấm cá cơm 3 Miền",
+          "quantity": 1,
+          "price": 22000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/nuoc_mam_3mien_uypln5.webp",
+          "_id": "692c055557913069b850e8de"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 22000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 22000,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-11-30T08:50:29.880Z",
+      "updatedAt": "2025-11-30T08:50:29.880Z",
+      "__v": 0
+    },
+    {
+      "_id": "692c056f0298aaa3b084721f",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8b",
+          "name": "Nước chấm cá cơm 3 Miền",
+          "quantity": 1,
+          "price": 22000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/nuoc_mam_3mien_uypln5.webp",
+          "_id": "692c056f0298aaa3b0847220"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 22000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 22000,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-11-30T08:50:55.208Z",
+      "updatedAt": "2025-11-30T08:50:55.208Z",
+      "__v": 0
+    },
+    {
+      "_id": "692c05ef540710550ce33958",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8b",
+          "name": "Nước chấm cá cơm 3 Miền",
+          "quantity": 1,
+          "price": 22000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/nuoc_mam_3mien_uypln5.webp",
+          "_id": "692c05ef540710550ce33959"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 22000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 22000,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-11-30T08:53:03.056Z",
+      "updatedAt": "2025-11-30T08:53:03.056Z",
+      "__v": 0
+    },
+    {
+      "_id": "692c0614540710550ce339ee",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8b",
+          "name": "Nước chấm cá cơm 3 Miền",
+          "quantity": 1,
+          "price": 22000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/nuoc_mam_3mien_uypln5.webp",
+          "_id": "692c0614540710550ce339ef"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 22000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 22000,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-11-30T08:53:40.146Z",
+      "updatedAt": "2025-11-30T08:53:40.146Z",
+      "__v": 0
+    },
+    {
+      "_id": "692c071aa6ec81f5a813d197",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8b",
+          "name": "Nước chấm cá cơm 3 Miền",
+          "quantity": 1,
+          "price": 22000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/nuoc_mam_3mien_uypln5.webp",
+          "_id": "692c071aa6ec81f5a813d198"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 22000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 22000,
+      "status": "Shipped",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-11-30T08:58:02.388Z",
+      "updatedAt": "2025-11-30T09:17:08.361Z",
+      "__v": 0
+    },
+    {
+      "_id": "692c072ea6ec81f5a813d276",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8c",
+          "name": "Cá bạc má",
+          "quantity": 1,
+          "price": 66750,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/ca_bac_ma_ai3qjh.webp",
+          "_id": "692c072ea6ec81f5a813d277"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 66750,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 66750,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-11-30T08:58:22.232Z",
+      "updatedAt": "2025-11-30T08:58:22.232Z",
+      "__v": 0
+    },
+    {
+      "_id": "692c085eb339d7ced731018f",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "69202f829011e311b73a6056",
+          "name": "Sữa óc cho 137 độ C nguyên chất hộp 1L",
+          "quantity": 2,
+          "price": 108000,
+          "image": "https://lh3.googleusercontent.com/6jJi7Skof8FliTBt_fHtVU30WXVrJjthfmtnuEyg-7ZTplqmdrgLe84w1lIoP1XI2u5P8mY_sCKg54VTbPKuOJeI8JkYOacK=w230-rw",
+          "_id": "692c085eb339d7ced7310190"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 216000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 216000,
+      "status": "Delivered",
+      "isPaid": false,
+      "isDelivered": true,
+      "createdAt": "2025-11-30T09:03:26.048Z",
+      "updatedAt": "2025-11-30T09:05:21.807Z",
+      "__v": 0,
+      "deliveredAt": "2025-11-30T09:05:21.806Z"
+    },
+    {
+      "_id": "692c6986415f06ccc52c957e",
+      "user": "68ff8087c27ba60ac0c9bdd0",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8a",
+          "name": "Cà rốt Đà Lạt",
+          "quantity": 2,
+          "price": 75000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/ca_rot_vcjtqu.webp",
+          "_id": "692c6986415f06ccc52c957f"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "Nguyễn Văn Aa",
+        "phone": "0987654321",
+        "address": "25 abc",
+        "city": "ha noi"
+      },
+      "paymentMethod": "Credit Card",
+      "paymentResult": {
+        "id": "txn_001",
+        "status": "COMPLETED",
+        "update_time": "2025-11-30T15:57:58.863Z",
+        "email_address": "thienmocay1235@gmail.com"
+      },
+      "itemsPrice": 150000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 150000,
+      "status": "Delivered",
+      "isPaid": true,
+      "paidAt": "2025-11-23T15:57:58.870Z",
+      "isDelivered": true,
+      "deliveredAt": "2025-11-25T15:57:58.870Z",
+      "createdAt": "2025-11-30T15:57:58.880Z",
+      "updatedAt": "2025-11-30T15:57:58.880Z",
+      "__v": 0
+    },
+    {
+      "_id": "692c6986415f06ccc52c9581",
+      "user": "68ff8087c27ba60ac0c9bdd0",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8b",
+          "name": "Nước chấm cá cơm 3 Miền",
+          "quantity": 1,
+          "price": 200000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/nuoc_mam_3mien_uypln5.webp",
+          "_id": "692c6986415f06ccc52c9582"
+        },
+        {
+          "product": "68ff83e26826b33c1503de8c",
+          "name": "Cá bạc má",
+          "quantity": 2,
+          "price": 75000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/ca_bac_ma_ai3qjh.webp",
+          "_id": "692c6986415f06ccc52c9583"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "Nguyễn Văn Aa",
+        "phone": "0987654321",
+        "address": "25 abc",
+        "city": "ha noi"
+      },
+      "paymentMethod": "Credit Card",
+      "paymentResult": {
+        "id": "txn_002",
+        "status": "COMPLETED",
+        "update_time": "2025-11-30T15:57:58.936Z",
+        "email_address": "thienmocay1235@gmail.com"
+      },
+      "itemsPrice": 350000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 350000,
+      "status": "Delivered",
+      "isPaid": true,
+      "paidAt": "2025-11-27T15:57:58.936Z",
+      "isDelivered": true,
+      "deliveredAt": "2025-11-29T15:57:58.936Z",
+      "createdAt": "2025-11-30T15:57:58.938Z",
+      "updatedAt": "2025-11-30T15:57:58.938Z",
+      "__v": 0
+    },
+    {
+      "_id": "692da7b215d7997ca4080f8b",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8c",
+          "name": "Cá bạc má",
+          "quantity": 2,
+          "price": 66750,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/ca_bac_ma_ai3qjh.webp",
+          "_id": "692da7b215d7997ca4080f8c"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "ZaloPay",
+      "itemsPrice": 133500,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 133500,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-12-01T14:35:30.506Z",
+      "updatedAt": "2025-12-01T14:35:30.506Z",
+      "__v": 0
+    },
+    {
+      "_id": "692da7b915d7997ca4080fdd",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8c",
+          "name": "Cá bạc má",
+          "quantity": 2,
+          "price": 66750,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/ca_bac_ma_ai3qjh.webp",
+          "_id": "692da7b915d7997ca4080fde"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 133500,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 133500,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-12-01T14:35:37.433Z",
+      "updatedAt": "2025-12-01T14:35:37.433Z",
+      "__v": 0
+    },
+    {
+      "_id": "692da8dd15d7997ca40810e5",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "69202f829011e311b73a6059",
+          "name": "Sản phẩm dinh dưỡng Ensure Original vani chai 237ml",
+          "quantity": 2,
+          "price": 42500,
+          "image": "https://lh3.googleusercontent.com/HVZ-kluEpyyp04SDtD4yjd9ukpN2sQ0Dd0vjD2sBuNpT7A--6pHkMLXjrZcVWItIIMnmGeD8s5-YlEuGLYAouLLIiw_FT8hh=w230-rw",
+          "_id": "692da8dd15d7997ca40810e6"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 85000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 85000,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-12-01T14:40:29.155Z",
+      "updatedAt": "2025-12-01T14:40:29.155Z",
+      "__v": 0
+    },
+    {
+      "_id": "692ef680ea7bf6a3f7627801",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "69202f839011e311b73a6065",
+          "name": "Phô mai La Vache Quirit truyền thống hộp 224g",
+          "quantity": 2,
+          "price": 64000,
+          "image": "https://lh3.googleusercontent.com/zWQS4Sm4YfbcTfPu-t7O5Taplji0A4kd9c8xutUcDQ2LWnbzl39psKYbeQCPqcO7u_PneJwlFa7nFw5PwZjnMXEhjx3_eOIw=w230-rw",
+          "_id": "692ef680ea7bf6a3f7627802"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 128000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 128000,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-12-02T14:24:00.145Z",
+      "updatedAt": "2025-12-02T14:24:00.145Z",
+      "__v": 0
+    },
+    {
+      "_id": "692ef684ea7bf6a3f762783a",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "69202f839011e311b73a6065",
+          "name": "Phô mai La Vache Quirit truyền thống hộp 224g",
+          "quantity": 2,
+          "price": 64000,
+          "image": "https://lh3.googleusercontent.com/zWQS4Sm4YfbcTfPu-t7O5Taplji0A4kd9c8xutUcDQ2LWnbzl39psKYbeQCPqcO7u_PneJwlFa7nFw5PwZjnMXEhjx3_eOIw=w230-rw",
+          "_id": "692ef684ea7bf6a3f762783b"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "COD",
+      "itemsPrice": 128000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 128000,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-12-02T14:24:04.369Z",
+      "updatedAt": "2025-12-02T14:24:04.369Z",
+      "__v": 0
+    },
+    {
+      "_id": "692ef695ea7bf6a3f76278d4",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8e",
+          "name": "Ức gà 3F",
+          "quantity": 3,
+          "price": 50000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/uc_ga_k6a17p.webp",
+          "_id": "692ef695ea7bf6a3f76278d5"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "ZaloPay",
+      "itemsPrice": 150000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 150000,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-12-02T14:24:21.061Z",
+      "updatedAt": "2025-12-02T14:24:21.061Z",
+      "__v": 0
+    },
+    {
+      "_id": "692ef706ea7bf6a3f7627937",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8e",
+          "name": "Ức gà 3F",
+          "quantity": 3,
+          "price": 50000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/uc_ga_k6a17p.webp",
+          "_id": "692ef706ea7bf6a3f7627938"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "ZaloPay",
+      "itemsPrice": 150000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 150000,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-12-02T14:26:14.085Z",
+      "updatedAt": "2025-12-02T14:26:14.085Z",
+      "__v": 0
+    },
+    {
+      "_id": "692efa4fea7bf6a3f76279dc",
+      "user": "68ff83e26826b33c1503de91",
+      "orderItems": [
+        {
+          "product": "68ff83e26826b33c1503de8e",
+          "name": "Ức gà 3F",
+          "quantity": 3,
+          "price": 50000,
+          "image": "https://res.cloudinary.com/daeeumk1i/image/upload/v1761484204/uc_ga_k6a17p.webp",
+          "_id": "692efa4fea7bf6a3f76279dd"
+        }
+      ],
+      "shippingAddress": {
+        "fullName": "tran van a",
+        "phone": "098745612",
+        "address": "phố 6 phường đông hòa",
+        "city": "thành phố hcm"
+      },
+      "paymentMethod": "ZaloPay",
+      "itemsPrice": 150000,
+      "taxPrice": 0,
+      "shippingPrice": 0,
+      "totalPrice": 150000,
+      "status": "Pending",
+      "isPaid": false,
+      "isDelivered": false,
+      "createdAt": "2025-12-02T14:40:15.503Z",
+      "updatedAt": "2025-12-02T14:40:15.503Z",
+      "__v": 0
+    }
+  ],
+  "carts": [
+    {
+      "_id": "6911f2be4d29fc39c47e33e8",
+      "user": "68ff83e26826b33c1503de91",
+      "items": [
+        {
+          "product": "68ff83e26826b33c1503de8e",
+          "quantity": 3,
+          "_id": "692ef68fea7bf6a3f76278c0"
+        }
+      ],
+      "totalPrice": 0,
+      "createdAt": "2025-11-10T14:12:14.945Z",
+      "updatedAt": "2025-12-02T14:24:15.051Z",
+      "__v": 180
+    },
+    {
+      "_id": "6911fe07982bf43b76bf4fa4",
+      "user": "69108a8bf2452e5727ce5e91",
+      "items": [
+        {
+          "product": "68ff83e26826b33c1503de8a",
+          "quantity": 2,
+          "_id": "6911fe07982bf43b76bf4fa5"
+        }
+      ],
+      "totalPrice": 0,
+      "createdAt": "2025-11-10T15:00:23.893Z",
+      "updatedAt": "2025-11-10T15:00:23.893Z",
+      "__v": 0
+    },
+    {
+      "_id": "6911fe67982bf43b76bf5030",
+      "user": "68ff8087c27ba60ac0c9bdd0",
+      "items": [
+        {
+          "product": "68ff83e26826b33c1503de8b",
+          "quantity": 4,
+          "_id": "6912d862b267afccf13e1876"
+        },
+        {
+          "product": "68ff83e26826b33c1503de8a",
+          "quantity": 2,
+          "_id": "6912d876b267afccf13e18ac"
+        },
+        {
+          "product": "69202f839011e311b73a6065",
+          "quantity": 2,
+          "_id": "692155b064f1c67a4941e3fa"
+        }
+      ],
+      "totalPrice": 153800,
+      "createdAt": "2025-11-10T15:01:59.611Z",
+      "updatedAt": "2025-11-22T06:18:24.082Z",
+      "__v": 12
+    }
+  ],
+  "discounts": [
+    {
+      "_id": "69202da6151fd58f4c90d5ab",
+      "code": "WELCOME10",
+      "description": "Giảm 10% cho khách hàng mới",
+      "type": "percent",
+      "value": 10,
+      "minOrderValue": 50000,
+      "maxDiscountAmount": 50000,
+      "usageLimit": 1000,
+      "usedCount": 0,
+      "startDate": "2025-11-01T00:00:00.000Z",
+      "endDate": "2025-12-31T00:00:00.000Z",
+      "isActive": true,
+      "createdAt": "2025-11-21T09:15:18.469Z",
+      "updatedAt": "2025-11-30T15:57:43.098Z",
+      "__v": 1,
+      "allowedUsers": [],
+      "applicableCategories": [],
+      "applicableProducts": [],
+      "endAt": "2025-12-31T00:00:00.000Z",
+      "excludeCategories": [],
+      "excludeProducts": [],
+      "maxDiscount": 0,
+      "minOrder": 0,
+      "perUserLimit": 0,
+      "startAt": "2025-11-01T00:00:00.000Z",
+      "userType": "new",
+      "tierRequired": "all"
+    },
+    {
+      "_id": "69202da6151fd58f4c90d5ae",
+      "code": "SAVE50K",
+      "description": "Giảm 50.000đ cho đơn hàng từ 200.000đ",
+      "type": "fixed",
+      "value": 50000,
+      "minOrderValue": 200000,
+      "maxDiscountAmount": 50000,
+      "usageLimit": 500,
+      "usedCount": 120,
+      "startDate": "2025-11-15T00:00:00.000Z",
+      "endDate": "2025-12-15T00:00:00.000Z",
+      "isActive": true,
+      "createdAt": "2025-11-21T09:15:18.746Z",
+      "updatedAt": "2025-11-30T15:57:43.532Z",
+      "__v": 1,
+      "allowedUsers": [],
+      "applicableCategories": [],
+      "applicableProducts": [],
+      "endAt": "2025-12-15T00:00:00.000Z",
+      "excludeCategories": [],
+      "excludeProducts": [],
+      "maxDiscount": 0,
+      "minOrder": 200000,
+      "perUserLimit": 0,
+      "startAt": "2025-11-15T00:00:00.000Z",
+      "userType": "all",
+      "tierRequired": "all"
+    },
+    {
+      "_id": "69202da6151fd58f4c90d5b1",
+      "code": "FLASH20",
+      "description": "Flash sale - Giảm 20% (Có hạn)",
+      "type": "percentage",
+      "value": 20,
+      "minOrderValue": 100000,
+      "maxDiscountAmount": 100000,
+      "usageLimit": 300,
+      "usedCount": 250,
+      "startDate": "2025-11-20T00:00:00.000Z",
+      "endDate": "2025-11-22T00:00:00.000Z",
+      "isActive": true,
+      "createdAt": "2025-11-21T09:15:18.901Z",
+      "updatedAt": "2025-11-30T15:57:43.586Z",
+      "__v": 0,
+      "tierRequired": "all"
+    },
+    {
+      "_id": "69202da7151fd58f4c90d5b4",
+      "code": "LOYALTY15",
+      "description": "Giảm 15% cho khách hàng thân thiết",
+      "type": "percent",
+      "value": 15,
+      "minOrderValue": 150000,
+      "maxDiscountAmount": 80000,
+      "usageLimit": 2000,
+      "usedCount": 350,
+      "startDate": "2025-10-01T00:00:00.000Z",
+      "endDate": "2025-12-31T00:00:00.000Z",
+      "isActive": true,
+      "createdAt": "2025-11-21T09:15:19.058Z",
+      "updatedAt": "2025-11-30T15:57:43.640Z",
+      "__v": 1,
+      "allowedUsers": [],
+      "applicableCategories": [],
+      "applicableProducts": [],
+      "endAt": "2025-12-31T00:00:00.000Z",
+      "excludeCategories": [],
+      "excludeProducts": [],
+      "maxDiscount": 0,
+      "minOrder": 0,
+      "perUserLimit": 0,
+      "startAt": "2025-10-01T00:00:00.000Z",
+      "userType": "all",
+      "tierRequired": "silver"
+    },
+    {
+      "_id": "69202da7151fd58f4c90d5b7",
+      "code": "FREESHIP",
+      "description": "Miễn phí vận chuyển cho đơn hàng trên 300.000đ",
+      "type": "fixed",
+      "value": 30000,
+      "minOrderValue": 300000,
+      "maxDiscountAmount": 30000,
+      "usageLimit": 800,
+      "usedCount": 650,
+      "startDate": "2025-11-01T00:00:00.000Z",
+      "endDate": "2025-12-31T00:00:00.000Z",
+      "isActive": true,
+      "createdAt": "2025-11-21T09:15:19.244Z",
+      "updatedAt": "2025-11-30T15:57:43.696Z",
+      "__v": 1,
+      "allowedUsers": [],
+      "applicableCategories": [],
+      "applicableProducts": [],
+      "endAt": "2025-12-31T00:00:00.000Z",
+      "excludeCategories": [],
+      "excludeProducts": [],
+      "maxDiscount": 0,
+      "minOrder": 300000,
+      "perUserLimit": 0,
+      "startAt": "2025-11-01T00:00:00.000Z",
+      "userType": "all",
+      "tierRequired": "all"
+    },
+    {
+      "_id": "69202da7151fd58f4c90d5ba",
+      "code": "HOLIDAY25",
+      "description": "Giảm 25% cuối năm",
+      "type": "percent",
+      "value": 25,
+      "minOrderValue": 250000,
+      "maxDiscountAmount": 150000,
+      "usageLimit": 600,
+      "usedCount": 420,
+      "startDate": "2025-11-20T00:00:00.000Z",
+      "endDate": "2025-12-31T00:00:00.000Z",
+      "isActive": true,
+      "createdAt": "2025-11-21T09:15:19.361Z",
+      "updatedAt": "2025-11-30T15:57:43.753Z",
+      "__v": 1,
+      "allowedUsers": [],
+      "applicableCategories": [],
+      "applicableProducts": [],
+      "endAt": "2025-12-31T00:00:00.000Z",
+      "excludeCategories": [],
+      "excludeProducts": [],
+      "maxDiscount": 0,
+      "minOrder": 0,
+      "perUserLimit": 0,
+      "startAt": "2025-11-20T00:00:00.000Z",
+      "userType": "all",
+      "tierRequired": "all"
+    },
+    {
+      "_id": "69202da7151fd58f4c90d5bd",
+      "code": "VIP30",
+      "description": "Giảm 30% dành cho VIP members",
+      "type": "percent",
+      "value": 30,
+      "minOrderValue": 300000,
+      "maxDiscountAmount": 200000,
+      "usageLimit": 200,
+      "usedCount": 85,
+      "startDate": "2025-09-01T00:00:00.000Z",
+      "endDate": "2026-02-28T00:00:00.000Z",
+      "isActive": true,
+      "createdAt": "2025-11-21T09:15:19.553Z",
+      "updatedAt": "2025-11-30T15:57:43.809Z",
+      "__v": 1,
+      "allowedUsers": [],
+      "applicableCategories": [],
+      "applicableProducts": [],
+      "endAt": "2026-02-28T00:00:00.000Z",
+      "excludeCategories": [],
+      "excludeProducts": [],
+      "maxDiscount": 0,
+      "minOrder": 0,
+      "perUserLimit": 0,
+      "startAt": "2025-09-01T00:00:00.000Z",
+      "userType": "vip",
+      "tierRequired": "gold"
+    },
+    {
+      "_id": "69202da7151fd58f4c90d5c0",
+      "code": "NEWYEAR100",
+      "description": "Giảm 100.000đ đầu năm mới",
+      "type": "fixed",
+      "value": 100000,
+      "minOrderValue": 500000,
+      "maxDiscountAmount": 100000,
+      "usageLimit": 300,
+      "usedCount": 0,
+      "startDate": "2026-01-01T00:00:00.000Z",
+      "endDate": "2026-01-10T00:00:00.000Z",
+      "isActive": false,
+      "createdAt": "2025-11-21T09:15:19.691Z",
+      "updatedAt": "2025-11-30T15:57:43.863Z",
+      "__v": 1,
+      "allowedUsers": [],
+      "applicableCategories": [],
+      "applicableProducts": [],
+      "endAt": "2026-01-10T00:00:00.000Z",
+      "excludeCategories": [],
+      "excludeProducts": [],
+      "maxDiscount": 0,
+      "minOrder": 0,
+      "perUserLimit": 0,
+      "startAt": "2026-01-01T00:00:00.000Z",
+      "userType": "all",
+      "tierRequired": "gold"
+    },
+    {
+      "_id": "69202da7151fd58f4c90d5c3",
+      "code": "SUMMER5",
+      "description": "Giảm 5% cho sản phẩm mùa hè",
+      "type": "percent",
+      "value": 5,
+      "minOrderValue": 75000,
+      "maxDiscountAmount": 25000,
+      "usageLimit": 2000,
+      "usedCount": 1250,
+      "startDate": "2025-05-01T00:00:00.000Z",
+      "endDate": "2025-08-31T00:00:00.000Z",
+      "isActive": false,
+      "createdAt": "2025-11-21T09:15:19.836Z",
+      "updatedAt": "2025-11-30T15:57:43.918Z",
+      "__v": 1,
+      "allowedUsers": [],
+      "applicableCategories": [],
+      "applicableProducts": [],
+      "endAt": "2025-08-31T00:00:00.000Z",
+      "excludeCategories": [],
+      "excludeProducts": [],
+      "maxDiscount": 0,
+      "minOrder": 0,
+      "perUserLimit": 0,
+      "startAt": "2025-05-01T00:00:00.000Z",
+      "userType": "all",
+      "tierRequired": "all"
+    },
+    {
+      "_id": "69202da7151fd58f4c90d5c6",
+      "code": "BULK30K",
+      "description": "Giảm 30.000đ cho đơn hàng trên 400.000đ",
+      "type": "fixed",
+      "value": 30000,
+      "minOrderValue": 400000,
+      "maxDiscountAmount": 30000,
+      "usageLimit": 400,
+      "usedCount": 210,
+      "startDate": "2025-11-01T00:00:00.000Z",
+      "endDate": "2025-12-31T00:00:00.000Z",
+      "isActive": true,
+      "createdAt": "2025-11-21T09:15:19.995Z",
+      "updatedAt": "2025-11-30T15:57:43.972Z",
+      "__v": 1,
+      "allowedUsers": [],
+      "applicableCategories": [],
+      "applicableProducts": [],
+      "endAt": "2025-12-31T00:00:00.000Z",
+      "excludeCategories": [],
+      "excludeProducts": [],
+      "maxDiscount": 0,
+      "minOrder": 400000,
+      "perUserLimit": 0,
+      "startAt": "2025-11-01T00:00:00.000Z",
+      "userType": "all",
+      "tierRequired": "all"
+    }
+  ],
+  "notifications": [
+    {
+      "_id": "692bf40fa044189e09db0bd3",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_status",
+      "title": "Cập nhật đơn hàng",
+      "message": "Đơn hàng của bạn đang được xử lý",
+      "data": {
+        "orderId": "692b15c7bb3e73000c791361",
+        "orderCode": "0C791361",
+        "oldStatus": "Pending",
+        "newStatus": "Processing"
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T07:36:47.859Z",
+      "updatedAt": "2025-11-30T07:54:29.263Z",
+      "__v": 0,
+      "readAt": "2025-11-30T07:54:29.262Z"
+    },
+    {
+      "_id": "692c01984f529399f96bd71e",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_status",
+      "title": "Cập nhật đơn hàng",
+      "message": "Đơn hàng của bạn đang được vận chuyển",
+      "data": {
+        "orderId": "692b158e7c66f9d776022ed4",
+        "orderCode": "76022ED4",
+        "oldStatus": "Pending",
+        "newStatus": "Shipped"
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:34:32.847Z",
+      "updatedAt": "2025-11-30T08:34:39.215Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:34:39.214Z"
+    },
+    {
+      "_id": "692c020e4f529399f96bd80a",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_status",
+      "title": "Cập nhật đơn hàng",
+      "message": "Đơn hàng của bạn đang chờ xác nhận",
+      "data": {
+        "orderId": "692b158e7c66f9d776022ed4",
+        "orderCode": "76022ED4",
+        "oldStatus": "Shipped",
+        "newStatus": "Pending"
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:36:30.053Z",
+      "updatedAt": "2025-11-30T08:36:40.584Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:36:40.584Z"
+    },
+    {
+      "_id": "692c02234f529399f96bd869",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_status",
+      "title": "Cập nhật đơn hàng",
+      "message": "Đơn hàng của bạn đã được giao thành công",
+      "data": {
+        "orderId": "692b158e7c66f9d776022ed4",
+        "orderCode": "76022ED4",
+        "oldStatus": "Pending",
+        "newStatus": "Delivered"
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:36:51.593Z",
+      "updatedAt": "2025-11-30T08:37:01.460Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:37:01.459Z"
+    },
+    {
+      "_id": "692c023b4f529399f96bd934",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 32.900₫",
+      "data": {
+        "orderId": "692c023b4f529399f96bd931",
+        "orderCode": "F96BD931",
+        "totalPrice": 32900,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:37:15.647Z",
+      "updatedAt": "2025-11-30T08:58:30.542Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:58:30.541Z"
+    },
+    {
+      "_id": "692c02d34f529399f96bda77",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 44.000₫",
+      "data": {
+        "orderId": "692c02d34f529399f96bda74",
+        "orderCode": "F96BDA74",
+        "totalPrice": 44000,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:39:47.982Z",
+      "updatedAt": "2025-11-30T08:58:30.542Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:58:30.541Z"
+    },
+    {
+      "_id": "692c035d4f529399f96bdbc6",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 21.980₫",
+      "data": {
+        "orderId": "692c035d4f529399f96bdbc3",
+        "orderCode": "F96BDBC3",
+        "totalPrice": 21980,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:42:05.254Z",
+      "updatedAt": "2025-11-30T08:47:08.734Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:47:08.732Z"
+    },
+    {
+      "_id": "692c0497b77b19a16f680b14",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 22.000₫",
+      "data": {
+        "orderId": "692c0497b77b19a16f680b11",
+        "orderCode": "6F680B11",
+        "totalPrice": 22000,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:47:19.696Z",
+      "updatedAt": "2025-11-30T08:58:30.542Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:58:30.541Z"
+    },
+    {
+      "_id": "692c050f96c5cc3b2ce5034c",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 22.000₫",
+      "data": {
+        "orderId": "692c050f96c5cc3b2ce50349",
+        "orderCode": "2CE50349",
+        "totalPrice": 22000,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:49:19.428Z",
+      "updatedAt": "2025-11-30T08:58:30.542Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:58:30.541Z"
+    },
+    {
+      "_id": "692c055557913069b850e8e0",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 22.000₫",
+      "data": {
+        "orderId": "692c055557913069b850e8dd",
+        "orderCode": "B850E8DD",
+        "totalPrice": 22000,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:50:29.963Z",
+      "updatedAt": "2025-11-30T08:58:30.542Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:58:30.541Z"
+    },
+    {
+      "_id": "692c056f0298aaa3b0847222",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 22.000₫",
+      "data": {
+        "orderId": "692c056f0298aaa3b084721f",
+        "orderCode": "B084721F",
+        "totalPrice": 22000,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:50:55.294Z",
+      "updatedAt": "2025-11-30T08:58:30.542Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:58:30.541Z"
+    },
+    {
+      "_id": "692c05ef540710550ce3395b",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 22.000₫",
+      "data": {
+        "orderId": "692c05ef540710550ce33958",
+        "orderCode": "0CE33958",
+        "totalPrice": 22000,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:53:03.140Z",
+      "updatedAt": "2025-11-30T08:58:30.542Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:58:30.541Z"
+    },
+    {
+      "_id": "692c0614540710550ce339f1",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 22.000₫",
+      "data": {
+        "orderId": "692c0614540710550ce339ee",
+        "orderCode": "0CE339EE",
+        "totalPrice": 22000,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:53:40.208Z",
+      "updatedAt": "2025-11-30T08:58:30.542Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:58:30.541Z"
+    },
+    {
+      "_id": "692c071aa6ec81f5a813d19a",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 22.000₫",
+      "data": {
+        "orderId": "692c071aa6ec81f5a813d197",
+        "orderCode": "A813D197",
+        "totalPrice": 22000,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:58:02.489Z",
+      "updatedAt": "2025-11-30T08:58:30.542Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:58:30.541Z"
+    },
+    {
+      "_id": "692c072ea6ec81f5a813d279",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 66.750₫",
+      "data": {
+        "orderId": "692c072ea6ec81f5a813d276",
+        "orderCode": "A813D276",
+        "totalPrice": 66750,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T08:58:22.293Z",
+      "updatedAt": "2025-11-30T08:58:30.542Z",
+      "__v": 0,
+      "readAt": "2025-11-30T08:58:30.541Z"
+    },
+    {
+      "_id": "692c085eb339d7ced7310192",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 216.000₫",
+      "data": {
+        "orderId": "692c085eb339d7ced731018f",
+        "orderCode": "D731018F",
+        "totalPrice": 216000,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T09:03:26.135Z",
+      "updatedAt": "2025-11-30T09:04:32.832Z",
+      "__v": 0,
+      "readAt": "2025-11-30T09:04:32.832Z"
+    },
+    {
+      "_id": "692c08c1b339d7ced73102ce",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_status",
+      "title": "Cập nhật đơn hàng",
+      "message": "Đơn hàng của bạn đang được vận chuyển",
+      "data": {
+        "orderId": "692c085eb339d7ced731018f",
+        "orderCode": "D731018F",
+        "oldStatus": "Pending",
+        "newStatus": "Shipped"
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T09:05:05.259Z",
+      "updatedAt": "2025-11-30T09:05:09.059Z",
+      "__v": 0,
+      "readAt": "2025-11-30T09:05:09.059Z"
+    },
+    {
+      "_id": "692c08d1b339d7ced7310353",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_status",
+      "title": "Cập nhật đơn hàng",
+      "message": "Đơn hàng của bạn đã được giao thành công",
+      "data": {
+        "orderId": "692c085eb339d7ced731018f",
+        "orderCode": "D731018F",
+        "oldStatus": "Shipped",
+        "newStatus": "Delivered"
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T09:05:21.872Z",
+      "updatedAt": "2025-11-30T09:05:33.283Z",
+      "__v": 0,
+      "readAt": "2025-11-30T09:05:33.283Z"
+    },
+    {
+      "_id": "692c0b943f569c2b52dad1b6",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_status",
+      "title": "Cập nhật đơn hàng",
+      "message": "Đơn hàng của bạn đang được vận chuyển",
+      "data": {
+        "orderId": "692c071aa6ec81f5a813d197",
+        "orderCode": "A813D197",
+        "oldStatus": "Pending",
+        "newStatus": "Shipped"
+      },
+      "isRead": true,
+      "createdAt": "2025-11-30T09:17:08.429Z",
+      "updatedAt": "2025-11-30T09:22:05.630Z",
+      "__v": 0,
+      "readAt": "2025-11-30T09:22:05.627Z"
+    },
+    {
+      "_id": "692da7b215d7997ca4080f8e",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 133.500₫",
+      "data": {
+        "orderId": "692da7b215d7997ca4080f8b",
+        "orderCode": "A4080F8B",
+        "totalPrice": 133500,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-12-01T14:35:30.674Z",
+      "updatedAt": "2025-12-02T14:17:12.221Z",
+      "__v": 0,
+      "readAt": "2025-12-02T14:17:12.221Z"
+    },
+    {
+      "_id": "692da7b915d7997ca4080fe0",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 133.500₫",
+      "data": {
+        "orderId": "692da7b915d7997ca4080fdd",
+        "orderCode": "A4080FDD",
+        "totalPrice": 133500,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-12-01T14:35:37.494Z",
+      "updatedAt": "2025-12-02T14:17:10.337Z",
+      "__v": 0,
+      "readAt": "2025-12-02T14:17:10.337Z"
+    },
+    {
+      "_id": "692da8dd15d7997ca40810e8",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 85.000₫",
+      "data": {
+        "orderId": "692da8dd15d7997ca40810e5",
+        "orderCode": "A40810E5",
+        "totalPrice": 85000,
+        "itemCount": 1
+      },
+      "isRead": true,
+      "createdAt": "2025-12-01T14:40:29.213Z",
+      "updatedAt": "2025-12-02T14:17:07.975Z",
+      "__v": 0,
+      "readAt": "2025-12-02T14:17:07.974Z"
+    },
+    {
+      "_id": "692ef680ea7bf6a3f7627804",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 128.000₫",
+      "data": {
+        "orderId": "692ef680ea7bf6a3f7627801",
+        "orderCode": "F7627801",
+        "totalPrice": 128000,
+        "itemCount": 1
+      },
+      "isRead": false,
+      "createdAt": "2025-12-02T14:24:00.297Z",
+      "updatedAt": "2025-12-02T14:24:00.297Z",
+      "__v": 0
+    },
+    {
+      "_id": "692ef684ea7bf6a3f762783d",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 128.000₫",
+      "data": {
+        "orderId": "692ef684ea7bf6a3f762783a",
+        "orderCode": "F762783A",
+        "totalPrice": 128000,
+        "itemCount": 1
+      },
+      "isRead": false,
+      "createdAt": "2025-12-02T14:24:04.429Z",
+      "updatedAt": "2025-12-02T14:24:04.429Z",
+      "__v": 0
+    },
+    {
+      "_id": "692ef695ea7bf6a3f76278d7",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 150.000₫",
+      "data": {
+        "orderId": "692ef695ea7bf6a3f76278d4",
+        "orderCode": "F76278D4",
+        "totalPrice": 150000,
+        "itemCount": 1
+      },
+      "isRead": false,
+      "createdAt": "2025-12-02T14:24:21.119Z",
+      "updatedAt": "2025-12-02T14:24:21.119Z",
+      "__v": 0
+    },
+    {
+      "_id": "692ef706ea7bf6a3f762793a",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 150.000₫",
+      "data": {
+        "orderId": "692ef706ea7bf6a3f7627937",
+        "orderCode": "F7627937",
+        "totalPrice": 150000,
+        "itemCount": 1
+      },
+      "isRead": false,
+      "createdAt": "2025-12-02T14:26:14.147Z",
+      "updatedAt": "2025-12-02T14:26:14.147Z",
+      "__v": 0
+    },
+    {
+      "_id": "692efa4fea7bf6a3f76279df",
+      "user": "68ff83e26826b33c1503de91",
+      "type": "order_created",
+      "title": "Đơn hàng đã được tạo",
+      "message": "Đơn hàng của bạn đã được tạo thành công với tổng giá trị 150.000₫",
+      "data": {
+        "orderId": "692efa4fea7bf6a3f76279dc",
+        "orderCode": "F76279DC",
+        "totalPrice": 150000,
+        "itemCount": 1
+      },
+      "isRead": false,
+      "createdAt": "2025-12-02T14:40:15.565Z",
+      "updatedAt": "2025-12-02T14:40:15.565Z",
+      "__v": 0
+    }
+  ],
+  "discountusages": []
+}
