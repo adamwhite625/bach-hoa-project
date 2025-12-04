@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.frontend2.data.model.ApiResponse;
@@ -57,7 +56,12 @@ public class VouchersFragment extends Fragment {
     }
 
     private void setupToolbar() {
-        binding.toolbar.setNavigationOnClickListener(v -> NavHostFragment.findNavController(this).navigateUp());
+        // SỬA LỖI: Dùng FragmentManager để quay lại màn hình trước đó
+        binding.toolbar.setNavigationOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -77,21 +81,18 @@ public class VouchersFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     userTier = response.body().getData().getCurrentTier();
                 }
-                // Even if this call fails, proceed to fetch vouchers with the default tier
                 fetchVouchers(token);
             }
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse<LoyaltyStatus>> call, @NonNull Throwable t) {
                 Log.e(TAG, "Failed to get loyalty status", t);
-                // Proceed with default tier
                 fetchVouchers(token);
             }
         });
     }
 
     private void fetchVouchers(String token) {
-        // Now, get all available discounts
         apiService.getAvailableDiscounts(token).enqueue(new Callback<List<Voucher>>() {
             @Override
             public void onResponse(@NonNull Call<List<Voucher>> call, @NonNull Response<List<Voucher>> response) {
@@ -112,8 +113,7 @@ public class VouchersFragment extends Fragment {
     }
 
     private void filterAndDisplayVouchers(List<Voucher> allVouchers) {
-        if (userTier == null) userTier = "bronze"; // Sanity check
-
+        if (userTier == null) userTier = "bronze";
         String finalUserTier = userTier.toLowerCase();
 
         List<Voucher> eligibleVouchers = allVouchers.stream()
