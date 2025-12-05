@@ -62,6 +62,16 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupClickListeners() {
+        // Listener cho Thông báo
+        binding.notificationsOption.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new NotificationsFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
         // Listener cho Sửa thông tin cá nhân
         binding.editProfileOption.setOnClickListener(v -> {
             if (currentUser != null) {

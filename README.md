@@ -8,8 +8,8 @@ Nền tảng thương mại điện tử Bach Hoa với hệ thống quản tr�
 do_an_2/
 ├── backend/              # Node.js API Server
 ├── admin-web/           # Admin Management Web (React)
-├── frontend2/           # Mobile App (Android)
-├── chatbot/             # AI Chatbot (FastAPI)
+├── android/           # Mobile App (Android)
+├── chatbotRAG/             # AI Chatbot (FastAPI)
 └── README.md            # File này
 ```
 
@@ -140,7 +140,7 @@ Admin Web sẽ chạy tại: **http://localhost:5173** (hoặc port khác nếu 
 ### Bước 1: Vào thư mục Chatbot
 
 ```bash
-cd chatbot
+cd chatbotRAG
 ```
 
 ### Bước 2: Tạo Virtual Environment (Python)
@@ -167,15 +167,11 @@ pip install -r requirements.txt
 
 ### Bước 4: Tạo file `.env`
 
-Tạo file `.env` trong thư mục `chatbot`:
+Tạo file `.env` trong thư mục `chatbotRAG`:
 
 ```env
 # OpenAI API
 OPENAI_API_KEY=your_openai_api_key
-
-# FastAPI
-PORT=8001
-HOST=127.0.0.1
 ```
 
 ### Bước 5: Build Database Chroma
@@ -189,7 +185,7 @@ Lệnh này sẽ tạo vector database từ các file markdown trong thư mục 
 ### Bước 6: Chạy Chatbot
 
 ```bash
-uvicorn main:app --host 127.0.0.1 --port 8001 --reload
+uvicorn main:app --port 8001
 ```
 
 Chatbot sẽ chạy tại: **http://127.0.0.1:8001**
@@ -210,10 +206,10 @@ curl -X POST "http://127.0.0.1:8001/chat" \
 
 ## 📱 Mobile App (Android)
 
-### Bước 1: Vào thư mục Frontend2
+### Bước 1: Vào thư mục android
 
 ```bash
-cd frontend2
+cd android
 ```
 
 ### Bước 2: Build Android App
@@ -315,13 +311,6 @@ Hoặc truy cập:
 
 ---
 
-## 🔧 Troubleshooting
-
-### Backend không chạy
-
-```bash
-# Kiểm tra port 5000 có đang dùng
-netstat -ano | findstr :5000
 
 # Kill process trên port 5000
 ```
