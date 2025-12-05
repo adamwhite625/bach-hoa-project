@@ -11,10 +11,6 @@ jobs:
   deploy: 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-
     steps:
     - name: Deploy using SSH
       uses: appleboy/ssh-action@master
@@ -29,6 +25,8 @@ jobs:
           git fetch origin
           git pull
           npm install
-          pm2 reload backend-bachoa || pm2 start server.js --name backend-bachhoa
+          npm audit
+          npm audit fix
+          pm2 restart backend-bachoa || pm2 start server.js --name backend-bachhoa
           pm2 save
           pm2 list
