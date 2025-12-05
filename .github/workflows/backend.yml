@@ -27,6 +27,6 @@ jobs:
           npm install
           npm audit
           npm audit fix
-          pm2 restart backend-bachoa || pm2 start server.js --name backend-bachhoa
+          pm2 restart backend-bachoa --update-env || pm2 start server.js --name backend-bachhoa --update-env
           pm2 save
           pm2 list
