@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd admin-web && npm install && npm run build",
+  "buildCommand": "cd admin-web && npm install && npm run dev",
   "outputDirectory": "admin-web/dist",
   "installCommand": "echo 'Skipping root install'",
   "framework": null
