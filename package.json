@@ -1,4 +1,9 @@
 {
+  "scripts": {
+    "dev": "cd admin-web && npm run dev",
+    "build": "cd admin-web && npm install && npm run build && cd .. && cp -r admin-web/dist ./dist",
+    "preview": "cd admin-web && npm run preview"
+  },
   "dependencies": {
     "node-cron": "^4.2.1",
     "socket.io": "^4.8.1",
