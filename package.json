@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "build": "cd admin-web && npm install && npm run build",
+    "postbuild": "mv admin-web/dist dist"
+  },
   "dependencies": {
     "node-cron": "^4.2.1",
     "socket.io": "^4.8.1",
