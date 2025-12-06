@@ -5,4 +5,13 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   base: '/admin/',
   plugins: [react()],
+  resolve: {
+    preserveSymlinks: false,
+  },
+  build: {
+    // Đảm bảo case sensitivity
+    rollupOptions: {
+      external: [],
+    }
+  }
 })
