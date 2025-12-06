@@ -1,0 +1,39 @@
+
+services:
+  backend:
+    build: ./backend
+    container_name: backend_bachhoa
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGO_URI=mongodb+srv://nguyenhaithien2k5_db_user:K8Bg8CO9lmYRkEB0@cluster0.gx1f2js.mongodb.net/?appName=Cluster0 
+      - JWT_SECRET=JWT_SECRET=8a9f$#vX1!@pLmZ0qW$Tz7r^dJk3B*o
+      - ZALO_PAY_KEY1=${ZALO_PAY_KEY1}
+      - ZALO_PAY_KEY2=${ZALO_PAY_KEY2}
+    depends_on:
+      - mongodb
+
+  chatbot:
+    build: ./chatbotRAG
+    container_name: chatbot_rag
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./chatbotRAG/.env
+
+  mongodb:
+    image: mongo:6
+    container_name: mongo_bachhoa
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
+

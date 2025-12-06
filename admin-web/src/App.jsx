@@ -27,7 +27,7 @@ const App = () => {
         <Route path="/admin/login" element={<AdminLogin />} />
 
         {/* Admin-only routes */}
-        <Route path="/admin" element={<AdminGuard><AdminLayout /></AdminGuard>}>
+        <Route path="/admin" element={<AdminGuard><AdminLayout/></AdminGuard>}>
           <Route index element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
