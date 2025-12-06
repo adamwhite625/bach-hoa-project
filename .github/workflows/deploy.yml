@@ -12,21 +12,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Deploy using SSH
+    - name: Deploy to VPS using SSH
       uses: appleboy/ssh-action@master
       with:
-        node-version: ${{ matrix.node-version }}
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: 22
+
         script: | 
-          cd $HOME/bach-hoa-project/backend
-          git fetch origin
-          git pull
-          npm install
-          npm audit
-          npm audit fix
-          pm2 restart backend-bachoa --update-env || pm2 start server.js --name backend-bachhoa --update-env
-          pm2 save
-          pm2 list
+          cd $HOME/bach-hoa-project
+          git fetch --all
+          git reset --hard origin/main
+          docker compose down
+          docker compose build
+          docker compose up -d
+          docker system prune -f
+          echo "Deploy completed successfully!"
