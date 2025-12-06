@@ -10,7 +10,7 @@ public class ApiClient {
     // URL cho backend chính (sản phẩm, user, etc.)
     private static final String MAIN_BASE_URL = "http://180.93.35.30:5000";
     // URL cho backend chatbot
-    private static final String CHATBOT_BASE_URL = "http://10.0.2.2:8001/";
+    private static final String CHATBOT_BASE_URL = "http://180.93.35.30/chatbot/";
 
     private static Retrofit mainRetrofit = null;
     private static Retrofit chatbotRetrofit = null;
