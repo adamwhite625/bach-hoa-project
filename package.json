@@ -1,7 +1,10 @@
 {
+  "name": "bach-hoa-project",
+  "version": "1.0.0",
   "scripts": {
-    "dev": "cd admin-web && npm run dev",
-    "build": "cd admin-web && npm install && npm run build && cd .. && cp -r admin-web/dist ./dist",
+    "dev": "cd admin-web && npm install && npm run dev",
+    "build": "node build.js",
+    "vercel-build": "node build.js",
     "preview": "cd admin-web && npm run preview"
   },
   "dependencies": {
