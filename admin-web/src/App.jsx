@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 
 // Layouts
-import AdminLayout from "./components/layout/AdminLayout.jsx";
+import AdminLayout from "./components/layout/Adminlayout.jsx";
 // Removed user/public/auth pages to make admin-only
 
 // Admin Pages
