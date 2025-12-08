@@ -1,5 +1,9 @@
 # Bach Hoa E-Commerce Platform
 
+#Backend: http://180.93.35.30/api/
+#Admin-Web: http://180.93.35.30/admin/
+#ChatbotRAG: http://180.93.35.30/chatbot/
+
 Nền tảng thương mại điện tử Bach Hoa với hệ thống quản trị admin, frontend web, mobile app, và chatbot AI.
 
 ## 📋 Cấu trúc Project
@@ -304,13 +308,8 @@ Backend API documentation có sẵn trong file:
 backend/API_COMPLETE_DOCUMENTATION.js
 ```
 
-Hoặc truy cập:
-
-- Swagger UI: http://localhost:5000/api-docs (nếu bật)
 - Postman Collection: `backend/postman_collection.json`
 
 ---
 
 
-# Kill process trên port 5000
-```
