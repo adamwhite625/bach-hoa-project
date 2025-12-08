@@ -9,8 +9,8 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=5000
-      - MONGO_URI=mongodb+srv://nguyenhaithien2k5_db_user:K8Bg8CO9lmYRkEB0@cluster0.gx1f2js.mongodb.net/?appName=Cluster0 
-      - JWT_SECRET=JWT_SECRET=8a9f$#vX1!@pLmZ0qW$Tz7r^dJk3B*o
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
       - ZALO_PAY_KEY1=${ZALO_PAY_KEY1}
       - ZALO_PAY_KEY2=${ZALO_PAY_KEY2}
     depends_on:
@@ -21,7 +21,7 @@ services:
     container_name: chatbot_rag
     restart: always
     ports:
-      - "3000:3000"
+      - "8001:8001"
     env_file:
       - ./chatbotRAG/.env
 
