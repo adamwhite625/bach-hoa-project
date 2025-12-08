@@ -1,8 +1,10 @@
 # Bach Hoa E-Commerce Platform
 
-#Backend: http://180.93.35.30/api/
-#Admin-Web: http://180.93.35.30/admin/
-#ChatbotRAG: http://180.93.35.30/chatbot/
+# Backend: http://180.93.35.30/api/
+
+# Admin-Web: http://180.93.35.30/admin/
+
+# ChatbotRAG: http://180.93.35.30/chatbot/
 
 Nền tảng thương mại điện tử Bach Hoa với hệ thống quản trị admin, frontend web, mobile app, và chatbot AI.
 
