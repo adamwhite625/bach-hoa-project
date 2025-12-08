@@ -43,7 +43,7 @@ def read_root():
     return {"message": "Chào mừng bạn đến với Chatbot API!"}
 
 
-@app.post("/api/chat")
+@app.post("/chatbot/api/chat")
 def chat_endpoint(request: ChatRequest):
     """
     Đây là API endpoint chính mà React sẽ gọi tới.
