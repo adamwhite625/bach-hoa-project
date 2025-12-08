@@ -5,7 +5,7 @@ services:
     container_name: backend_bachhoa
     restart: always
     ports:
-      - "5000:5000"
+      - "5001:5000"
     environment:
       - NODE_ENV=production
       - PORT=5000

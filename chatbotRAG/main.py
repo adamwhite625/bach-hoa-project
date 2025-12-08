@@ -43,7 +43,7 @@ def read_root():
     return {"message": "Chào mừng bạn đến với Chatbot API!"}
 
 
-@app.post("/chatbot/api/chat")
+@app.post("/api/chat")
 def chat_endpoint(request: ChatRequest):
     """
     Đây là API endpoint chính mà React sẽ gọi tới.
@@ -58,5 +58,5 @@ def chat_endpoint(request: ChatRequest):
 
 # --- Lệnh chạy Server (chỉ để tham khảo) ---
 if __name__ == "__main__":
-    print("Khởi chạy FastAPI server tại http://localhost:8000")
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    print("Khởi chạy FastAPI server tại http://localhost:8001")
+    uvicorn.run(app, host="0.0.0.0", port=8001)
