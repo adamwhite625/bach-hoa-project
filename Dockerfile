@@ -1,13 +1,14 @@
-# Sử dụng image Node.js chính thức
 FROM node:18
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY backend/package*.json ./backend/
+
+WORKDIR /app/backend
 
 RUN npm install
 
-COPY . .
+COPY backend/. .
 
 EXPOSE 5000
 
