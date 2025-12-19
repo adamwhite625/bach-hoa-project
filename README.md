@@ -1,8 +1,8 @@
 # Bach Hoa E-Commerce Platform
 
-# Backend: http://180.93.35.30/api/
+# Backend: https://bachhoa-2637c5wi.b4a.run/
 
-# Admin-Web: http://180.93.35.30/admin/
+# Admin-Web: https://bach-hoa-project-deploy-webadmin.vercel.app
 
 # ChatbotRAG: http://180.93.35.30/chatbot/
 
