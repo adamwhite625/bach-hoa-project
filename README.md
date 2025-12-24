@@ -1,5 +1,7 @@
 # Bach Hoa E-Commerce Platform
 
+## Figma: https://www.figma.com/design/j9moxFSSwYvI2EY1875rTW/NT118?node-id=0-1&t=nQrjJNi7SGKFyP0F-1
+
 ## Backend: http://180.93.35.30/api/
 
 ## Admin-Web: http://180.93.35.30/admin/
