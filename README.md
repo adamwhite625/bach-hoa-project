@@ -1,5 +1,8 @@
 # Bach Hoa E-Commerce Platform
 
+## Tài khoản admin web: nguyenhaithien2k5@gmail.com (password: 12345678)
+## Tài khoản android user: thienmocay1235@gmail.com (password: 12345)
+
 ## Figma: https://www.figma.com/design/j9moxFSSwYvI2EY1875rTW/NT118?node-id=0-1&t=nQrjJNi7SGKFyP0F-1
 
 ## Backend: http://180.93.35.30/api/
