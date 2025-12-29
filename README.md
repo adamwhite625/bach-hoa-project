@@ -274,18 +274,6 @@ uvicorn main:app --port 8001 --reload
 
 ## 🗄️ Database Setup
 
-### MongoDB Local
-
-```bash
-# Windows
-mongod
-
-# macOS
-brew services start mongodb-community
-
-# Linux
-sudo systemctl start mongod
-```
 
 ### MongoDB Atlas (Cloud)
 
